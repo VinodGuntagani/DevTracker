@@ -1,0 +1,19 @@
+# compiled files
+/build/
+/target/
+*.class
+
+# eclipse files
+.classpath
+.project
+.settings/
+
+# exported app
+*.war
+
+# logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
