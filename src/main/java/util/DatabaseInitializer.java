@@ -1,7 +1,6 @@
 package util;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.Statement;
 
 public class DatabaseInitializer {
@@ -12,13 +11,9 @@ public class DatabaseInitializer {
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "1234");
+			Connection con = DBConnection.getConnection();
 
 			Statement st = con.createStatement();
-
-			st.executeUpdate("CREATE DATABASE IF NOT EXISTS devtracker");
-
-			st.executeUpdate("USE devtracker");
 
 			// USERS
 			st.executeUpdate("CREATE TABLE IF NOT EXISTS users(" + "id INT PRIMARY KEY AUTO_INCREMENT,"
@@ -50,7 +45,7 @@ public class DatabaseInitializer {
 					+ "topic_id INT," + "name VARCHAR(100)," + "completed BOOLEAN DEFAULT FALSE,"
 
 					+ "difficulty VARCHAR(20) DEFAULT 'Medium'," + "estimated_minutes INT DEFAULT 60,"
-					+ "weight INT DEFAULT 120," + "ai_notes LONGTEXT," + "ai_learning LONGTEXT,"+ "ai_keywords TEXT,"
+					+ "weight INT DEFAULT 120," + "ai_notes LONGTEXT," + "ai_learning LONGTEXT," + "ai_keywords TEXT,"
 
 					+ "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
 					+ "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,"
