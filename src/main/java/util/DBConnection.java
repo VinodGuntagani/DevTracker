@@ -7,44 +7,29 @@ public class DBConnection {
 
 	public static Connection getConnection() {
 
-		Connection con = null;
-
 		try {
+
+			String host = System.getenv("DB_HOST");
+			String port = System.getenv("DB_PORT");
+			String db = System.getenv("DB_NAME");
+
+			String url = "jdbc:mysql://" + host + ":" + port + "/" + db + "?sslMode=REQUIRED";
+
+			String user = System.getenv("DB_USER");
+			String pass = System.getenv("DB_PASSWORD");
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			String url = System.getenv("DB_URL");
-
-			String user = System.getenv("DB_USER");
-
-			String password = System.getenv("DB_PASSWORD");
-
-			// =========================
-			// LOCAL DEVELOPMENT FALLBACK
-			// =========================
-
-			if (url == null) {
-
-				url = "jdbc:mysql://localhost:3306/devtracker";
-
-				user = "root";
-
-				password = "1234";
-
-			}
-
-			con = DriverManager.getConnection(url, user, password);
-
 			System.out.println("Database Connected");
 
-		} catch (Exception e) {
+			return DriverManager.getConnection(url, user, pass);
+
+		} catch(Exception e) {
 
 			e.printStackTrace();
 
 		}
 
-		return con;
-
+		return null;
 	}
-
 }
