@@ -9,6 +9,10 @@ import util.DatabaseInitializer;
 @WebListener
 public class AppStartupListener implements ServletContextListener {
 
+	static {
+		System.out.println("APP STARTUP LISTENER CLASS LOADED");
+	}
+
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 
@@ -20,7 +24,7 @@ public class AppStartupListener implements ServletContextListener {
 
 			System.out.println("Database Initialization Complete");
 
-		} catch (Exception e) {
+		} catch (Throwable e) {
 
 			System.out.println("DATABASE INIT FAILED");
 
@@ -29,6 +33,8 @@ public class AppStartupListener implements ServletContextListener {
 		}
 
 	}
+
+
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
