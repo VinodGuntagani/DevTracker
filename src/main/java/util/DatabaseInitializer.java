@@ -12,6 +12,13 @@ public class DatabaseInitializer {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			Connection con = DBConnection.getConnection();
+			if (con == null) {
+
+			    System.out.println("DATABASE CONNECTION FAILED - SKIPPING INIT");
+
+			    return;
+
+			}
 
 			Statement st = con.createStatement();
 
