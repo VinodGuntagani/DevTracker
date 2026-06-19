@@ -5,12 +5,6 @@ import java.sql.DriverManager;
 
 public class DBConnection {
 
-	private static final String URL = "jdbc:mysql://localhost:3306/devtracker";
-
-	private static final String USER = "root";
-
-	private static final String PASSWORD = "1234";
-
 	public static Connection getConnection() {
 
 		Connection con = null;
@@ -19,7 +13,27 @@ public class DBConnection {
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			String url = System.getenv("DB_URL");
+
+			String user = System.getenv("DB_USER");
+
+			String password = System.getenv("DB_PASSWORD");
+
+			// =========================
+			// LOCAL DEVELOPMENT FALLBACK
+			// =========================
+
+			if (url == null) {
+
+				url = "jdbc:mysql://localhost:3306/devtracker";
+
+				user = "root";
+
+				password = "1234";
+
+			}
+
+			con = DriverManager.getConnection(url, user, password);
 
 			System.out.println("Database Connected");
 
