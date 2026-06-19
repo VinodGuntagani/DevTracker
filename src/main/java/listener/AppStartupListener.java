@@ -12,61 +12,56 @@ import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
 
 import util.DatabaseInitializer;
 
-
 @WebListener
 public class AppStartupListener implements ServletContextListener {
 
+	@Override
+	public void contextInitialized(ServletContextEvent event) {
 
-    @Override
-    public void contextInitialized(ServletContextEvent event) {
+		System.out.println("Application Starting...");
 
-        System.out.println("Application Starting...");
+		try {
 
-        DatabaseInitializer.initDatabase();
+			DatabaseInitializer.initDatabase();
 
-        System.out.println("Database Initialization Complete");
+			System.out.println("Database Initialization Complete");
 
-    }
+		} catch (Exception e) {
 
+			System.out.println("DATABASE INIT FAILED - APP STILL STARTING");
 
+			e.printStackTrace();
 
-    @Override
-    public void contextDestroyed(ServletContextEvent event) {
+		}
+	}
 
-        System.out.println("Application Stopped");
+	@Override
+	public void contextDestroyed(ServletContextEvent event) {
 
+		System.out.println("Application Stopped");
 
-        try {
+		try {
 
-            AbandonedConnectionCleanupThread.checkedShutdown();
+			AbandonedConnectionCleanupThread.checkedShutdown();
 
+			Enumeration<Driver> drivers = DriverManager.getDrivers();
 
-            Enumeration<Driver> drivers =
-                    DriverManager.getDrivers();
+			while (drivers.hasMoreElements()) {
 
+				Driver driver = drivers.nextElement();
 
-            while(drivers.hasMoreElements()) {
+				DriverManager.deregisterDriver(driver);
 
-                Driver driver =
-                        drivers.nextElement();
+			}
 
+			System.out.println("MySQL cleanup completed");
 
-                DriverManager.deregisterDriver(driver);
+		} catch (Exception e) {
 
-            }
+			e.printStackTrace();
 
+		}
 
-            System.out.println(
-                "MySQL cleanup completed"
-            );
-
-
-        } catch(Exception e) {
-
-            e.printStackTrace();
-
-        }
-
-    }
+	}
 
 }
