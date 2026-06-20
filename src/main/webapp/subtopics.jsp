@@ -902,7 +902,7 @@ for (SubTopic s : list) {
 							<span class="difficulty-badge"> <%=s.getDifficulty()%>
 
 
-							</span> <span class="time-pill"> ⏱ <%=s.getEstimatedHours()%> hrs
+							</span> <span class="time-pill"> ⏱ <%=s.getEstimatedMinutes()%> hrs
 
 
 							</span> <span class="time-pill"> Weight <%=s.getWeight()%>

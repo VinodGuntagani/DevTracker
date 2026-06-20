@@ -593,7 +593,7 @@ int totalDeleted = deletedRoadmaps.size() + deletedSubjects.size() + deletedTopi
                         </div>
                         <div class="trash-card-meta">
                             <span class="<%=diffClass%>"><%=st.getDifficulty()%></span>
-                            <span class="time-pill"><i class="ti ti-clock" style="font-size:11px"></i> <%=st.getEstimatedHours()%> hrs</span>
+                            <span class="time-pill"><i class="ti ti-clock" style="font-size:11px"></i> <%=st.getEstimatedMinutes()%> hrs</span>
                             <span class="deleted-pill"><i class="ti ti-trash" style="font-size:11px"></i> Deleted</span>
                         </div>
                     </div>
