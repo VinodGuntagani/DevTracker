@@ -3305,3 +3305,25 @@ body {
 	background:#dbeafe;
 
 }
+/* customization hidden by default */
+
+.inline-edit-btn,
+.add-plus,
+.row-delete-btn,
+.subject-delete-form,
+.topic-delete-form,
+.subtopic-delete-form {
+	display: none !important;
+}
+
+
+/* when customize enabled */
+
+.customize-mode .inline-edit-btn,
+.customize-mode .add-plus,
+.customize-mode .row-delete-btn,
+.customize-mode .subject-delete-form,
+.customize-mode .topic-delete-form,
+.customize-mode .subtopic-delete-form {
+	display: flex !important;
+}

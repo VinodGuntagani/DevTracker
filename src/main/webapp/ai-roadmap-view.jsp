@@ -128,6 +128,10 @@ for (Subject subject : roadmap.getSubjects()) {
 					<button class="btn btn-sm" onclick="collapseAll()">
 						<i class="ti ti-chevrons-up"></i> Collapse all
 					</button>
+					<button class="btn btn-sm" id="customizeBtn"
+						onclick="toggleCustomize()">
+						<i class="ti ti-pencil"></i> Customize
+					</button>
 					<a class="btn btn-sm" href="dashboard.jsp"><i
 						class="ti ti-arrow-left"></i> Back</a>
 				</div>
@@ -587,6 +591,32 @@ function hideAddSubject(){
 
 	document.getElementById("addSubjectBtn")
 	.style.display="flex";
+
+}
+let customizeMode = false;
+
+function toggleCustomize(){
+
+	customizeMode = !customizeMode;
+
+	document.body.classList.toggle(
+		"customize-mode",
+		customizeMode
+	);
+
+	let btn = document.getElementById("customizeBtn");
+
+	if(customizeMode){
+
+		btn.innerHTML =
+		'<i class="ti ti-check"></i> Done';
+
+	}else{
+
+		btn.innerHTML =
+		'<i class="ti ti-pencil"></i> Customize';
+
+	}
 
 }
 </script>
