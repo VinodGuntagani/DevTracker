@@ -109,7 +109,7 @@ for (Subject subject : roadmap.getSubjects()) {
 					</div>
 					<div class="hero-stat">
 						<span class="hero-stat-val"><%=totalSubtopics%></span> <span
-							class="hero-stat-label">Subtopics</span>
+							class="hero-stat-label">Lessons</span>
 					</div>
 					<div class="hero-stat">
 						<span class="hero-stat-val"><%=totalMinutes / 60%></span> <span
@@ -117,7 +117,40 @@ for (Subject subject : roadmap.getSubjects()) {
 					</div>
 				</div>
 			</div>
+			<div class="learning-hint">
 
+				<div class="hint-icon">
+					<i class="ti ti-bulb"></i>
+				</div>
+
+				<div>
+
+					<strong>How DevTracker works</strong>
+
+					<p>Your roadmap is organized like:</p>
+
+					<div class="hint-tree">
+
+						<div>📚 Subject</div>
+						<div class="indent">└ 📖 Topic</div>
+						<div class="indent2">└ 🎯 Lesson</div>
+
+					</div>
+
+
+					<p>Lessons are where you learn, track progress, take notes and
+						follow schedules.</p>
+
+
+					<p>
+						Creating your own roadmap? Use <a href="#customizeBtn"
+							class="hint-link"> Customize Mode </a> to add Subjects, Topics,
+						and Lessons.
+					</p>
+
+				</div>
+
+			</div>
 			<!-- Toolbar -->
 			<div class="syllabus-toolbar">
 				<span class="syllabus-toolbar-label">Syllabus</span>
@@ -164,9 +197,21 @@ for (Subject subject : roadmap.getSubjects()) {
 						onclick="toggleSubject('<%=sBlockId%>')"><%=si%></div>
 
 					<%-- Name (read mode) --%>
-					<div class="subject-header-left"
-						onclick="toggleSubject('<%=sBlockId%>')" style="cursor: pointer">
-						<span class="subject-name" id="<%=sNameId%>"><%=subject.getName()%></span>
+					<div class="subject-header-left" style="cursor: pointer">
+						<button class="inline-edit-btn" title="Edit subject"
+							onclick="enableSubjectEdit('<%=si%>')">
+
+							<i class="ti ti-pencil"></i>
+
+						</button>
+						<span class="subject-name" id="<%=sNameId%>"
+							onclick="toggleSubject('<%=sBlockId%>')"> <%=subject.getName()%>
+
+						</span>
+
+
+
+
 					</div>
 
 					<%-- Inline edit form (hidden by default) --%>
@@ -199,18 +244,15 @@ for (Subject subject : roadmap.getSubjects()) {
 					</form>
 					<div class="subject-meta">
 						<span class="count-pill" id="<%=sCountId%>"><%=tCount%>
-							topics · <%=stCount%> subtopics</span>
-						<button class="inline-edit-btn" title="Edit subject"
-							onclick="enableSubjectEdit('<%=si%>')">
-							<i class="ti ti-pencil"></i>
-						</button>
-						<i class="ti ti-chevron-down chevron-icon"
+							topics · <%=stCount%> Lessons</span> <i
+							class="ti ti-chevron-down chevron-icon"
 							onclick="toggleSubject('<%=sBlockId%>')"></i>
 					</div>
 				</div>
 
 				<%-- Subject body (topics) --%>
 				<div class="subject-body">
+
 
 					<%
 					int ti = 0;
@@ -225,12 +267,21 @@ for (Subject subject : roadmap.getSubjects()) {
 
 						<%-- Topic header row --%>
 						<div class="topic-header">
+
 							<div class="topic-dot" onclick="toggleTopic('<%=tSectionId%>')"
 								style="cursor: pointer; width: 10px; height: 10px; flex-shrink: 0"></div>
+
+							<button class="inline-edit-btn" title="Edit topic"
+								onclick="enableTopicEdit('<%=si%>','<%=ti%>')">
+
+								<i class="ti ti-pencil"></i>
+
+							</button>
 
 							<%-- Topic name (read mode) --%>
 							<span class="topic-name" id="<%=tNameId%>"
 								onclick="toggleTopic('<%=tSectionId%>')" style="cursor: pointer"><%=topic.getName()%></span>
+
 
 							<%-- Topic inline edit form --%>
 							<form id="<%=tEditFormId%>" class="topic-edit-form"
@@ -265,12 +316,7 @@ for (Subject subject : roadmap.getSubjects()) {
 
 							</form>
 							<span class="count-pill" style="font-size: 11px"><%=topic.getSubtopics().size()%>
-								subtopics</span>
-							<button class="inline-edit-btn" title="Edit topic"
-								onclick="enableTopicEdit('<%=si%>','<%=ti%>')">
-								<i class="ti ti-pencil"></i>
-							</button>
-							<i class="ti ti-chevron-down topic-chevron"
+								Lesson </span> <i class="ti ti-chevron-down topic-chevron"
 								onclick="toggleTopic('<%=tSectionId%>')"></i>
 						</div>
 
@@ -286,17 +332,18 @@ for (Subject subject : roadmap.getSubjects()) {
 
 							<%-- Read row --%>
 							<div class="subtopic-row" id="<%=stRowId%>">
+							<button class="inline-edit-btn" title="Edit subtopic"
+										onclick="enableSubtopicEdit(<%=sub.getId()%>)">
+										<i class="ti ti-pencil"></i>
+									</button>
 								<span class="subtopic-name-text"><%=sub.getName()%></span>
 								<div class="subtopic-right">
-									<span class="diff-badge <%=diffClass%>"><%=sub.getDifficulty()%></span>
+
 									<span class="hours-pill"> <i class="ti ti-clock"
 										style="font-size: 11px"></i> <%=sub.getEstimatedMinutes() / 60%>h
 										<%=sub.getEstimatedMinutes() % 60%>m
 									</span>
-									<button class="inline-edit-btn" title="Edit subtopic"
-										onclick="enableSubtopicEdit(<%=sub.getId()%>)">
-										<i class="ti ti-pencil"></i>
-									</button>
+									
 
 								</div>
 							</div>
@@ -350,7 +397,7 @@ for (Subject subject : roadmap.getSubjects()) {
 						<%-- Add subtopic row --%>
 						<div id="addSubBtn-<%=topic.getId()%>" class="add-plus"
 							onclick="showAddSub(<%=topic.getId()%>)">
-							<i class="ti ti-plus"></i><span>Add Subtopic</span>
+							<i class="ti ti-plus"></i><span>Add Lesson</span>
 
 
 						</div>
