@@ -3307,6 +3307,11 @@ body {
 }
 /* customization hidden by default */
 
+/* ======================
+   CUSTOMIZE MODE
+====================== */
+
+/* Hide edit controls normally */
 .inline-edit-btn,
 .add-plus,
 .row-delete-btn,
@@ -3317,8 +3322,7 @@ body {
 }
 
 
-/* when customize enabled */
-
+/* Show only when customize enabled */
 .customize-mode .inline-edit-btn,
 .customize-mode .add-plus,
 .customize-mode .row-delete-btn,
@@ -3326,4 +3330,59 @@ body {
 .customize-mode .topic-delete-form,
 .customize-mode .subtopic-delete-form {
 	display: flex !important;
+}
+
+
+/* bottom helper message */
+
+.customize-hint {
+	margin-top: 40px;
+	padding: 18px;
+	border-radius: 14px;
+	background: #f8fafc;
+	text-align: center;
+	color: #64748b;
+}
+
+
+.customize-hint a {
+	cursor: pointer;
+	font-weight: 600;
+	color: #2563eb;
+	text-decoration: none;
+}
+html {
+    scroll-behavior: smooth;
+}
+
+
+.customize-hint {
+
+    margin-top: 40px;
+    padding: 18px;
+
+    border-radius: 14px;
+
+    background: #f8fafc;
+
+    text-align: center;
+
+    color: #64748b;
+}
+
+
+.customize-hint a {
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    color: #2563eb;
+
+    text-decoration: none;
+}
+#customizeBtn:target {
+
+    transform: scale(1.08);
+
 }

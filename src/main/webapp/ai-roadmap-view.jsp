@@ -447,6 +447,12 @@ for (Subject subject : roadmap.getSubjects()) {
 			</form>
 		</div>
 	</div>
+	<div class="customize-hint">
+
+		💡 Want to change this roadmap? Use <a href="#customizeBtn">
+			Customize Mode </a> to add, edit, or remove subjects, topics and lessons.
+
+	</div>
 	</main>
 	</div>
 	<%-- /layout --%>
