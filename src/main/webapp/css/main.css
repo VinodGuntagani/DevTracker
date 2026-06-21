@@ -3383,6 +3383,28 @@ html {
 }
 #customizeBtn:target {
 
-    transform: scale(1.08);
+    animation: highlightButton 1.5s ease;
+
+}
+
+
+@keyframes highlightButton {
+
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0px #2563eb;
+    }
+
+
+    50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 20px #2563eb;
+    }
+
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0px #2563eb;
+    }
 
 }
