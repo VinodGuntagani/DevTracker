@@ -3383,7 +3383,7 @@ html {
 }
 #customizeBtn:target {
 
-    animation: highlightButton 1.5s ease;
+    animation: highlightButton 10s ease;
 
 }
 
