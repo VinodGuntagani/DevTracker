@@ -13,18 +13,38 @@ public class DBConnection {
 			String port = System.getenv("DB_PORT");
 			String db = System.getenv("DB_NAME");
 
-			String url = "jdbc:mysql://" + host + ":" + port + "/" + db + "?sslMode=REQUIRED";
-
 			String user = System.getenv("DB_USER");
 			String pass = System.getenv("DB_PASSWORD");
 
+			// LOCAL FALLBACK
+			if (host == null || host.isEmpty()) {
+
+				System.out.println("Using LOCAL database");
+
+				host = "localhost";
+				port = "3306";
+				db = "devtracker";
+
+				user = "root";
+				pass = "YOUR_LOCAL_PASSWORD";
+
+			} else {
+
+				System.out.println("Using CLOUD database");
+
+			}
+
+			String url = "jdbc:mysql://" + host + ":" + port + "/" + db;
+
 			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			Connection con = DriverManager.getConnection(url, user, pass);
 
 			System.out.println("Database Connected");
 
-			return DriverManager.getConnection(url, user, pass);
+			return con;
 
-		} catch(Exception e) {
+		} catch (Exception e) {
 
 			e.printStackTrace();
 

@@ -3311,7 +3311,9 @@ body {
    CUSTOMIZE MODE
 ====================== */
 
+
 /* Hide edit controls normally */
+
 .inline-edit-btn,
 .add-plus,
 .row-delete-btn,
@@ -3322,7 +3324,8 @@ body {
 }
 
 
-/* Show only when customize enabled */
+/* Show edit controls in customize mode */
+
 .customize-mode .inline-edit-btn,
 .customize-mode .add-plus,
 .customize-mode .row-delete-btn,
@@ -3333,78 +3336,83 @@ body {
 }
 
 
-/* bottom helper message */
+/* Smooth anchor scrolling */
+
+html {
+	scroll-behavior: smooth;
+}
+
+
+/* Bottom helper */
 
 .customize-hint {
+
 	margin-top: 40px;
 	padding: 18px;
+
 	border-radius: 14px;
+
 	background: #f8fafc;
+
 	text-align: center;
+
 	color: #64748b;
 }
 
 
 .customize-hint a {
+
 	cursor: pointer;
+
 	font-weight: 600;
+
 	color: #2563eb;
+
 	text-decoration: none;
 }
-html {
-    scroll-behavior: smooth;
+
+
+/* Keep button slightly lower after navigation */
+
+#customizeBtn {
+
+	scroll-margin-top: 220px;
+
 }
 
 
-.customize-hint {
+/* Highlight after clicking bottom link */
 
-    margin-top: 40px;
-    padding: 18px;
-
-    border-radius: 14px;
-
-    background: #f8fafc;
-
-    text-align: center;
-
-    color: #64748b;
-}
-
-
-.customize-hint a {
-
-    cursor: pointer;
-
-    font-weight: 600;
-
-    color: #2563eb;
-
-    text-decoration: none;
-}
 #customizeBtn:target {
 
-    animation: highlightButton 10s ease;
+	animation: highlightButton 2s ease;
 
 }
 
 
 @keyframes highlightButton {
 
-    0% {
-        transform: scale(1);
-        box-shadow: 0 0 0px #2563eb;
-    }
+	0% {
+
+		transform: scale(1);
+		box-shadow: 0 0 0px #2563eb;
+
+	}
 
 
-    50% {
-        transform: scale(1.08);
-        box-shadow: 0 0 20px #2563eb;
-    }
+	50% {
+
+		transform: scale(1.08);
+		box-shadow: 0 0 20px #2563eb;
+
+	}
 
 
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 0px #2563eb;
-    }
+	100% {
+
+		transform: scale(1);
+		box-shadow: 0 0 0px #2563eb;
+
+	}
 
 }
