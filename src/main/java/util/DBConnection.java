@@ -26,7 +26,7 @@ public class DBConnection {
 				db = "devtracker";
 
 				user = "root";
-				pass = "YOUR_LOCAL_PASSWORD";
+				pass = "1234";
 
 			} else {
 

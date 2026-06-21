@@ -3376,7 +3376,7 @@ html {
 
 #customizeBtn {
 
-	scroll-margin-top: 220px;
+	scroll-margin-top: 300px;
 
 }
 
@@ -3385,7 +3385,7 @@ html {
 
 #customizeBtn:target {
 
-	animation: highlightButton 2s ease;
+	animation: highlightButton 10s ease;
 
 }
 
