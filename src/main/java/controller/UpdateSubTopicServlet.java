@@ -5,8 +5,8 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import dao.StudyPlanDAO;
 
+import dao.StudyPlanDAO;
 import dao.SubTopicDAO;
 
 @WebServlet("/updateSubTopic")
@@ -17,23 +17,27 @@ public class UpdateSubTopicServlet extends HttpServlet {
 
 		int id = Integer.parseInt(request.getParameter("id"));
 
-		int topicId = Integer.parseInt(request.getParameter("topicId"));
-
-		int subjectId = Integer.parseInt(request.getParameter("subjectId"));
-
-		int roadmapId = Integer.parseInt(request.getParameter("roadmapId"));
-
-		boolean completed = request.getParameter("completed") != null;
+		boolean completed = Boolean.parseBoolean(request.getParameter("completed"));
 
 		SubTopicDAO dao = new SubTopicDAO();
 
 		dao.updateStatus(id, completed);
+
 		StudyPlanDAO planDAO = new StudyPlanDAO();
 
 		planDAO.updateTaskBySubTopic(id, completed);
 
-		response.sendRedirect(
-				"subtopics.jsp?topicId=" + topicId + "&subjectId=" + subjectId + "&roadmapId=" + roadmapId);
+		String redirect = request.getParameter("redirect");
+
+		if (redirect != null) {
+
+			response.sendRedirect(redirect);
+
+		} else {
+
+			response.sendRedirect("dashboard.jsp");
+
+		}
 
 	}
 

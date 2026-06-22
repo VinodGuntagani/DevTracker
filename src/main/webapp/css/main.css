@@ -3503,3 +3503,49 @@ html {
 	margin-left: 50px;
 
 }
+.lesson-title {
+
+	display:flex;
+	align-items:center;
+	gap:10px;
+
+}
+
+
+.lesson-complete-form {
+
+	margin:0;
+
+}
+
+
+.lesson-check-btn {
+
+	border:none;
+	background:none;
+
+	cursor:pointer;
+
+	font-size:18px;
+
+	color:#4f46e5;
+
+	display:flex;
+
+}
+
+
+.lesson-link {
+
+	color:#111827;
+
+	text-decoration:none;
+
+}
+
+
+.lesson-link:hover {
+
+	color:#4f46e5;
+
+}

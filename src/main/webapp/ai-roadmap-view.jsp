@@ -332,18 +332,67 @@ for (Subject subject : roadmap.getSubjects()) {
 
 							<%-- Read row --%>
 							<div class="subtopic-row" id="<%=stRowId%>">
-							<button class="inline-edit-btn" title="Edit subtopic"
-										onclick="enableSubtopicEdit(<%=sub.getId()%>)">
-										<i class="ti ti-pencil"></i>
+								<button class="inline-edit-btn" title="Edit subtopic"
+									onclick="enableSubtopicEdit(<%=sub.getId()%>)">
+									<i class="ti ti-pencil"></i>
+								</button>
+								<div class="lesson-title">
+
+
+									<!-- completion button -->
+									<button class="lesson-check-btn"
+										onclick="toggleLesson(
+								            <%=sub.getId()%>,
+								            <%=!sub.isCompleted()%>,
+								            this
+								        )">
+
+										<%
+										if (sub.isCompleted()) {
+										%>
+
+										<i class="ti ti-circle-check-filled"></i>
+
+										<%
+										} else {
+										%>
+
+										<i class="ti ti-circle"></i>
+
+										<%
+										}
+										%>
+
 									</button>
-								<span class="subtopic-name-text"><%=sub.getName()%></span>
+
+
+
+
+
+									<!-- open learning -->
+									<a class="lesson-link"
+										href="generateLearning?subtopicId=<%=sub.getId()%>"> <%=sub.getName()%>
+
+									</a>
+
+
+
+									<button class="inline-edit-btn" title="Edit lesson"
+										onclick="enableSubtopicEdit(<%=sub.getId()%>)">
+
+										<i class="ti ti-pencil"></i>
+
+									</button>
+
+
+								</div>
 								<div class="subtopic-right">
 
 									<span class="hours-pill"> <i class="ti ti-clock"
 										style="font-size: 11px"></i> <%=sub.getEstimatedMinutes() / 60%>h
 										<%=sub.getEstimatedMinutes() % 60%>m
 									</span>
-									
+
 
 								</div>
 							</div>
@@ -670,6 +719,80 @@ function toggleCustomize(){
 		'<i class="ti ti-pencil"></i> Customize';
 
 	}
+
+}
+function toggleLesson(id, completed, btn){
+
+
+	let oldIcon = btn.innerHTML;
+
+
+	btn.disabled = true;
+
+
+	btn.innerHTML =
+	'<i class="ti ti-loader-2"></i>';
+
+
+	fetch("updateSubTopic", {
+
+		method:"POST",
+
+		headers:{
+			"Content-Type":
+			"application/x-www-form-urlencoded"
+		},
+
+		body:
+		"id=" + id +
+		"&completed=" + completed
+
+	})
+	.then(response => {
+
+
+		if(!response.ok){
+
+			throw new Error();
+
+		}
+
+
+		if(completed){
+
+			btn.innerHTML =
+			'<i class="ti ti-circle-check-filled"></i>';
+
+		}else{
+
+			btn.innerHTML =
+			'<i class="ti ti-circle"></i>';
+
+		}
+
+
+		btn.setAttribute(
+			"onclick",
+			"toggleLesson("+id+","+!completed+",this)"
+		);
+
+
+	})
+	.catch(()=>{
+
+
+		btn.innerHTML = oldIcon;
+
+		alert("Could not update progress. Try again.");
+
+
+	})
+	.finally(()=>{
+
+		btn.disabled = false;
+
+	});
+
 
 }
 </script>

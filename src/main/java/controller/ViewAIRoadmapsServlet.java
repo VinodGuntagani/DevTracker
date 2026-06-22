@@ -35,7 +35,7 @@ public class ViewAIRoadmapsServlet extends HttpServlet {
 
 		request.setAttribute("roadmaps", list);
 
-		request.getRequestDispatcher("ai-roadmaps.jsp").forward(request, response);
+		request.getRequestDispatcher("ai-roadmap-view.jsp").forward(request, response);
 
 	}
 
