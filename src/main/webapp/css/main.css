@@ -3549,3 +3549,40 @@ html {
 	color:#4f46e5;
 
 }
+.learning-body {
+
+	max-width:100%;
+	overflow:hidden;
+
+}
+
+
+.learning-body table {
+
+	display:block;
+
+	width:100%;
+
+	overflow-x:auto;
+
+}
+
+
+.learning-body pre {
+
+	max-width:100%;
+
+	overflow-x:auto;
+
+	white-space:pre;
+
+}
+
+
+.learning-body img {
+
+	max-width:100%;
+
+	height:auto;
+
+}

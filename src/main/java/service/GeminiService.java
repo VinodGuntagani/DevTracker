@@ -540,96 +540,234 @@ public class GeminiService {
 
 			String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key="
 					+ API_KEY;
-
 			String prompt = """
-					You are an expert programming mentor creating a learning page for DevTracker.
+					You are an expert teacher creating lesson content for DevTracker.
 
-					Create a complete interactive HTML learning guide.
+					DevTracker is a learning platform for:
+					- Programming
+					- Computer Science
+					- Mathematics
+					- Science
+					- Technical subjects
 
-					VERY IMPORTANT:
-					- Return ONLY raw HTML.
-					- Do NOT write ```html.
-					- Do NOT include <html>, <head>, <body>.
-					- This goes inside an existing webpage.
 
-					You can use:
-					<h1>
+					OUTPUT RULES:
+
+					Return ONLY HTML fragment.
+
+					Never include:
+					<html>
+					<head>
+					<body>
+					<style>
+					<script>
+					markdown code fences
+
+
+					IMPORTANT:
+					DevTracker controls:
+					- layout
+					- cards
+					- colors
+					- responsive design
+
+					You control:
+					- explanation
+					- teaching content only
+
+
+
+					ALLOWED HTML:
+
+					Headings:
 					<h2>
 					<h3>
+					<h4>
+
+					Text:
 					<p>
 					<strong>
+					<em>
 					<span>
+
+					Lists:
 					<ul>
 					<ol>
 					<li>
+
+					Tables:
 					<table>
+					<thead>
+					<tbody>
 					<tr>
 					<th>
 					<td>
-					<div>
 
-					You MAY use inline CSS.
+					Code:
+					<pre><code>
 
-					Design rules:
-					- Make it look like a course module.
-					- Use cards/sections.
-					- Use colors for important areas.
 
-					Colors:
-					Blue = learning path
-					Green = practice
-					Orange = important
-					Purple = projects
+					Diagrams:
+					You MAY create simple text diagrams using:
 
-					Create:
+					<pre>
+					diagram here
+					</pre>
 
-					1. Learning Roadmap
-					(step by step order)
+					Example:
 
-					2. Before Learning Requirements
-					(what user should know)
+					Client
+					  |
+					  v
+					Server
+					  |
+					  v
+					Database
 
-					3. Explanation Strategy
-					(how to understand this topic)
 
-					4. Practice Tasks
+					Mathematics:
 
-					Beginner:
-					- task
+					Use HTML friendly math.
 
-					Intermediate:
-					- task
+					Use:
 
-					Advanced:
-					- task
+					<sup>
+					<sub>
 
-					5. Mini Project Ideas
+					Examples:
 
-					6. Interview Preparation
+					x<sup>2</sup>
 
-					Common questions:
-					Question + short answer
+					H<sub>2</sub>O
 
-					7. YouTube Search Section
 
-					IMPORTANT:
-					Do NOT create fake links.
+					Use symbols:
 
-					Only create search keywords like:
+					→
+					←
+					≥
+					≤
+					×
+					÷
+					π
+					√
 
-					"Java inheritance explained beginner"
 
-					Give 5-10 search queries ranked:
-					🥇 Best beginner
-					🥈 Detailed
-					🥉 Quick revision
+					Programming code rules:
 
-					8. Official documentation keywords
+					All code MUST be inside:
 
-					Make it beginner friendly.
-					Avoid unnecessary theory.
+					<pre><code>
+
+					code
+
+					</code></pre>
+
+
+					Escape HTML characters inside code:
+
+					< becomes &lt;
+
+					> becomes &gt;
+
+
+					Do NOT:
+					- use inline CSS
+					- use fixed widths
+					- create cards
+					- create buttons
+					- create navigation
+					- create links
+
+
+
+					Create lesson:
+
+
+					1. Introduction
+
+					Explain what it is.
+
+
+					2. Why Learn This?
+
+					Real world importance.
+
+
+					3. Core Concepts
+
+					Explain important ideas.
+
+
+					4. Visual Explanation
+
+					If useful:
+					- diagrams
+					- flow
+					- memory representation
+					- architecture
+
+
+					5. Formulas / Rules
+
+					Only when needed.
+
+					Explain step by step.
+
+
+					6. Examples
+
+					Programming:
+					include code examples.
+
+					Math:
+					include solved examples.
+
+					Theory:
+					include scenarios.
+
+
+					7. Comparison Tables
+
+					Only when useful.
+
+
+					8. Common Mistakes
+
+					Explain mistakes beginners make.
+
+
+					9. Practice Section
+
+					Beginner tasks.
+
+					Intermediate tasks.
+
+					Advanced tasks.
+
+
+					10. Interview / Exam Questions
+
+					Question + answer.
+
+
+					11. Quick Revision Notes
+
+					Short bullet summary.
+
+
+
+					Teaching style:
+
+					- Beginner friendly
+					- Practical
+					- Like a mentor
+					- Avoid unnecessary paragraphs
+					- Prefer examples
+
 
 					Topic:
+
 					""" + topicName;
 
 			Gson gson = new Gson();

@@ -38,7 +38,9 @@ public class GenerateLearningServlet extends HttpServlet {
 
 			if (sub.getAiLearning() == null || sub.getAiLearning().trim().isEmpty()) {
 
-				String learning = gemini.generateLearning(sub.getName());
+				String context = subDAO.getLearningContext(subtopicId);
+
+				String learning = gemini.generateLearning(context);
 
 				if (learning != null) {
 

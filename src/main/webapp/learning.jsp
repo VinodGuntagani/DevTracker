@@ -113,15 +113,38 @@ if (sub == null) {
 				<div>
 
 
-					<h1>📚 Learn</h1>
-
-
-					<p class="muted-text">
-
+					<h1>
+						📚
 						<%=sub.getName()%>
+					</h1>
 
-					</p>
 
+					<button class="lesson-check-btn"
+						onclick="toggleLesson(
+									<%=sub.getId()%>,
+									<%=!sub.isCompleted()%>,
+									this
+								)">
+
+
+						<%
+						if (sub.isCompleted()) {
+						%>
+
+						<i class="ti ti-circle-check-filled"></i> Completed
+
+						<%
+						} else {
+						%>
+
+						<i class="ti ti-circle"></i> Mark Complete
+
+						<%
+						}
+						%>
+
+
+					</button>
 
 				</div>
 
@@ -325,6 +348,68 @@ keywords.forEach(k=>{
 
 
 });
+function toggleLesson(id, completed, btn){
+
+
+	let old = btn.innerHTML;
+
+
+	btn.innerHTML="Saving...";
+
+
+	fetch("updateSubTopic", {
+
+
+		method:"POST",
+
+
+		headers:{
+			"Content-Type":
+			"application/x-www-form-urlencoded"
+		},
+
+
+		body:
+		"id="+id+
+		"&completed="+completed
+
+
+	})
+	.then(()=>{
+
+
+		if(completed){
+
+
+			btn.innerHTML =
+			'<i class="ti ti-circle-check-filled"></i> Completed';
+
+
+		}else{
+
+
+			btn.innerHTML =
+			'<i class="ti ti-circle"></i> Mark Complete';
+
+
+		}
+
+
+		btn.setAttribute(
+			"onclick",
+			"toggleLesson("+id+","+!completed+",this)"
+		);
+
+
+	})
+	.catch(()=>{
+
+		btn.innerHTML=old;
+
+	});
+
+
+}
 
 
 </script>
