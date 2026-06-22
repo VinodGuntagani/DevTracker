@@ -383,99 +383,324 @@ public class GeminiService {
 					+ API_KEY;
 
 			String prompt = """
-					You are an expert teacher creating premium interactive study notes for DevTracker.
+					You are an expert teacher creating a beautiful lesson page for DevTracker.
 
-					Create beautiful HTML content for a learning card.
+					DevTracker supports ANY learning topic:
+					- Programming
+					- Computer Science
+					- Mathematics
+					- Science
+					- Engineering
+					- School/College subjects
+					- Languages
+					- Business
+					- General skills
 
-					VERY IMPORTANT:
-					- Return ONLY raw HTML.
-					- Do NOT write ```html.
-					- Do NOT include <html>, <head>, <body>.
-					- This HTML will be inserted inside an existing page.
 
-					You are allowed to use:
+					========================
+					OUTPUT RULES
+					========================
 
-					Text:
-					<h1>, <h2>, <h3>, <h4>
-					<p>
-					<strong>
-					<em>
-					<span>
+					Return ONLY an HTML fragment.
 
-					Lists:
-					<ul>
-					<ol>
-					<li>
+					Do NOT include:
+					<html>
+					<head>
+					<body>
+					<script>
+					markdown ``` blocks
 
-					Tables:
+
+					You are creating the INSIDE content only.
+
+
+					========================
+					DESIGN RULES
+					========================
+
+					Create a modern beautiful learning page.
+
+					Style inspiration:
+					- Notion
+					- Coursera
+					- Modern documentation
+
+					You MAY use:
+					<div>
+					<section>
+					inline CSS
+
+					Create:
+					- clean cards
+					- highlighted notes
+					- important boxes
+					- examples boxes
+					- summaries
+
+					Use:
+					- border-radius
+					- padding
+					- soft backgrounds
+					- spacing
+
+
+					IMPORTANT RESPONSIVE RULES:
+
+					Must work on mobile.
+
+					Never use:
+					- fixed width like 800px
+					- huge tables without scrolling
+
+
+					Use:
+
+					max-width:100%;
+					box-sizing:border-box;
+
+
+					Tables must be wrapped:
+
+					<div style="overflow-x:auto">
+
 					<table>
-					<thead>
-					<tbody>
-					<tr>
-					<th>
-					<td>
+					...
+					</table>
 
-					Math:
-					- Use <sup> for powers.
+					</div>
+
+
+					Code blocks must use:
+
+					<pre style="
+					max-width:100%;
+					overflow-x:auto;
+					white-space:pre-wrap;
+					"><code>
+
+
+					========================
+					SUBJECT DETECTION
+					========================
+
+					First understand what type of lesson it is.
+
+
+					If Programming / Technology:
+
+					Include when useful:
+					- concept explanation
+					- architecture
+					- syntax
+					- code examples
+					- best practices
+					- debugging tips
+					- small practice projects
+					- interview questions
+
+
+					If Mathematics:
+
+					Include when useful:
+					- intuition
+					- formulas
+					- derivation
+					- step-by-step solving
+					- solved examples
+					- practice problems
+					- shortcuts
+
+
+					If Science:
+
+					Include when useful:
+					- concepts
+					- laws
+					- processes
+					- diagrams
+					- experiments
+					- applications
+
+
+					If Theory Subjects:
+
+					Include when useful:
+					- definitions
+					- explanations
+					- examples
+					- comparisons
+					- memory techniques
+
+
+					Do NOT force programming content into non-programming lessons.
+
+
+					========================
+					CODE RULES
+					========================
+
+					All programming code MUST be inside:
+
+					<pre><code>
+
+					code here
+
+					</code></pre>
+
+
+					Escape HTML characters:
+
+					< becomes &lt;
+
+					> becomes &gt;
+
+
 					Example:
-					2<sup>8</sup>
-					10<sup>3</sup>
 
-					- Use proper symbols:
+					Wrong:
+
+					class Box<T>
+
+
+					Correct:
+
+					class Box&lt;T&gt;
+
+
+					========================
+					MATH SUPPORT
+					========================
+
+					Use HTML compatible formulas.
+
+					Allowed:
+
+					<sup>
+					<sub>
+
+					Examples:
+
+					x<sup>2</sup>
+
+					H<sub>2</sub>O
+
+
+					Use symbols:
+
 					→
+					←
 					≥
 					≤
 					×
 					÷
+					π
+					√
 
-					Code:
-					<pre><code>
-					for programming examples.
 
-					Design freedom:
-					- You MAY use inline styles.
-					- You MAY use colors.
-					- Highlight important formulas.
-					- Create small info boxes.
-					- Create warning boxes for mistakes.
-					- Create interview tip boxes.
+					========================
+					DIAGRAM SUPPORT
+					========================
 
-					Preferred colors:
-					Blue = concepts
-					Green = examples
-					Orange = important
-					Red = mistakes
+					Create diagrams whenever they improve understanding.
 
-					Content structure:
+					Use:
 
-					1. Clear title
+					<pre>
 
-					2. Simple explanation
+					Input
+					 |
+					 v
+					Process
+					 |
+					 v
+					Output
 
-					3. Core concepts
+					</pre>
 
-					4. Important formulas / rules
 
-					5. Examples with step-by-step solving
+					========================
+					LESSON STRUCTURE
+					========================
 
-					6. Tables if comparison is useful
 
-					7. Real world usage
+					Create the best structure depending on the topic.
 
-					8. Interview questions with answers
+					Possible sections:
 
-					9. Common mistakes
 
-					10. Quick revision box
+					📘 Introduction
+
+					Explain simply.
+
+
+					💡 Why Learn This?
+
+					Real life importance.
+
+
+					🧠 Core Concepts
+
+					Main explanation.
+
+
+					👀 Visual Explanation
+
+					Diagram/table/process if helpful.
+
+
+					🧮 Formulas / Rules
+
+					Only when relevant.
+
+
+					💻 Examples
+
+					Programming:
+					code examples.
+
+					Math:
+					solved problems.
+
+					Other:
+					real examples.
+
+
+					⚠️ Common Mistakes
+
+					Beginner mistakes.
+
+
+					📝 Practice
+
+					Easy
+
+					Medium
+
+					Hard
+
+
+					🎯 Exam / Interview Preparation
+
+					Only if useful.
+
+
+					⚡ Quick Revision
+
+					Short notes for revision.
+
+
 
 					Teaching style:
+
+					- Act like a personal mentor
 					- Beginner friendly
-					- Visual
-					- Less boring paragraphs
-					- More structured blocks
-					- Explain like a mentor
+					- Detailed but not boring
+					- Practical examples
+					- Make hard topics simple
+
 
 					Topic:
+
 					""" + topicName;
 
 			Gson gson = new Gson();
@@ -541,95 +766,197 @@ public class GeminiService {
 			String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key="
 					+ API_KEY;
 			String prompt = """
-					You are an expert teacher creating lesson content for DevTracker.
+					You are an expert teacher creating a beautiful lesson page for DevTracker.
 
-					DevTracker is a learning platform for:
+					DevTracker supports ANY learning topic:
 					- Programming
 					- Computer Science
 					- Mathematics
 					- Science
-					- Technical subjects
+					- Engineering
+					- School/College subjects
+					- Languages
+					- Business
+					- General skills
 
 
-					OUTPUT RULES:
+					========================
+					OUTPUT RULES
+					========================
 
-					Return ONLY HTML fragment.
+					Return ONLY an HTML fragment.
 
-					Never include:
+					Do NOT include:
 					<html>
 					<head>
 					<body>
-					<style>
 					<script>
-					markdown code fences
+					markdown ``` blocks
 
 
-					IMPORTANT:
-					DevTracker controls:
-					- layout
-					- cards
-					- colors
-					- responsive design
-
-					You control:
-					- explanation
-					- teaching content only
+					You are creating the INSIDE content only.
 
 
+					========================
+					DESIGN RULES
+					========================
 
-					ALLOWED HTML:
+					Create a modern beautiful learning page.
 
-					Headings:
-					<h2>
-					<h3>
-					<h4>
+					Style inspiration:
+					- Notion
+					- Coursera
+					- Modern documentation
 
-					Text:
-					<p>
-					<strong>
-					<em>
-					<span>
+					You MAY use:
+					<div>
+					<section>
+					inline CSS
 
-					Lists:
-					<ul>
-					<ol>
-					<li>
+					Create:
+					- clean cards
+					- highlighted notes
+					- important boxes
+					- examples boxes
+					- summaries
 
-					Tables:
+					Use:
+					- border-radius
+					- padding
+					- soft backgrounds
+					- spacing
+
+
+					IMPORTANT RESPONSIVE RULES:
+
+					Must work on mobile.
+
+					Never use:
+					- fixed width like 800px
+					- huge tables without scrolling
+
+
+					Use:
+
+					max-width:100%;
+					box-sizing:border-box;
+
+
+					Tables must be wrapped:
+
+					<div style="overflow-x:auto">
+
 					<table>
-					<thead>
-					<tbody>
-					<tr>
-					<th>
-					<td>
+					...
+					</table>
 
-					Code:
+					</div>
+
+
+					Code blocks must use:
+
+					<pre style="
+					max-width:100%;
+					overflow-x:auto;
+					white-space:pre-wrap;
+					"><code>
+
+
+					========================
+					SUBJECT DETECTION
+					========================
+
+					First understand what type of lesson it is.
+
+
+					If Programming / Technology:
+
+					Include when useful:
+					- concept explanation
+					- architecture
+					- syntax
+					- code examples
+					- best practices
+					- debugging tips
+					- small practice projects
+					- interview questions
+
+
+					If Mathematics:
+
+					Include when useful:
+					- intuition
+					- formulas
+					- derivation
+					- step-by-step solving
+					- solved examples
+					- practice problems
+					- shortcuts
+
+
+					If Science:
+
+					Include when useful:
+					- concepts
+					- laws
+					- processes
+					- diagrams
+					- experiments
+					- applications
+
+
+					If Theory Subjects:
+
+					Include when useful:
+					- definitions
+					- explanations
+					- examples
+					- comparisons
+					- memory techniques
+
+
+					Do NOT force programming content into non-programming lessons.
+
+
+					========================
+					CODE RULES
+					========================
+
+					All programming code MUST be inside:
+
 					<pre><code>
 
+					code here
 
-					Diagrams:
-					You MAY create simple text diagrams using:
+					</code></pre>
 
-					<pre>
-					diagram here
-					</pre>
+
+					Escape HTML characters:
+
+					< becomes &lt;
+
+					> becomes &gt;
+
 
 					Example:
 
-					Client
-					  |
-					  v
-					Server
-					  |
-					  v
-					Database
+					Wrong:
+
+					class Box<T>
 
 
-					Mathematics:
+					Correct:
 
-					Use HTML friendly math.
+					class Box&lt;T&gt;
 
-					Use:
+
+					========================
+					MATH SUPPORT
+					========================
+
+					Use HTML compatible formulas.
+
+					Allowed:
 
 					<sup>
 					<sub>
@@ -653,123 +980,111 @@ public class GeminiService {
 					√
 
 
-					Programming code rules:
+					========================
+					DIAGRAM SUPPORT
+					========================
 
-					All code MUST be inside:
+					Create diagrams whenever they improve understanding.
 
-					<pre><code>
+					Use:
 
-					code
+					<pre>
 
-					</code></pre>
+					Input
+					 |
+					 v
+					Process
+					 |
+					 v
+					Output
 
-
-					Escape HTML characters inside code:
-
-					< becomes &lt;
-
-					> becomes &gt;
-
-
-					Do NOT:
-					- use inline CSS
-					- use fixed widths
-					- create cards
-					- create buttons
-					- create navigation
-					- create links
+					</pre>
 
 
-
-					Create lesson:
-
-
-					1. Introduction
-
-					Explain what it is.
+					========================
+					LESSON STRUCTURE
+					========================
 
 
-					2. Why Learn This?
+					Create the best structure depending on the topic.
 
-					Real world importance.
-
-
-					3. Core Concepts
-
-					Explain important ideas.
+					Possible sections:
 
 
-					4. Visual Explanation
+					📘 Introduction
 
-					If useful:
-					- diagrams
-					- flow
-					- memory representation
-					- architecture
+					Explain simply.
 
 
-					5. Formulas / Rules
+					💡 Why Learn This?
 
-					Only when needed.
-
-					Explain step by step.
+					Real life importance.
 
 
-					6. Examples
+					🧠 Core Concepts
+
+					Main explanation.
+
+
+					👀 Visual Explanation
+
+					Diagram/table/process if helpful.
+
+
+					🧮 Formulas / Rules
+
+					Only when relevant.
+
+
+					💻 Examples
 
 					Programming:
-					include code examples.
+					code examples.
 
 					Math:
-					include solved examples.
+					solved problems.
 
-					Theory:
-					include scenarios.
-
-
-					7. Comparison Tables
-
-					Only when useful.
+					Other:
+					real examples.
 
 
-					8. Common Mistakes
+					⚠️ Common Mistakes
 
-					Explain mistakes beginners make.
-
-
-					9. Practice Section
-
-					Beginner tasks.
-
-					Intermediate tasks.
-
-					Advanced tasks.
+					Beginner mistakes.
 
 
-					10. Interview / Exam Questions
+					📝 Practice
 
-					Question + answer.
+					Easy
+
+					Medium
+
+					Hard
 
 
-					11. Quick Revision Notes
+					🎯 Exam / Interview Preparation
 
-					Short bullet summary.
+					Only if useful.
+
+
+					⚡ Quick Revision
+
+					Short notes for revision.
 
 
 
 					Teaching style:
 
+					- Act like a personal mentor
 					- Beginner friendly
-					- Practical
-					- Like a mentor
-					- Avoid unnecessary paragraphs
-					- Prefer examples
+					- Detailed but not boring
+					- Practical examples
+					- Make hard topics simple
 
 
 					Topic:
 
 					""" + topicName;
-
 			Gson gson = new Gson();
 
 			JsonObject textPart = new JsonObject();

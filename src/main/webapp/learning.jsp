@@ -34,6 +34,8 @@ if (sub == null) {
 
 <meta charset="UTF-8">
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 <title>Learn | DevTracker</title>
 
@@ -42,55 +44,6 @@ if (sub == null) {
 
 
 <style>
-.learning-body {
-	text-align: left;
-	line-height: 1.8;
-	font-size: 16px;
-}
-
-.learning-body table {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-.learning-body th, .learning-body td {
-	border: 1px solid #ddd;
-	padding: 12px;
-}
-
-.learning-body pre {
-	background: #111827;
-	color: white;
-	padding: 15px;
-	border-radius: 12px;
-	overflow: auto;
-}
-
-/* videos */
-.video-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	gap: 20px;
-	margin-top: 20px;
-}
-
-.video-card {
-	background: #fff;
-	border-radius: 15px;
-	padding: 15px;
-	box-shadow: 0 5px 20px rgba(0, 0, 0, .08);
-}
-
-.video-card iframe {
-	width: 100%;
-	height: 220px;
-	border-radius: 12px;
-	border: 0;
-}
-
-.video-card h3 {
-	margin-top: 12px;
-}
 </style>
 
 
