@@ -10,6 +10,7 @@ int totalSubjects = roadmap.getSubjects().size();
 int totalTopics = 0;
 int totalSubtopics = 0;
 int totalMinutes = 0;
+int totalCompleted = 0;
 
 for (Subject subject : roadmap.getSubjects()) {
 	totalTopics += subject.getTopics().size();
@@ -17,9 +18,12 @@ for (Subject subject : roadmap.getSubjects()) {
 		totalSubtopics += topic.getSubtopics().size();
 		for (SubTopic sub : topic.getSubtopics()) {
 	totalMinutes += sub.getEstimatedMinutes();
+	if (sub.isCompleted())
+		totalCompleted++;
 		}
 	}
 }
+int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSubtopics) : 0;
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,6 +32,7 @@ for (Subject subject : roadmap.getSubjects()) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><%=roadmap.getTitle()%> — Syllabus | DevTracker</title>
 <link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/syllabus.css">
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
@@ -39,13 +44,7 @@ for (Subject subject : roadmap.getSubjects()) {
 		<a class="mobile-logo" href="dashboard.jsp"> <i
 			class="ti ti-route"></i> DevTracker
 		</a>
-		<button class="hamburger" onclick="openSidebar()"
-			aria-label="Open menu">
-			<i class="ti ti-menu-2"></i>
-		</button>
 	</div>
-
-	<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 	<div class="layout">
 
@@ -98,6 +97,20 @@ for (Subject subject : roadmap.getSubjects()) {
 				</div>
 				<h1 class="hero-title"><%=roadmap.getTitle()%></h1>
 				<p class="hero-desc"><%=roadmap.getDescription()%></p>
+
+				<div class="hero-overall">
+					<div class="hero-overall-track">
+						<div class="hero-overall-fill" style="width:<%=overallPct%>%"></div>
+					</div>
+					<span class="hero-overall-text"><%=overallPct%>% complete</span>
+				</div>
+
+				<button type="button" class="hero-stats-toggle"
+					onclick="toggleHeroStats(this)">
+					<span>View roadmap stats</span>
+					<i class="ti ti-chevron-down"></i>
+				</button>
+
 				<div class="hero-stats">
 					<div class="hero-stat">
 						<span class="hero-stat-val"><%=totalSubjects%></span> <span
@@ -115,39 +128,47 @@ for (Subject subject : roadmap.getSubjects()) {
 						<span class="hero-stat-val"><%=totalMinutes / 60%></span> <span
 							class="hero-stat-label">Est. Hours</span>
 					</div>
+					<div class="hero-stat">
+						<span class="hero-stat-val"><%=overallPct%>%</span> <span
+							class="hero-stat-label">Complete</span>
+					</div>
 				</div>
 			</div>
-			<div class="learning-hint">
+			<div class="learning-hint" id="learningHint">
 
-				<div class="hint-icon">
-					<i class="ti ti-bulb"></i>
-				</div>
-
-				<div>
-
+				<button type="button" class="hint-toggle" onclick="toggleLearningHint()">
+					<div class="hint-icon">
+						<i class="ti ti-bulb"></i>
+					</div>
 					<strong>How DevTracker works</strong>
+					<i class="ti ti-chevron-down hint-chevron"></i>
+				</button>
 
-					<p>Your roadmap is organized like:</p>
+				<div class="hint-body">
+					<div class="hint-body-inner">
 
-					<div class="hint-tree">
+						<p>Your roadmap is organized like:</p>
 
-						<div>📚 Subject</div>
-						<div class="indent">└ 📖 Topic</div>
-						<div class="indent2">└ 🎯 Lesson</div>
+						<div class="hint-tree">
+
+							<div>📚 Subject</div>
+							<div class="indent">└ 📖 Topic</div>
+							<div class="indent2">└ 🎯 Lesson</div>
+
+						</div>
+
+
+						<p>Lessons are where you learn, track progress, take notes and
+							follow schedules.</p>
+
+
+						<p>
+							Creating your own roadmap? Use <a href="#customizeBtn"
+								class="hint-link"> Customize Mode </a> to add Subjects, Topics,
+							and Lessons.
+						</p>
 
 					</div>
-
-
-					<p>Lessons are where you learn, track progress, take notes and
-						follow schedules.</p>
-
-
-					<p>
-						Creating your own roadmap? Use <a href="#customizeBtn"
-							class="hint-link"> Customize Mode </a> to add Subjects, Topics,
-						and Lessons.
-					</p>
-
 				</div>
 
 			</div>
@@ -185,6 +206,7 @@ for (Subject subject : roadmap.getSubjects()) {
 				String sNameId = "sName-" + si;
 				String sEditFormId = "sEF-" + si;
 				String sCountId = "sCnt-" + si;
+				String sBarClass = subject.getProgress() >= 100 ? "high" : subject.getProgress() >= 40 ? "medium" : "low";
 			%>
 
 			<div class="subject-block" id="<%=sBlockId%>">
@@ -243,9 +265,22 @@ for (Subject subject : roadmap.getSubjects()) {
 
 					</form>
 					<div class="subject-meta">
-						<span class="count-pill" id="<%=sCountId%>"><%=tCount%>
-							topics · <%=stCount%> Lessons</span> <i
-							class="ti ti-chevron-down chevron-icon"
+						<div class="subject-progress-box">
+
+							<span class="count-pill" id="<%=sCountId%>"> <%=tCount%>
+								topics · <%=stCount%> Lessons
+							</span> <span id="subjectProgress-<%=subject.getId()%>"
+								class="progress-text"> <%=subject.getProgress()%>%
+
+							</span>
+							<div class="mini-progress">
+								<div id="subjectBar-<%=subject.getId()%>"
+									class="progress-fill <%=sBarClass%>"
+									style="width:<%=subject.getProgress()%>%"></div>
+							</div>
+
+						</div>
+						<i class="ti ti-chevron-down chevron-icon"
 							onclick="toggleSubject('<%=sBlockId%>')"></i>
 					</div>
 				</div>
@@ -261,6 +296,11 @@ for (Subject subject : roadmap.getSubjects()) {
 						String tSectionId = "ts-" + si + "-" + ti;
 						String tNameId = "tName-" + si + "-" + ti;
 						String tEditFormId = "tEF-" + si + "-" + ti;
+						int topicDoneCount = 0;
+						for (SubTopic ts : topic.getSubtopics())
+							if (ts.isCompleted())
+						topicDoneCount++;
+						String tBarClass = topic.getProgress() >= 100 ? "high" : topic.getProgress() >= 40 ? "medium" : "low";
 					%>
 
 					<div class="topic-section" id="<%=tSectionId%>">
@@ -269,7 +309,7 @@ for (Subject subject : roadmap.getSubjects()) {
 						<div class="topic-header">
 
 							<div class="topic-dot" onclick="toggleTopic('<%=tSectionId%>')"
-								style="cursor: pointer; width: 10px; height: 10px; flex-shrink: 0"></div>
+								style="cursor: pointer; width: 8px; height: 8px; flex-shrink: 0"></div>
 
 							<button class="inline-edit-btn" title="Edit topic"
 								onclick="enableTopicEdit('<%=si%>','<%=ti%>')">
@@ -315,13 +355,26 @@ for (Subject subject : roadmap.getSubjects()) {
 								</button>
 
 							</form>
-							<span class="count-pill" style="font-size: 11px"><%=topic.getSubtopics().size()%>
-								Lesson </span> <i class="ti ti-chevron-down topic-chevron"
+							<div class="topic-progress-box">
+
+								<span class="count-pill" id="topicCnt-<%=topic.getId()%>"> <%=topicDoneCount%>/<%=topic.getSubtopics().size()%>
+									lessons completed
+								</span>
+								<div class="mini-progress">
+									<div id="topicBar-<%=topic.getId()%>"
+										class="progress-fill <%=tBarClass%>"
+										style="width:<%=topic.getProgress()%>%"></div>
+								</div>
+								<span id="topicProgress-<%=topic.getId()%>"> <%=topic.getProgress()%>%
+								</span>
+
+							</div>
+							<i class="ti ti-chevron-down topic-chevron"
 								onclick="toggleTopic('<%=tSectionId%>')"></i>
 						</div>
 
 						<%-- Subtopics --%>
-						<div class="subtopic-table">
+						<div class="subtopic-table" id="subtable-<%=topic.getId()%>">
 							<%
 							for (SubTopic sub : topic.getSubtopics()) {
 								String diff = sub.getDifficulty() != null ? sub.getDifficulty().toLowerCase().trim() : "medium";
@@ -341,11 +394,15 @@ for (Subject subject : roadmap.getSubjects()) {
 
 									<!-- completion button -->
 									<button class="lesson-check-btn"
+										title="<%=sub.isCompleted() ? "Mark as not complete" : "Mark as complete"%>"
+										aria-label="<%=sub.isCompleted() ? "Mark as not complete" : "Mark as complete"%>"
 										onclick="toggleLesson(
-								            <%=sub.getId()%>,
-								            <%=!sub.isCompleted()%>,
-								            this
-								        )">
+											<%=sub.getId()%>,
+											<%=topic.getId()%>,
+											<%=subject.getId()%>,
+											<%=!sub.isCompleted()%>,
+											this
+											)">
 
 										<%
 										if (sub.isCompleted()) {
@@ -388,7 +445,7 @@ for (Subject subject : roadmap.getSubjects()) {
 								</div>
 								<div class="subtopic-right">
 
-									<span class="hours-pill"> <i class="ti ti-clock"
+									<span class="hours-pill <%=diffClass%>"> <i class="ti ti-clock"
 										style="font-size: 11px"></i> <%=sub.getEstimatedMinutes() / 60%>h
 										<%=sub.getEstimatedMinutes() % 60%>m
 									</span>
@@ -453,7 +510,7 @@ for (Subject subject : roadmap.getSubjects()) {
 
 
 						<form id="addSub-<%=topic.getId()%>" class="subtopic-edit-row"
-							style="display: none; background: #f0f7ff;" action="addSubTopic"
+							style="display: none; background: var(--surface-2);" action="addSubTopic"
 							method="post">
 							<input type="hidden" name="topicId" value="<%=topic.getId()%>">
 							<input type="hidden" name="subjectId"
@@ -497,14 +554,14 @@ for (Subject subject : roadmap.getSubjects()) {
 
 
 				<form id="addTopic-<%=subject.getId()%>" class="topic-header"
-					style="display: none; background: #f0f7ff;" action="addTopic"
+					style="display: none; background: var(--surface-2);" action="addTopic"
 					method="post">
 					<input type="hidden" name="subjectId" value="<%=subject.getId()%>">
 					<input type="hidden" name="roadmapId" value="<%=roadmap.getId()%>">
 					<i class="ti ti-plus"
-						style="color: var(--accent-primary); font-size: 14px; flex-shrink: 0"></i>
+						style="color: var(--accent); font-size: 14px; flex-shrink: 0"></i>
 					<input type="text" name="name" placeholder="Add a topic…" required
-						style="flex: 1; padding: 5px 10px; font-size: 13px; border-radius: 7px; border: 0.5px solid var(--border-normal); font-family: var(--font-body); outline: none; background: var(--bg-surface); color: var(--text-primary);">
+						style="flex: 1; padding: 7px 11px; font-size: 13px; border-radius: 8px; border: 1px solid var(--border); font-family: var(--font-display); outline: none; background: var(--surface); color: var(--text);">
 					<button class="btn btn-xs btn-primary" type="submit">
 						<i class="ti ti-plus"></i> Add topic
 					</button>
@@ -553,17 +610,30 @@ for (Subject subject : roadmap.getSubjects()) {
 	</div>
 	<%-- /layout --%>
 
+	<!-- Bottom tab bar (mobile only — sidebar nav mirrored here) -->
+	<nav class="bottom-nav">
+		<a class="bn-item" href="dashboard.jsp"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+		<a class="bn-item" href="ai-roadmap.jsp"><i class="ti ti-robot"></i>AI Tools</a>
+		<a class="bn-item active" href="viewAIRoadmaps"><i class="ti ti-layout-list"></i>Roadmaps</a>
+	</nav>
+
 	<script>
-/* ── Sidebar ── */
-function openSidebar() {
-    document.getElementById('sidebar').classList.add('open');
-    document.getElementById('overlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
+/* ── Progress bar color tier (mirrors the JSP thresholds: >=100 high, >=40 medium, else low) ── */
+function progressClass(el, pct) {
+    if (!el) return;
+    el.classList.remove('high', 'medium', 'low');
+    el.classList.add(pct >= 100 ? 'high' : pct >= 40 ? 'medium' : 'low');
 }
-function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('overlay').classList.remove('open');
-    document.body.style.overflow = '';
+
+/* ── "How DevTracker works" dropdown ── */
+function toggleLearningHint() {
+    document.getElementById('learningHint').classList.toggle('open');
+}
+
+/* ── Mobile hero stats reveal ── */
+function toggleHeroStats(btn) {
+    var hero = btn.closest('.syllabus-hero');
+    hero.classList.toggle('stats-open');
 }
 
 /* ── Accordion ── */
@@ -708,6 +778,8 @@ function toggleCustomize(){
 
 	let btn = document.getElementById("customizeBtn");
 
+	btn.classList.toggle("active", customizeMode);
+
 	if(customizeMode){
 
 		btn.innerHTML =
@@ -721,80 +793,149 @@ function toggleCustomize(){
 	}
 
 }
-function toggleLesson(id, completed, btn){
+function toggleLesson(
+		id,
+		topicId,
+		subjectId,
+		completed,
+		btn
+	){
+
+		let oldIcon = btn.innerHTML;
+
+		btn.disabled = true;
+
+		btn.innerHTML =
+		'<i class="ti ti-loader-2"></i>';
 
 
-	let oldIcon = btn.innerHTML;
+		fetch("updateSubTopic", {
+
+			method:"POST",
+
+			headers:{
+				"Content-Type":
+				"application/x-www-form-urlencoded"
+			},
+
+			body:
+			"id=" + id +
+			"&completed=" + completed
+
+		})
+
+		.then(r => r.json())
+
+		.then(data => {
 
 
-	btn.disabled = true;
+			if(completed){
+
+				btn.innerHTML =
+				'<i class="ti ti-circle-check-filled"></i>';
+
+			}else{
+
+				btn.innerHTML =
+				'<i class="ti ti-circle"></i>';
+
+			}
 
 
-	btn.innerHTML =
-	'<i class="ti ti-loader-2"></i>';
+			let topicText =
+			document.getElementById(
+				"topicProgress-" + topicId
+			);
 
 
-	fetch("updateSubTopic", {
+			if(topicText){
 
-		method:"POST",
+				topicText.innerText =
+				data.topicProgress + "%";
 
-		headers:{
-			"Content-Type":
-			"application/x-www-form-urlencoded"
-		},
-
-		body:
-		"id=" + id +
-		"&completed=" + completed
-
-	})
-	.then(response => {
+			}
 
 
-		if(!response.ok){
 
-			throw new Error();
+			document
+			.getElementById(
+				"topicBar-" + topicId
+			)
+			.style.width =
+			data.topicProgress + "%";
 
-		}
-
-
-		if(completed){
-
-			btn.innerHTML =
-			'<i class="ti ti-circle-check-filled"></i>';
-
-		}else{
-
-			btn.innerHTML =
-			'<i class="ti ti-circle"></i>';
-
-		}
+			progressClass(
+				document.getElementById("topicBar-" + topicId),
+				data.topicProgress
+			);
 
 
-		btn.setAttribute(
-			"onclick",
-			"toggleLesson("+id+","+!completed+",this)"
-		);
+
+			document
+			.getElementById(
+				"subjectProgress-" + subjectId
+			)
+			.innerText =
+			data.subjectProgress + "%";
 
 
-	})
-	.catch(()=>{
+
+			document
+			.getElementById(
+				"subjectBar-" + subjectId
+			)
+			.style.width =
+			data.subjectProgress + "%";
+
+			progressClass(
+				document.getElementById("subjectBar-" + subjectId),
+				data.subjectProgress
+			);
+
+			/* Keep the "X/Y lessons completed" pill in sync — derive the done
+			   count straight from the DOM so it never depends on the server
+			   response shape, then update both the topic and subject totals. */
+			let topicTable = document.getElementById("subtable-" + topicId);
+			if (topicTable) {
+				let allIcons = topicTable.querySelectorAll(".lesson-check-btn i");
+				let total = allIcons.length;
+				let done = topicTable.querySelectorAll(".lesson-check-btn i.ti-circle-check-filled").length;
+
+				let topicCnt = document.getElementById("topicCnt-" + topicId);
+				if (topicCnt) {
+					topicCnt.innerText = done + "/" + total + " lessons completed";
+				}
+			}
 
 
-		btn.innerHTML = oldIcon;
-
-		alert("Could not update progress. Try again.");
-
-
-	})
-	.finally(()=>{
-
-		btn.disabled = false;
-
-	});
+			btn.setAttribute(
+				"onclick",
+				"toggleLesson("
+				+ id + ","
+				+ topicId + ","
+				+ subjectId + ","
+				+ !completed +
+				",this)"
+			);
 
 
-}
+		})
+
+
+		.catch(()=>{
+
+			btn.innerHTML = oldIcon;
+
+		})
+
+
+		.finally(()=>{
+
+			btn.disabled=false;
+
+		});
+
+	}
 </script>
 
 </body>

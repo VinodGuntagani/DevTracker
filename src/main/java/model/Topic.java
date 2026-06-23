@@ -40,5 +40,16 @@ public class Topic {
 	public void setSubtopics(List<SubTopic> subtopics) {
 		this.subtopics = subtopics;
 	}
+	private int progress;
+
+
+	public int getProgress() {
+		return progress;
+	}
+
+
+	public void setProgress(int progress) {
+		this.progress = progress;
+	}
 
 }

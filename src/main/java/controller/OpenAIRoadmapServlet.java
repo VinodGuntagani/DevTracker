@@ -41,9 +41,17 @@ public class OpenAIRoadmapServlet extends HttpServlet {
 
 		for (Subject s : subjects) {
 
+			int subjectProgress = topicDAO.getSubjectProgress(s.getId());
+
+			s.setProgress(subjectProgress);
+
 			List<Topic> topics = topicDAO.getTopicsBySubject(s.getId());
 
 			for (Topic t : topics) {
+
+				int topicProgress = subDAO.getProgress(t.getId());
+
+				t.setProgress(topicProgress);
 
 				List<SubTopic> subs = subDAO.getSubTopicsByTopic(t.getId());
 

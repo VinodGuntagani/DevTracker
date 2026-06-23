@@ -8,6 +8,10 @@ import javax.servlet.http.*;
 
 import dao.StudyPlanDAO;
 import dao.SubTopicDAO;
+import dao.TopicDAO;
+
+import model.SubTopic;
+import model.Topic;
 
 @WebServlet("/updateSubTopic")
 public class UpdateSubTopicServlet extends HttpServlet {
@@ -19,25 +23,39 @@ public class UpdateSubTopicServlet extends HttpServlet {
 
 		boolean completed = Boolean.parseBoolean(request.getParameter("completed"));
 
-		SubTopicDAO dao = new SubTopicDAO();
+		SubTopicDAO subDAO = new SubTopicDAO();
 
-		dao.updateStatus(id, completed);
+		subDAO.updateStatus(id, completed);
 
 		StudyPlanDAO planDAO = new StudyPlanDAO();
 
 		planDAO.updateTaskBySubTopic(id, completed);
 
-		String redirect = request.getParameter("redirect");
+		// get updated subtopic
 
-		if (redirect != null) {
+		SubTopic sub = subDAO.getSubTopicById(id);
 
-			response.sendRedirect(redirect);
+		// topic progress
 
-		} else {
+		int topicProgress = subDAO.getProgress(sub.getTopicId());
 
-			response.sendRedirect("dashboard.jsp");
+		// subject progress
 
-		}
+		TopicDAO topicDAO = new TopicDAO();
+
+		Topic topic = topicDAO.getTopicById(sub.getTopicId());
+
+		int subjectProgress = topicDAO.getSubjectProgress(topic.getSubjectId());
+
+		// return JSON
+
+		response.setContentType("application/json");
+
+		response.getWriter().write(
+
+				"{" + "\"topicProgress\":" + topicProgress + "," + "\"subjectProgress\":" + subjectProgress + "}"
+
+		);
 
 	}
 
