@@ -951,10 +951,6 @@ body {
 					class="ti ti-layout-dashboard"></i> Dashboard
 				</a> <a class="nav-item" href="create-roadmap.jsp"> <i
 					class="ti ti-map"></i> Create Roadmap
-				</a> <a class="nav-item" href="ai-roadmap.jsp"> <i
-					class="ti ti-robot"></i> Generate Roadmap
-				</a> <a class="nav-item" href="viewAIRoadmaps"> <i
-					class="ti ti-layout-list"></i> AI Roadmaps
 				</a>
 
 				<div class="nav-section-label">Manage</div>
@@ -993,10 +989,9 @@ body {
 					<p>Here's your learning progress at a glance.</p>
 				</div>
 				<div class="greeting-actions">
-					<a class="btn btn-ai" href="ai-roadmap.jsp"> <i
-						class="ti ti-sparkles"></i> Generate Roadmap
-					</a> <a class="btn btn-primary" href="create-roadmap.jsp"> <i
-						class="ti ti-plus"></i> Create Roadmap
+					<a href="create-roadmap.jsp" class="btn btn-primary"> <i
+						class="ti ti-plus"></i> New Roadmap
+
 					</a>
 				</div>
 			</div>
@@ -1059,7 +1054,7 @@ body {
 					<%
 					} else {
 					for (Roadmap r : roadmaps) {
-						int progress = r.isAi() ? aiProgressDao.getAIProgress(r.getId()) : progressDao.getRoadmapProgress(r.getId());
+						int progress = progressDao.getRoadmapProgress(r.getId());
 						boolean isDone = progress >= 100;
 						String fillClass = isDone ? "high" : (progress >= 40 ? "medium" : "low");
 					%>
@@ -1121,8 +1116,10 @@ body {
 									<span>Progress</span> <strong><%=progress%>%</strong>
 								</div>
 								<div class="progress-track">
-									<div class="progress-fill <%=fillClass%>" style="width: 0%"
-										data-target="<%=progress%>"></div>
+
+									<div class="progress-fill <%=fillClass%>"
+										style="width:<%=progress%>%"></div>
+
 								</div>
 							</div>
 
@@ -1205,6 +1202,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 120);
   });
 });
+
 </script>
 
 </body>
