@@ -33,6 +33,8 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 <title><%=roadmap.getTitle()%> — Syllabus | DevTracker</title>
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/syllabus.css">
+
+
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 

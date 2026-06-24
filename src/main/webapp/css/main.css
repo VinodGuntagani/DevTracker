@@ -2616,14 +2616,22 @@ body {
 }
 /* ── Hero ── */
 .syllabus-hero {
-	background: linear-gradient(135deg, #1e1a4a 0%, #2d2580 55%, #534AB7 100%);
-	border-radius: var(--radius-lg);
-	padding: 2rem 2rem 1.5rem;
-	color: #fff;
-	position: relative;
-	overflow: hidden;
-}
 
+	background: var(--surface);
+
+	border:1px solid var(--border);
+
+	border-radius: var(--radius-lg);
+
+	padding: 2rem 2rem 1.5rem;
+
+	color: var(--text);
+
+	position: relative;
+
+	overflow:hidden;
+
+}
 .syllabus-hero::after {
 	content: '';
 	position: absolute;

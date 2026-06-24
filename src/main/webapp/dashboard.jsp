@@ -1170,9 +1170,9 @@ body {
 	<nav class="bottom-nav">
 		<a class="bn-item active" href="dashboard.jsp"><i
 			class="ti ti-layout-dashboard"></i>Dashboard</a> <a class="bn-item"
-			href="ai-roadmap.jsp"><i class="ti ti-robot"></i>AI Tools</a> <a
-			class="bn-item" href="viewAIRoadmaps"><i
-			class="ti ti-layout-list"></i>Roadmaps</a>
+			href="create-roadmap.jsp"><i class="ti ti-plus"></i>New Roadmap</a> <a
+			class="bn-item" href="trash.jsp"><i
+			class="ti ti-recycle"></i>Deleted</a>
 	</nav>
 
 	<script>
