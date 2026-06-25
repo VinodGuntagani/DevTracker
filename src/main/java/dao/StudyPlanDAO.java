@@ -157,7 +157,7 @@ public class StudyPlanDAO {
 					WHERE sp.roadmap_id=?
 
 
-				
+
 					ORDER BY
 					dt.schedule_date,
 					dt.task_order
@@ -184,7 +184,7 @@ public class StudyPlanDAO {
 				task.setTaskOrder(rs.getInt("task_order"));
 
 				task.setWeight(rs.getInt("weight"));
-				
+
 				task.setScheduleDate(rs.getDate("schedule_date"));
 
 				task.setPlannedMinutes(rs.getInt("planned_minutes"));
@@ -316,13 +316,30 @@ public class StudyPlanDAO {
 
 			Connection con = DBConnection.getConnection();
 
-			String sql = "UPDATE daily_tasks SET completed=? WHERE subtopic_id=?";
+			String sql = """
+					UPDATE daily_tasks
+
+					SET completed=?,
+					    status=?
+
+					WHERE subtopic_id=?
+					""";
 
 			PreparedStatement ps = con.prepareStatement(sql);
 
 			ps.setBoolean(1, completed);
 
-			ps.setInt(2, subtopicId);
+			if (completed) {
+
+				ps.setString(2, "COMPLETED");
+
+			} else {
+
+				ps.setString(2, "NOT_STARTED");
+
+			}
+
+			ps.setInt(3, subtopicId);
 
 			ps.executeUpdate();
 

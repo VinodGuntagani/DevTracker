@@ -1135,7 +1135,7 @@ body {
 									<i class="ti ti-map"></i> Syllabus
 								</a> <a class="btn btn-sm"
 									href="schedule.jsp?roadmapId=<%=r.getId()%>"> <i
-									class="ti ti-calendar-event"></i> Timetable
+									class="ti ti-calendar-event"></i> Daily Task
 								</a>
 								<form id="deleteForm<%=r.getId()%>" action="deleteRoadmap"
 									method="post" class="delete-form">

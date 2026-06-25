@@ -65,9 +65,9 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 				<div class="nav-section-label">Menu</div>
 				<a class="nav-item" href="dashboard.jsp"><i
 					class="ti ti-layout-dashboard"></i> Dashboard</a> <a class="nav-item"
-					href="ai-roadmap.jsp"><i class="ti ti-robot"></i> AI Tools</a> <a
-					class="nav-item active" href="viewAIRoadmaps"><i
-					class="ti ti-layout-list"></i> AI Roadmaps</a>
+					href="create-roadmap.jsp"><i class="ti ti-plus"></i> Create Roadmap</a> <a
+					class="nav-item active" href=""><i
+					class="ti ti-layout-list"></i> Roadmap</a>
 			</nav>
 			<div class="sidebar-footer">
 				<div class="user-row">
@@ -102,15 +102,18 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 
 				<div class="hero-overall">
 					<div class="hero-overall-track">
-						<div class="hero-overall-fill" style="width:<%=overallPct%>%"></div>
+						<div id="heroProgressFill" class="hero-overall-fill"
+							style="width:<%=overallPct%>%"></div>
 					</div>
-					<span class="hero-overall-text"><%=overallPct%>% complete</span>
+					<span id="heroProgressText" class="hero-overall-text"> <%=overallPct%>%
+						complete
+
+					</span>
 				</div>
 
 				<button type="button" class="hero-stats-toggle"
 					onclick="toggleHeroStats(this)">
-					<span>View roadmap stats</span>
-					<i class="ti ti-chevron-down"></i>
+					<span>View roadmap stats</span> <i class="ti ti-chevron-down"></i>
 				</button>
 
 				<div class="hero-stats">
@@ -131,19 +134,23 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 							class="hero-stat-label">Est. Hours</span>
 					</div>
 					<div class="hero-stat">
-						<span class="hero-stat-val"><%=overallPct%>%</span> <span
-							class="hero-stat-label">Complete</span>
+
+						<span id="heroPercentVal" class="hero-stat-val"> <%=overallPct%>%
+
+						</span> <span class="hero-stat-label"> Complete </span>
+
 					</div>
 				</div>
 			</div>
 			<div class="learning-hint" id="learningHint">
 
-				<button type="button" class="hint-toggle" onclick="toggleLearningHint()">
+				<button type="button" class="hint-toggle"
+					onclick="toggleLearningHint()">
 					<div class="hint-icon">
 						<i class="ti ti-bulb"></i>
 					</div>
-					<strong>How DevTracker works</strong>
-					<i class="ti ti-chevron-down hint-chevron"></i>
+					<strong>How DevTracker works</strong> <i
+						class="ti ti-chevron-down hint-chevron"></i>
 				</button>
 
 				<div class="hint-body">
@@ -359,8 +366,9 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 							</form>
 							<div class="topic-progress-box">
 
-								<span class="count-pill" id="topicCnt-<%=topic.getId()%>"> <%=topicDoneCount%>/<%=topic.getSubtopics().size()%>
-									lessons completed
+								<span class="count-pill" id="topicCnt-<%=topic.getId()%>">
+									<%=topicDoneCount%>/<%=topic.getSubtopics().size()%> lessons
+									completed
 								</span>
 								<div class="mini-progress">
 									<div id="topicBar-<%=topic.getId()%>"
@@ -447,8 +455,8 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 								</div>
 								<div class="subtopic-right">
 
-									<span class="hours-pill <%=diffClass%>"> <i class="ti ti-clock"
-										style="font-size: 11px"></i> <%=sub.getEstimatedMinutes() / 60%>h
+									<span class="hours-pill <%=diffClass%>"> <i
+										class="ti ti-clock" style="font-size: 11px"></i> <%=sub.getEstimatedMinutes() / 60%>h
 										<%=sub.getEstimatedMinutes() % 60%>m
 									</span>
 
@@ -512,8 +520,8 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 
 
 						<form id="addSub-<%=topic.getId()%>" class="subtopic-edit-row"
-							style="display: none; background: var(--surface-2);" action="addSubTopic"
-							method="post">
+							style="display: none; background: var(--surface-2);"
+							action="addSubTopic" method="post">
 							<input type="hidden" name="topicId" value="<%=topic.getId()%>">
 							<input type="hidden" name="subjectId"
 								value="<%=subject.getId()%>"> <input type="hidden"
@@ -556,8 +564,8 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 
 
 				<form id="addTopic-<%=subject.getId()%>" class="topic-header"
-					style="display: none; background: var(--surface-2);" action="addTopic"
-					method="post">
+					style="display: none; background: var(--surface-2);"
+					action="addTopic" method="post">
 					<input type="hidden" name="subjectId" value="<%=subject.getId()%>">
 					<input type="hidden" name="roadmapId" value="<%=roadmap.getId()%>">
 					<i class="ti ti-plus"
@@ -614,9 +622,11 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 
 	<!-- Bottom tab bar (mobile only — sidebar nav mirrored here) -->
 	<nav class="bottom-nav">
-		<a class="bn-item" href="dashboard.jsp"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
-		<a class="bn-item" href="ai-roadmap.jsp"><i class="ti ti-robot"></i>AI Tools</a>
-		<a class="bn-item active" href="viewAIRoadmaps"><i class="ti ti-layout-list"></i>Roadmaps</a>
+		<a class="bn-item" href="dashboard.jsp"><i
+			class="ti ti-layout-dashboard"></i>Dashboard</a> <a class="bn-item"
+			href="create-roadmap.jsp"><i class="ti ti-plus"></i>New Roadmap</a> <a
+			class="bn-item active" href=""><i
+			class="ti ti-layout-list"></i>Roadmaps</a>
 	</nav>
 
 	<script>
@@ -795,6 +805,46 @@ function toggleCustomize(){
 	}
 
 }
+function updateHeroProgress(){
+
+	let all =
+	document.querySelectorAll(".lesson-check-btn i");
+
+	let done =
+	document.querySelectorAll(
+	".lesson-check-btn i.ti-circle-check-filled"
+	).length;
+
+
+	let total = all.length;
+
+
+	let percent = 0;
+
+
+	if(total > 0){
+
+		percent =
+		Math.round(done * 100 / total);
+
+	}
+
+
+	document
+	.getElementById("heroProgressFill")
+	.style.width = percent + "%";
+
+
+	document
+	.getElementById("heroProgressText")
+	.innerText = percent + "% complete";
+
+
+	document
+	.getElementById("heroPercentVal")
+	.innerText = percent + "%";
+
+}
 function toggleLesson(
 		id,
 		topicId,
@@ -893,6 +943,7 @@ function toggleLesson(
 				document.getElementById("subjectBar-" + subjectId),
 				data.subjectProgress
 			);
+			updateHeroProgress();
 
 			/* Keep the "X/Y lessons completed" pill in sync — derive the done
 			   count straight from the DOM so it never depends on the server

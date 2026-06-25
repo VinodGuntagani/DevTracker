@@ -45,6 +45,16 @@ public class UpdateDailyTaskServlet extends HttpServlet {
 
 		subDao.updateStatus(subtopicId, completed);
 
+		if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+
+			response.setContentType("application/json");
+
+			response.getWriter().write("{\"success\":true}");
+
+			return;
+
+		}
+
 		response.sendRedirect("schedule.jsp?roadmapId=" + roadmapId);
 
 	}

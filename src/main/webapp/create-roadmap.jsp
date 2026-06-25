@@ -1110,7 +1110,8 @@ body {
 				</a> <a class="nav-item active" href="create-roadmap.jsp"> <i
 					class="ti ti-map"></i> Create Roadmap
 
-				</a>
+				</a> <a class="nav-item" href="trash.jsp"><i class="ti ti-recycle"></i>
+					Deleted</a>
 
 
 			</nav>
@@ -1173,6 +1174,7 @@ body {
 
 					<p class="page-sub">Plan your learning journey</p>
 
+
 				</div>
 
 
@@ -1186,8 +1188,8 @@ body {
 
 
 				<!-- AI CARD -->
-				<div class="card choice-card"
-					onclick="location.href='ai-roadmap.jsp'" style="cursor: pointer">
+				<div class="card choice-card" onclick="showAiForm()"
+					style="cursor: pointer">
 
 
 					<div class="stat-icon si-green">
@@ -1247,7 +1249,11 @@ body {
 			<!-- Your old manual form (hidden) -->
 			<div id="manualForm" class="card" style="display: none">
 
+				<button type="button" class="btn" onclick="goBackChoice()">
 
+					<i class="ti ti-arrow-left"></i> Choose Different Method
+
+				</button>
 				<form action="createRoadmap" method="post">
 
 
@@ -1307,7 +1313,94 @@ body {
 
 
 			</div>
+			<div id="aiForm" class="card" style="display: none">
+				<div class="page-header">
 
+
+					<div>
+
+						<h1 class="page-title">🤖 AI Roadmap Generator</h1>
+
+
+						<p class="page-sub">Tell AI your goal and generate your
+							complete learning path</p>
+						<button type="button" class="btn" onclick="goBackChoice()">
+
+							<i class="ti ti-arrow-left"></i> Choose Different Method
+
+						</button>
+					</div>
+
+
+				</div>
+
+
+
+
+				<div class="card">
+
+
+					<div class="stat-icon si-green">
+
+						<i class="ti ti-sparkles"></i>
+
+					</div>
+
+
+					<h2>Create using AI</h2>
+
+
+					<p class="muted-text">AI will create subjects, topics, lessons
+						and optimize your learning plan.</p>
+
+
+
+					<form action="generateAIRoadmap" method="post">
+
+
+
+						<div class="input-group">
+
+							<label>Your Goal</label> <input type="text" name="goal"
+								placeholder="Example: Java Backend Developer" required>
+
+						</div>
+
+
+
+
+						<div class="input-group">
+
+							<label>Target Days</label> <input type="number" name="days"
+								value="90" min="1" required>
+
+						</div>
+
+
+
+
+						<div class="input-group">
+
+							<label>Daily Study Time (minutes)</label> <input type="number"
+								name="dailyMinutes" value="120" min="5" required>
+
+						</div>
+
+
+
+
+						<button class="btn btn-primary">
+
+							<i class="ti ti-wand"></i> Generate Roadmap
+
+						</button>
+
+
+					</form>
+
+
+				</div>
+			</div>
 
 		</main>
 
@@ -1324,9 +1417,9 @@ body {
 		<a class="bn-item" href="dashboard.jsp"> <i
 			class="ti ti-layout-dashboard"></i> Dashboard
 		</a> <a class="bn-item active" href="create-roadmap.jsp"> <i
-			class="ti ti-plus"></i> Create
-		</a> <a class="bn-item" href="viewAIRoadmaps"> <i
-			class="ti ti-layout-list"></i> Roadmaps
+			class="ti ti-plus"></i> New Roadmap
+		</a> <a class="bn-item " href="trash.jsp"> <i class="ti ti-recycle"></i>
+			Deleted
 		</a>
 
 	</nav>
@@ -1336,6 +1429,27 @@ body {
 			document.getElementById("choiceBox").style.display = "none";
 
 			document.getElementById("manualForm").style.display = "block";
+
+			document.getElementById("aiForm").style.display = "none";
+
+		}
+
+		function showAiForm() {
+
+			document.getElementById("choiceBox").style.display = "none";
+
+			document.getElementById("aiForm").style.display = "block";
+
+			document.getElementById("manualForm").style.display = "none";
+
+		}
+		function goBackChoice() {
+
+			document.getElementById("choiceBox").style.display = "grid";
+
+			document.getElementById("manualForm").style.display = "none";
+
+			document.getElementById("aiForm").style.display = "none";
 
 		}
 	</script>
