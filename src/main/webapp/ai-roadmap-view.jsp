@@ -68,6 +68,8 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 					href="create-roadmap.jsp"><i class="ti ti-plus"></i> Create Roadmap</a> <a
 					class="nav-item active" href=""><i
 					class="ti ti-layout-list"></i> Roadmap</a>
+					<div class="nav-section-label">Manage</div><a class="nav-item " href="trash.jsp"><i
+					class="ti ti-recycle"></i> Deleted</a>
 			</nav>
 			<div class="sidebar-footer">
 				<div class="user-row">
