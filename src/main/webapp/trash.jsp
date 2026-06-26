@@ -375,7 +375,7 @@ int totalDeleted = deletedRoadmaps.size() + deletedSubjects.size() + deletedTopi
 					href="ai-roadmap.jsp"><i class="ti ti-plus"></i> Create Roadmap</a> 
 				<div class="nav-section-label">Manage</div>
 				<a class="nav-item active" href="trash.jsp"><i
-					class="ti ti-recycle"></i> Deleted</a>
+					class="ti ti-recycle"></i> Recover Deleted</a>
 			</nav>
 			<div class="sidebar-footer">
 				<div class="user-row">

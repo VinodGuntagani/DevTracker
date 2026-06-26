@@ -170,16 +170,18 @@ if (tasks.size() > 0) {
 
 				<a class="nav-item" href="dashboard.jsp"> <i
 					class="ti ti-layout-dashboard"></i> Dashboard
-				</a> <a class="nav-item active" href="#"> <i class="ti ti-books"></i>
-					Daily Tasks
-				</a> <a class="nav-item" href="create-roadmap.jsp"> <i
+				</a><a class="nav-item" href="create-roadmap.jsp"> <i
 					class="ti ti-plus"></i> Create Roadmap
-				</a> 
+				</a> <a class="nav-item" href="openAIRoadmap?id=<%=roadmapId%>"> <i
+					class="ti ti-books"></i> Syllabus
+				</a><a class="nav-item active" href="#"> <i class="ti ti-books"></i>
+					Daily Tasks
+				</a>
 
 				<div class="nav-section-label">Manage</div>
-			<a class="nav-item" href="trash.jsp"> <i
-			class="ti ti-recycle"></i> Deleted
-		</a>
+				<a class="nav-item" href="trash.jsp"> <i class="ti ti-recycle"></i>
+					Recover Deleted
+				</a>
 			</nav>
 
 			<div class="sidebar-footer">
@@ -245,6 +247,10 @@ if (tasks.size() > 0) {
 			<div class="syllabus-toolbar">
 				<span class="syllabus-toolbar-label">Schedule</span>
 				<div class="toolbar-actions">
+					<button class="btn btn-sm"
+						onclick="location.href='openAIRoadmap?id=<%=roadmapId%>'">
+						<i class="ti ti-books"></i> Syllabus
+					</button>
 					<button class="btn btn-sm" onclick="expandAllDays()">
 						<i class="ti ti-chevrons-down"></i> Expand all
 					</button>
@@ -350,8 +356,10 @@ if (tasks.size() > 0) {
 					</button>
 					<span class="task-title-text"><%=task.getSubtopicName()%></span> <a
 						class="task-learn-btn"
-						href="generateLearning?subtopicId=<%=task.getSubtopicId()%>">
+						href="generateLearning?subtopicId=<%=task.getSubtopicId()%>&roadmapId=<%=roadmapId%>">
+
 						<i class="ti ti-book-2"></i> Learn
+
 					</a>
 				</div>
 
@@ -383,8 +391,11 @@ if (tasks.size() > 0) {
 	<nav class="bottom-nav">
 		<a class="bn-item" href="dashboard.jsp"><i
 			class="ti ti-layout-dashboard"></i>Dashboard</a> <a class="bn-item"
-			href="ai-roadmap.jsp"><i class="ti ti-robot"></i>AI Tools</a> <a
-			class="bn-item active" href="#"><i class="ti ti-books"></i>Schedule</a>
+			href="create-roadmap.jsp"><i class="ti ti-plus"></i>New</a> <a
+			class="bn-item" href="openAIRoadmap?id=<%=roadmapId%>"> <i
+			class="ti ti-books"></i> Syllabus
+		</a> <a class="bn-item active" href="#"><i class="ti ti-calendar-week"></i>Daily
+			Tasks</a>
 	</nav>
 
 	<style>

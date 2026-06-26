@@ -1110,8 +1110,10 @@ body {
 				</a> <a class="nav-item active" href="create-roadmap.jsp"> <i
 					class="ti ti-map"></i> Create Roadmap
 
-				</a> <a class="nav-item" href="trash.jsp"><i class="ti ti-recycle"></i>
-					Deleted</a>
+				</a>
+				<div class="nav-section-label">Manage</div>
+				<a class="nav-item" href="trash.jsp"><i class="ti ti-recycle"></i>
+					Recover Deleted</a>
 
 
 			</nav>

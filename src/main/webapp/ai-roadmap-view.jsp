@@ -65,11 +65,15 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 				<div class="nav-section-label">Menu</div>
 				<a class="nav-item" href="dashboard.jsp"><i
 					class="ti ti-layout-dashboard"></i> Dashboard</a> <a class="nav-item"
-					href="create-roadmap.jsp"><i class="ti ti-plus"></i> Create Roadmap</a> <a
-					class="nav-item active" href=""><i
-					class="ti ti-layout-list"></i> Roadmap</a>
-					<div class="nav-section-label">Manage</div><a class="nav-item " href="trash.jsp"><i
-					class="ti ti-recycle"></i> Deleted</a>
+					href="create-roadmap.jsp"><i class="ti ti-plus"></i> Create
+					Roadmap</a> <a class="nav-item active" href=""><i
+					class="ti ti-books"></i> Syllabus</a> <a class="nav-item"
+					href="schedule.jsp?roadmapId=<%=roadmap.getId()%>"> <i
+					class="ti ti-calendar-week"></i> Daily Tasks
+				</a>
+				<div class="nav-section-label">Manage</div>
+				<a class="nav-item " href="trash.jsp"><i class="ti ti-recycle"></i>
+					Recover Deleted</a>
 			</nav>
 			<div class="sidebar-footer">
 				<div class="user-row">
@@ -187,6 +191,12 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 			<div class="syllabus-toolbar">
 				<span class="syllabus-toolbar-label">Syllabus</span>
 				<div class="toolbar-actions">
+					<button class="btn btn-sm"
+						onclick="location.href='schedule.jsp?roadmapId=<%=roadmap.getId()%>'">
+						<i class="ti ti-calendar-week"></i> Daily Tasks
+					</button>
+
+
 					<button class="btn btn-sm" onclick="expandAll()">
 						<i class="ti ti-chevrons-down"></i> Expand all
 					</button>
@@ -440,10 +450,9 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 
 									<!-- open learning -->
 									<a class="lesson-link"
-										href="generateLearning?subtopicId=<%=sub.getId()%>"> <%=sub.getName()%>
-
+										href="generateLearning?subtopicId=<%=sub.getId()%>&roadmapId=<%=roadmap.getId()%>">
+										<%=sub.getName()%>
 									</a>
-
 
 
 									<button class="inline-edit-btn" title="Edit lesson"
@@ -626,9 +635,12 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 	<nav class="bottom-nav">
 		<a class="bn-item" href="dashboard.jsp"><i
 			class="ti ti-layout-dashboard"></i>Dashboard</a> <a class="bn-item"
-			href="create-roadmap.jsp"><i class="ti ti-plus"></i>New Roadmap</a> <a
-			class="bn-item active" href=""><i
-			class="ti ti-layout-list"></i>Roadmaps</a>
+			href="create-roadmap.jsp"><i class="ti ti-plus"></i>New</a> <a
+			class="bn-item active" href=""><i class="ti ti-books"></i>
+			Syllabus</a> <a class="bn-item"
+			href="schedule.jsp?roadmapId=<%=roadmap.getId()%>"> <i
+			class="ti ti-calendar-week"></i> Schedule
+		</a>
 	</nav>
 
 	<script>

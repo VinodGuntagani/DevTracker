@@ -954,10 +954,8 @@ body {
 				</a>
 
 				<div class="nav-section-label">Manage</div>
-				<a class="nav-item" href="analytics.jsp"> <i
-					class="ti ti-chart-bar"></i> Analytics
-				</a> <a class="nav-item" href="trash.jsp"> <i class="ti ti-recycle"></i>
-					Recover deleted
+				 <a class="nav-item" href="trash.jsp"> <i class="ti ti-recycle"></i>
+					Recover Deleted
 				</a>
 			</nav>
 
