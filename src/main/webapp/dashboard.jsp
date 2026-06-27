@@ -48,6 +48,9 @@ int avgProgress = total > 0 ? totalProgress / total : 0;
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard | DevTracker</title>
 <link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/loading.css">
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
@@ -366,6 +369,7 @@ body {
 	cursor: pointer;
 	text-decoration: none;
 	transition: .15s;
+	width: 100%;
 }
 
 .btn:hover {
@@ -1202,6 +1206,18 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
+<script src="js/loading.js"></script>
+<div id="loadingContainer"></div>
 
+<script>
+window.addEventListener("DOMContentLoaded", async () => {
+
+    const res = await fetch("includes/loading.html");
+    const html = await res.text();
+
+    document.getElementById("loadingContainer").innerHTML = html;
+
+});
+</script>
 </body>
 </html>

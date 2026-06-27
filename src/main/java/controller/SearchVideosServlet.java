@@ -7,36 +7,48 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
+import dao.SubTopicDAO;
+import model.SubTopic;
 import model.LearningResource;
-
 import service.YouTubeService;
 
 @WebServlet("/searchVideos")
 public class SearchVideosServlet extends HttpServlet {
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
 
-		try {
+        try {
 
-			int subtopicId = Integer.parseInt(request.getParameter("subtopicId"));
+            int subtopicId =
+                    Integer.parseInt(request.getParameter("subtopicId"));
 
-			String query = request.getParameter("query");
+            String query =
+                    request.getParameter("query");
 
-			YouTubeService yt = new YouTubeService();
+            // Build a default query if none was provided
+            if (query == null || query.isBlank()) {
 
-			List<LearningResource> videos = yt.searchVideos(subtopicId, query);
+                SubTopicDAO dao = new SubTopicDAO();
+                SubTopic sub = dao.getSubTopicById(subtopicId);
 
-			request.setAttribute("videos", videos);
+                query = sub.getName() + " tutorial";
+            }
 
-			request.getRequestDispatcher("video-results.jsp").forward(request, response);
+            YouTubeService yt = new YouTubeService();
 
-		} catch (Exception e) {
+            List<LearningResource> videos =
+                    yt.searchVideos(subtopicId, query);
 
-			e.printStackTrace();
+            request.setAttribute("videos", videos);
 
-		}
+            request.getRequestDispatcher("video-results.jsp")
+                    .forward(request, response);
 
-	}
+        } catch (Exception e) {
 
+            e.printStackTrace();
+        }
+    }
 }

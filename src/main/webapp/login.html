@@ -6,96 +6,17 @@
 <title>Login | DevTracker</title>
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/animation.css">
+	<link rel="stylesheet" href="css/loading.css">
+
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
-<style>
-/* ============================================================
-   ANIMATED BACKGROUND DESIGN — coffee/amber theme
-   Self-contained so it works without touching auth.css.
-   - Corner blobs: slow breathing glow (matches register page)
-   - Dashed paths: gentle flowing dash motion
-   - Dot nodes: soft pulsing glow
-   - Badge icons: light floating bob, staggered per badge
-   Respects prefers-reduced-motion.
-   ============================================================ */
 
-.auth-bg-svg .corner-blob {
-	transform-box: fill-box;
-	transform-origin: center;
-}
-.auth-bg-svg .corner-blob-orange {
-	animation: blobDriftOrange 14s ease-in-out infinite;
-}
-.auth-bg-svg .corner-blob-blue {
-	animation: blobDriftBlue 17s ease-in-out infinite;
-}
-
-@keyframes blobDriftOrange {
-	0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
-	50%      { transform: translate(14px, -10px) scale(1.15); opacity: 0.22; }
-}
-@keyframes blobDriftBlue {
-	0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.13; }
-	50%      { transform: translate(-12px, 12px) scale(1.12); opacity: 0.2; }
-}
-
-.auth-bg-svg .bp-orange,
-.auth-bg-svg .bp-blue {
-	animation: dashFlow 7s linear infinite;
-}
-@keyframes dashFlow {
-	to { stroke-dashoffset: -200; }
-}
-
-.auth-bg-svg .pn {
-	transform-box: fill-box;
-	transform-origin: center;
-	animation: dotGlow 3.2s ease-in-out infinite;
-}
-.auth-bg-svg .pn-pulse {
-	transform-box: fill-box;
-	transform-origin: center;
-	animation: dotPulse 2.4s ease-in-out infinite;
-}
-@keyframes dotGlow {
-	0%, 100% { opacity: 0.45; }
-	50%      { opacity: 1; }
-}
-@keyframes dotPulse {
-	0%, 100% { transform: scale(1);   opacity: 0.6; }
-	50%      { transform: scale(1.8); opacity: 1; }
-}
-
-.auth-bg-svg .badge-anim-1,
-.auth-bg-svg .badge-anim-2,
-.auth-bg-svg .badge-anim-3,
-.auth-bg-svg .badge-anim-4 {
-	transform-box: fill-box;
-	transform-origin: center;
-	animation-name: badgeFloat;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: infinite;
-}
-.auth-bg-svg .badge-anim-1 { animation-duration: 5s;   animation-delay: 0s; }
-.auth-bg-svg .badge-anim-2 { animation-duration: 6s;   animation-delay: .6s; }
-.auth-bg-svg .badge-anim-3 { animation-duration: 5.5s; animation-delay: 1.2s; }
-.auth-bg-svg .badge-anim-4 { animation-duration: 6.5s; animation-delay: .3s; }
-
-@keyframes badgeFloat {
-	0%, 100% { transform: translateY(0); }
-	50%      { transform: translateY(-10px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.auth-bg-svg * {
-		animation: none !important;
-	}
-}
-</style>
 </head>
 
 <body>
+
 
 	<div class="auth-container">
 
@@ -131,14 +52,19 @@
 
 			<!-- ── Blue dashed path (right arc) ── -->
 			<path class="bp-blue"
-				d="M 581 229 C 615 173 641 141 680 148 S 714 163 712 160" />
+				d=" M 581 229 C 615 173 641 141 680 148 S 714 163 712 160" />
 
 			<!-- ── Orange dashed path (bottom arc) ── -->
 			<path class="bp-blue"
 				d="M 386 371 C 271 376 313 489 348 511 S 312 621 501 602" />
 			<path class="bp-orange"
-				d="M 501 602 C 614 553 714 636 667 531 S 819 357 607 351" />
-
+				d=" M 501 602 C 614 553 714 636 667 531 S 819 357 607 351" />
+				<path class="bp-orange"
+				d=" M 607 351 C 621 278 648 308 648 270 S 622 227 581 232" />
+				<path class="bp-orange"
+				d="  M 386 371 C 341 350 339 329 354 335 S 325 293 374 307" />
+				<path class="bp-orange"
+				d="  M 479 195 C 464 159 501 116 535 181 S 567 157 580 229" />
 			<!-- Dot nodes on paths -->
 			<circle class="pn" cx="362" cy="173" r="4" />
 			<circle class="pn" cx="326" cy="257" r="4" />
@@ -189,7 +115,7 @@
 			</div>
 
 			<form action="login" method="post" id="loginForm"
-				onsubmit="handleLoginSubmit(event)">
+     			 onsubmit="showLoader('login');handleLoginSubmit(event);">
 
 				<div class="input-group">
 					<label for="email">Email</label>
@@ -271,5 +197,19 @@
 	}
 	</script>
 
+	<!-- Loader -->
+	<div id="loadingContainer"></div>
+<script>window.addEventListener("DOMContentLoaded", async () => {
+
+    const res = await fetch("includes/loading.html");
+
+    const html = await res.text();
+
+    document
+        .getElementById("loadingContainer")
+        .innerHTML = html;
+
+});</script>
+	<script src="js/loading.js"></script>
 </body>
 </html>

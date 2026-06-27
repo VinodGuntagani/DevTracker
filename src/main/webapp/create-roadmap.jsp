@@ -26,6 +26,9 @@ if (user == null) {
 
 <link rel="stylesheet" href="css/syllabus.css">
 <link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="css/loading.css">
+<link rel="stylesheet" href="css/auth.css">
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
@@ -1455,6 +1458,19 @@ body {
 
 		}
 	</script>
+	<script src="js/loading.js"></script>
+	<div id="loadingContainer"></div>
+
+<script>
+window.addEventListener("DOMContentLoaded", async () => {
+
+    const res = await fetch("includes/loading.html");
+    const html = await res.text();
+
+    document.getElementById("loadingContainer").innerHTML = html;
+
+});
+</script>
 </body>
 
 

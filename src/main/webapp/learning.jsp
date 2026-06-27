@@ -49,9 +49,34 @@ try {
 
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/learning.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/loading.css">
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>.more-videos-card{
+    margin-top:32px;
+    padding:28px;
+    text-align:center;
 
+    border:1px dashed var(--border);
+    border-radius:18px;
+
+    background:linear-gradient(
+        135deg,
+        #fafafa,
+        #ffffff
+    );
+}
+
+.more-videos-card h3{
+    margin-bottom:8px;
+}
+
+.more-videos-card .btn{
+    margin-top:18px;
+    display:inline-flex;
+}</style>
 </head>
 
 <body>
@@ -93,9 +118,8 @@ try {
 					class="ti ti-books"></i> Syllabus
 				</a> <a class="nav-item" href="schedule.jsp?roadmapId=<%=roadmapId%>">
 					<i class="ti ti-calendar-week"></i> Daily Tasks
-				</a>
-				 <a class="nav-item active" href="">
-					<i class="ti ti-notes"></i> Notes
+				</a> <a class="nav-item active" href=""> <i class="ti ti-notes"></i>
+					Notes
 				</a>
 				<%
 				}
@@ -235,7 +259,18 @@ try {
 					}
 					}
 					%>
+					<div class="more-videos-card">
 
+						<h3>Want more videos?</h3>
+
+						<p class="muted-text">Browse more tutorials from YouTube based
+							on this topic.</p>
+
+						<a class="btn" href="searchVideos?subtopicId=<%=sub.getId()%>">
+							<i class="ti ti-brand-youtube"></i> Explore More Videos
+						</a>
+
+					</div>
 					<div class="stats-card">
 						<h2>🔍 Didn't find what you need?</h2>
 
@@ -267,13 +302,12 @@ try {
 
 		<a class="bn-item" href="dashboard.jsp"> <i
 			class="ti ti-layout-dashboard"></i> Dashboard
-		</a> <a class="bn-item active" href=""> <i
-			class="ti ti-notes"></i> Notes
+		</a> <a class="bn-item active" href=""> <i class="ti ti-notes"></i>
+			Notes
 		</a> <a class="bn-item" href="openAIRoadmap?id=<%=roadmapId%>"> <i
 			class="ti ti-books"></i> Syllabus
-		</a> <a class="bn-item "
-			href="schedule.jsp?roadmapId=<%=roadmapId%>"> <i
-			class="ti ti-calendar-week"></i> Daily Tasks
+		</a> <a class="bn-item " href="schedule.jsp?roadmapId=<%=roadmapId%>">
+			<i class="ti ti-calendar-week"></i> Daily Tasks
 		</a>
 
 	</nav>
@@ -382,6 +416,18 @@ function toggleLesson(id, completed, btn) {
   applyMode(savedIndex >= 0 ? savedIndex : 1, false);  // default: Comfortable
 })();
 </script>
+<script src="js/loading.js"></script>
+<div id="loadingContainer"></div>
 
+<script>
+window.addEventListener("DOMContentLoaded", async () => {
+
+    const res = await fetch("includes/loading.html");
+    const html = await res.text();
+
+    document.getElementById("loadingContainer").innerHTML = html;
+
+});
+</script>
 </body>
 </html>

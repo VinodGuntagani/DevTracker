@@ -33,6 +33,9 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 <title><%=roadmap.getTitle()%> — Syllabus | DevTracker</title>
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/syllabus.css">
+<link rel="stylesheet" href="css/loading.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="css/auth.css">
 
 
 <link rel="stylesheet"
@@ -1004,6 +1007,18 @@ function toggleLesson(
 
 	}
 </script>
+<script src="js/loading.js"></script>
+<div id="loadingContainer"></div>
 
+<script>
+window.addEventListener("DOMContentLoaded", async () => {
+
+    const res = await fetch("includes/loading.html");
+    const html = await res.text();
+
+    document.getElementById("loadingContainer").innerHTML = html;
+
+});
+</script>
 </body>
 </html>
