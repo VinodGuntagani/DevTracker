@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,36 +16,22 @@ public class RoadmapDAO {
 	// CREATE ROADMAP
 	public boolean addRoadmap(Roadmap roadmap) {
 
-		boolean status = false;
+		String sql = """
+				INSERT INTO roadmaps
+				(user_id, title, description, start_date, target_date, is_ai)
+				VALUES (?, ?, ?, ?, ?, ?)
+				""";
 
-		try {
-
-			Connection con = DBConnection.getConnection();
-
-			String sql = "INSERT INTO roadmaps\r\n" + "(user_id,title,description,start_date,target_date,is_ai)"
-					+ "VALUES(?,?,?,?,?,?)";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, roadmap.getUserId());
-
 			ps.setString(2, roadmap.getTitle());
-
 			ps.setString(3, roadmap.getDescription());
-
 			ps.setDate(4, roadmap.getStartDate());
-
 			ps.setDate(5, roadmap.getTargetDate());
-
 			ps.setBoolean(6, false);
 
-			int rows = ps.executeUpdate();
-
-			if (rows > 0) {
-
-				status = true;
-
-			}
+			return ps.executeUpdate() > 0;
 
 		} catch (Exception e) {
 
@@ -54,8 +39,7 @@ public class RoadmapDAO {
 
 		}
 
-		return status;
-
+		return false;
 	}
 
 	// GET USER ROADMAPS
@@ -63,35 +47,33 @@ public class RoadmapDAO {
 
 		List<Roadmap> list = new ArrayList<>();
 
-		try {
+		String sql = """
+				SELECT *
+				FROM roadmaps
+				WHERE user_id = ?
+				AND is_deleted = false
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = "SELECT * FROM roadmaps " + "WHERE user_id=? AND is_deleted=false";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, userId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			while (rs.next()) {
+				while (rs.next()) {
 
-				Roadmap r = new Roadmap();
+					Roadmap r = new Roadmap();
 
-				r.setId(rs.getInt("id"));
+					r.setId(rs.getInt("id"));
+					r.setTitle(rs.getString("title"));
+					r.setDescription(rs.getString("description"));
+					r.setStartDate(rs.getDate("start_date"));
+					r.setTargetDate(rs.getDate("target_date"));
+					r.setAi(rs.getBoolean("is_ai"));
 
-				r.setTitle(rs.getString("title"));
+					list.add(r);
 
-				r.setDescription(rs.getString("description"));
-
-				r.setStartDate(rs.getDate("start_date"));
-
-				r.setTargetDate(rs.getDate("target_date"));
-
-				r.setAi(rs.getBoolean("is_ai"));
-
-				list.add(r);
+				}
 
 			}
 
@@ -107,70 +89,63 @@ public class RoadmapDAO {
 
 	public void deleteRoadmap(int id) {
 
-		try {
+		try (Connection con = DBConnection.getConnection()) {
 
-			Connection con = DBConnection.getConnection();
+			con.setAutoCommit(false);
 
-			// delete roadmap
+			try {
 
-			String sql1 = "UPDATE roadmaps SET is_deleted=true WHERE id=?";
+				// Delete roadmap
+				try (PreparedStatement ps = con.prepareStatement("UPDATE roadmaps SET is_deleted=true WHERE id=?")) {
 
-			PreparedStatement ps1 = con.prepareStatement(sql1);
+					ps.setInt(1, id);
+					ps.executeUpdate();
+				}
 
-			ps1.setInt(1, id);
+				// Delete subjects
+				try (PreparedStatement ps = con
+						.prepareStatement("UPDATE subjects SET is_deleted=true WHERE roadmap_id=?")) {
 
-			ps1.executeUpdate();
+					ps.setInt(1, id);
+					ps.executeUpdate();
+				}
 
-			// delete subjects
+				// Delete topics
+				try (PreparedStatement ps = con.prepareStatement("""
+						UPDATE topics t
+						JOIN subjects s
+						ON t.subject_id = s.id
+						SET t.is_deleted = true
+						WHERE s.roadmap_id = ?
+						""")) {
 
-			String sql2 = "UPDATE subjects SET is_deleted=true WHERE roadmap_id=?";
+					ps.setInt(1, id);
+					ps.executeUpdate();
+				}
 
-			PreparedStatement ps2 = con.prepareStatement(sql2);
+				// Delete subtopics
+				try (PreparedStatement ps = con.prepareStatement("""
+						UPDATE sub_topics st
+						JOIN topics t
+						ON st.topic_id = t.id
+						JOIN subjects s
+						ON t.subject_id = s.id
+						SET st.is_deleted = true
+						WHERE s.roadmap_id = ?
+						""")) {
 
-			ps2.setInt(1, id);
+					ps.setInt(1, id);
+					ps.executeUpdate();
+				}
 
-			ps2.executeUpdate();
+				con.commit();
 
-			// delete topics
+			} catch (Exception e) {
 
-			String sql3 = """
-					UPDATE topics t
+				con.rollback();
+				throw e;
 
-					JOIN subjects s
-					ON t.subject_id=s.id
-
-					SET t.is_deleted=true
-
-					WHERE s.roadmap_id=?
-					""";
-
-			PreparedStatement ps3 = con.prepareStatement(sql3);
-
-			ps3.setInt(1, id);
-
-			ps3.executeUpdate();
-
-			// delete subtopics
-
-			String sql4 = """
-					UPDATE sub_topics st
-
-					JOIN topics t
-					ON st.topic_id=t.id
-
-					JOIN subjects s
-					ON t.subject_id=s.id
-
-					SET st.is_deleted=true
-
-					WHERE s.roadmap_id=?
-					""";
-
-			PreparedStatement ps4 = con.prepareStatement(sql4);
-
-			ps4.setInt(1, id);
-
-			ps4.executeUpdate();
+			}
 
 		} catch (Exception e) {
 
@@ -182,26 +157,17 @@ public class RoadmapDAO {
 
 	public void updateName(int id, String title, String description) {
 
-		try {
-
-			Connection con = DBConnection.getConnection();
-
-			String sql = "UPDATE roadmaps SET title=?, description=? WHERE id=?";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement("UPDATE roadmaps SET title=?, description=? WHERE id=?")) {
 
 			ps.setString(1, title);
-
 			ps.setString(2, description);
-
 			ps.setInt(3, id);
 
 			ps.executeUpdate();
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 	}
@@ -210,36 +176,28 @@ public class RoadmapDAO {
 
 		List<Roadmap> list = new ArrayList<>();
 
-		try {
-
-			Connection con = DBConnection.getConnection();
-
-			String sql = "SELECT * FROM roadmaps WHERE user_id=? AND is_deleted=true";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection();
+				PreparedStatement ps = con
+						.prepareStatement("SELECT * FROM roadmaps WHERE user_id=? AND is_deleted=true")) {
 
 			ps.setInt(1, userId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			while (rs.next()) {
+				while (rs.next()) {
 
-				Roadmap r = new Roadmap();
+					Roadmap r = new Roadmap();
 
-				r.setId(rs.getInt("id"));
+					r.setId(rs.getInt("id"));
+					r.setTitle(rs.getString("title"));
+					r.setDescription(rs.getString("description"));
 
-				r.setTitle(rs.getString("title"));
-
-				r.setDescription(rs.getString("description"));
-
-				list.add(r);
-
+					list.add(r);
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return list;
@@ -248,70 +206,64 @@ public class RoadmapDAO {
 
 	public void restoreRoadmap(int id) {
 
-		try {
+		try (Connection con = DBConnection.getConnection()) {
 
-			Connection con = DBConnection.getConnection();
+			con.setAutoCommit(false);
 
-			// restore roadmap
+			try {
 
-			String sql1 = "UPDATE roadmaps SET is_deleted=false WHERE id=?";
+				// Restore roadmap
+				try (PreparedStatement ps = con
+						.prepareStatement("UPDATE roadmaps SET is_deleted=true WHERE id=?".replace("true", "false"))) {
 
-			PreparedStatement ps1 = con.prepareStatement(sql1);
+					ps.setInt(1, id);
+					ps.executeUpdate();
+				}
 
-			ps1.setInt(1, id);
+				// Restore subjects
+				try (PreparedStatement ps = con.prepareStatement(
+						"UPDATE subjects SET is_deleted=true WHERE roadmap_id=?".replace("true", "false"))) {
 
-			ps1.executeUpdate();
+					ps.setInt(1, id);
+					ps.executeUpdate();
+				}
 
-			// restore subjects
+				// Restore topics
+				try (PreparedStatement ps = con.prepareStatement("""
+						UPDATE topics t
+						JOIN subjects s
+						ON t.subject_id = s.id
+						SET t.is_deleted = false
+						WHERE s.roadmap_id = ?
+						""")) {
 
-			String sql2 = "UPDATE subjects SET is_deleted=false WHERE roadmap_id=?";
+					ps.setInt(1, id);
+					ps.executeUpdate();
+				}
 
-			PreparedStatement ps2 = con.prepareStatement(sql2);
+				// Restore subtopics
+				try (PreparedStatement ps = con.prepareStatement("""
+						UPDATE sub_topics st
+						JOIN topics t
+						ON st.topic_id = t.id
+						JOIN subjects s
+						ON t.subject_id = s.id
+						SET st.is_deleted = false
+						WHERE s.roadmap_id = ?
+						""")) {
 
-			ps2.setInt(1, id);
+					ps.setInt(1, id);
+					ps.executeUpdate();
+				}
 
-			ps2.executeUpdate();
+				con.commit();
 
-			// restore topics
+			} catch (Exception e) {
 
-			String sql3 = """
-					UPDATE topics t
+				con.rollback();
+				throw e;
 
-					JOIN subjects s
-					ON t.subject_id=s.id
-
-					SET t.is_deleted=false
-
-					WHERE s.roadmap_id=?
-					""";
-
-			PreparedStatement ps3 = con.prepareStatement(sql3);
-
-			ps3.setInt(1, id);
-
-			ps3.executeUpdate();
-
-			// restore subtopics
-
-			String sql4 = """
-					UPDATE sub_topics st
-
-					JOIN topics t
-					ON st.topic_id=t.id
-
-					JOIN subjects s
-					ON t.subject_id=s.id
-
-					SET st.is_deleted=false
-
-					WHERE s.roadmap_id=?
-					""";
-
-			PreparedStatement ps4 = con.prepareStatement(sql4);
-
-			ps4.setInt(1, id);
-
-			ps4.executeUpdate();
+			}
 
 		} catch (Exception e) {
 
@@ -325,59 +277,42 @@ public class RoadmapDAO {
 
 		List<SubTopic> list = new ArrayList<>();
 
-		try {
+		String sql = """
+				SELECT st.*
+				FROM sub_topics st
+				JOIN topics t
+				ON st.topic_id = t.id
+				JOIN subjects s
+				ON t.subject_id = s.id
+				WHERE s.roadmap_id = ?
+				AND st.is_deleted = false
+				ORDER BY st.weight DESC
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					SELECT st.*
-
-					FROM sub_topics st
-
-					JOIN topics t
-					ON st.topic_id = t.id
-
-					JOIN subjects s
-					ON t.subject_id = s.id
-
-					WHERE s.roadmap_id=?
-					AND st.is_deleted=false
-
-					ORDER BY st.weight DESC
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, roadmapId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			while (rs.next()) {
+				while (rs.next()) {
 
-				SubTopic st = new SubTopic();
+					SubTopic st = new SubTopic();
 
-				st.setId(rs.getInt("id"));
+					st.setId(rs.getInt("id"));
+					st.setTopicId(rs.getInt("topic_id"));
+					st.setName(rs.getString("name"));
+					st.setCompleted(rs.getBoolean("completed"));
+					st.setDifficulty(rs.getString("difficulty"));
+					st.setEstimatedMinutes(rs.getInt("estimated_minutes"));
+					st.setWeight(rs.getInt("weight"));
 
-				st.setTopicId(rs.getInt("topic_id"));
-
-				st.setName(rs.getString("name"));
-
-				st.setCompleted(rs.getBoolean("completed"));
-
-				st.setDifficulty(rs.getString("difficulty"));
-
-				st.setEstimatedMinutes(rs.getInt("estimated_Minutes"));
-
-				st.setWeight(rs.getInt("weight"));
-
-				list.add(st);
-
+					list.add(st);
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return list;
@@ -388,38 +323,28 @@ public class RoadmapDAO {
 
 		Roadmap roadmap = null;
 
-		try {
-
-			Connection con = DBConnection.getConnection();
-
-			String sql = "SELECT * FROM roadmaps WHERE id=?";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement("SELECT * FROM roadmaps WHERE id=?")) {
 
 			ps.setInt(1, id);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			if (rs.next()) {
+				if (rs.next()) {
 
-				roadmap = new Roadmap();
+					roadmap = new Roadmap();
 
-				roadmap.setId(rs.getInt("id"));
+					roadmap.setId(rs.getInt("id"));
+					roadmap.setTitle(rs.getString("title"));
+					roadmap.setDescription(rs.getString("description"));
+					roadmap.setStartDate(rs.getDate("start_date"));
+					roadmap.setTargetDate(rs.getDate("target_date"));
 
-				roadmap.setTitle(rs.getString("title"));
-
-				roadmap.setDescription(rs.getString("description"));
-
-				roadmap.setStartDate(rs.getDate("start_date"));
-
-				roadmap.setTargetDate(rs.getDate("target_date"));
-
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return roadmap;
@@ -430,41 +355,29 @@ public class RoadmapDAO {
 
 		int id = 0;
 
-		try {
+		String sql = "INSERT INTO roadmaps(user_id, title, description, start_date, target_date, is_ai) "
+				+ "VALUES (?, ?, ?, ?, ?, ?)";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = "INSERT INTO roadmaps(user_id,title,description,start_date,target_date,is_ai)"
-					+ " VALUES(?,?,?,?,?,?)";
-
-			PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		try (Connection con = DBConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 			ps.setInt(1, r.getUserId());
-
 			ps.setString(2, r.getTitle());
-
 			ps.setString(3, r.getDescription());
-
 			ps.setDate(4, r.getStartDate());
-
 			ps.setDate(5, r.getTargetDate());
-
 			ps.setBoolean(6, true);
 
 			ps.executeUpdate();
 
-			ResultSet rs = ps.getGeneratedKeys();
-
-			if (rs.next()) {
-
-				id = rs.getInt(1);
-
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				if (rs.next()) {
+					id = rs.getInt(1);
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return id;
@@ -475,48 +388,37 @@ public class RoadmapDAO {
 
 		List<Roadmap> list = new ArrayList<>();
 
-		try {
+		String sql = """
+				SELECT *
+				FROM roadmaps
+				WHERE user_id = ?
+				AND is_ai = true
+				AND is_deleted = false
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-						SELECT *
-						FROM roadmaps
-						WHERE user_id=?
-						AND is_ai=true
-						AND is_deleted=false
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, userId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			while (rs.next()) {
+				while (rs.next()) {
 
-				Roadmap r = new Roadmap();
+					Roadmap r = new Roadmap();
 
-				r.setId(rs.getInt("id"));
+					r.setId(rs.getInt("id"));
+					r.setTitle(rs.getString("title"));
+					r.setDescription(rs.getString("description"));
+					r.setStartDate(rs.getDate("start_date"));
+					r.setTargetDate(rs.getDate("target_date"));
+					r.setAi(rs.getBoolean("is_ai"));
 
-				r.setTitle(rs.getString("title"));
-
-				r.setDescription(rs.getString("description"));
-
-				r.setStartDate(rs.getDate("start_date"));
-
-				r.setTargetDate(rs.getDate("target_date"));
-
-				r.setAi(rs.getBoolean("is_ai"));
-
-				list.add(r);
-
+					list.add(r);
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return list;

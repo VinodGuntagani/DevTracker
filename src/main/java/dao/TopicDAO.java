@@ -11,65 +11,54 @@ public class TopicDAO {
 
 	public boolean addTopic(Topic topic) {
 
-		boolean status = false;
+		String sql = "INSERT INTO topics(subject_id, name) VALUES(?, ?)";
 
-		try {
-
-			Connection con = DBConnection.getConnection();
-
-			String sql = "INSERT INTO topics(subject_id,name) VALUES(?,?)";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, topic.getSubjectId());
-
 			ps.setString(2, topic.getName());
 
-			status = ps.executeUpdate() > 0;
+			return ps.executeUpdate() > 0;
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
-		return status;
+		return false;
+
 	}
 
 	public List<Topic> getTopics(int subjectId) {
 
 		List<Topic> list = new ArrayList<>();
 
-		try {
+		String sql = """
+				SELECT *
+				FROM topics
+				WHERE subject_id = ?
+				AND is_deleted = false
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = "SELECT * FROM topics WHERE subject_id=? AND is_deleted=false";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, subjectId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			while (rs.next()) {
+				while (rs.next()) {
 
-				Topic t = new Topic();
+					Topic t = new Topic();
 
-				t.setId(rs.getInt("id"));
+					t.setId(rs.getInt("id"));
+					t.setSubjectId(rs.getInt("subject_id"));
+					t.setName(rs.getString("name"));
 
-				t.setSubjectId(rs.getInt("subject_id"));
-
-				t.setName(rs.getString("name"));
-
-				list.add(t);
-
+					list.add(t);
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return list;
@@ -80,49 +69,37 @@ public class TopicDAO {
 
 		int progress = 0;
 
-		try {
-
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					SELECT
+		String sql = """
+				SELECT
 					COUNT(st.id) AS total,
 					SUM(st.completed) AS done
-
-					FROM topics t
-
-					LEFT JOIN sub_topics st
+				FROM topics t
+				LEFT JOIN sub_topics st
 					ON t.id = st.topic_id
+				WHERE t.subject_id = ?
+				AND t.is_deleted = false
+				AND st.is_deleted = false
+				""";
 
-					WHERE t.subject_id=?
-					AND t.is_deleted=false
-					AND st.is_deleted=false
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, subjectId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			if (rs.next()) {
+				if (rs.next()) {
 
-				int total = rs.getInt("total");
+					int total = rs.getInt("total");
+					int done = rs.getInt("done");
 
-				int done = rs.getInt("done");
-
-				if (total > 0) {
-
-					progress = (done * 100) / total;
-
+					if (total > 0) {
+						progress = (done * 100) / total;
+					}
 				}
-
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return progress;
@@ -131,56 +108,58 @@ public class TopicDAO {
 
 	public void deleteTopic(int id) {
 
-		try {
+		try (Connection con = DBConnection.getConnection()) {
 
-			Connection con = DBConnection.getConnection();
+			con.setAutoCommit(false);
 
-			// delete topic
-			String sql1 = "UPDATE topics SET is_deleted=true WHERE id=?";
+			try {
 
-			PreparedStatement ps1 = con.prepareStatement(sql1);
+				// Delete topic
+				String sql1 = "UPDATE topics SET is_deleted = true WHERE id = ?";
 
-			ps1.setInt(1, id);
+				try (PreparedStatement ps1 = con.prepareStatement(sql1)) {
 
-			ps1.executeUpdate();
+					ps1.setInt(1, id);
+					ps1.executeUpdate();
+				}
 
-			// delete subtopics inside topic
-			String sql2 = "UPDATE sub_topics SET is_deleted=true WHERE topic_id=?";
+				// Delete subtopics inside topic
+				String sql2 = "UPDATE sub_topics SET is_deleted = true WHERE topic_id = ?";
 
-			PreparedStatement ps2 = con.prepareStatement(sql2);
+				try (PreparedStatement ps2 = con.prepareStatement(sql2)) {
 
-			ps2.setInt(1, id);
+					ps2.setInt(1, id);
+					ps2.executeUpdate();
+				}
 
-			ps2.executeUpdate();
+				con.commit();
+
+			} catch (Exception e) {
+
+				con.rollback();
+				throw e;
+
+			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 	}
 
 	public void updateName(int id, String name) {
 
-		try {
+		String sql = "UPDATE topics SET name = ? WHERE id = ?";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = "UPDATE topics SET name=? WHERE id=?";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setString(1, name);
-
 			ps.setInt(2, id);
 
 			ps.executeUpdate();
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 	}
@@ -189,36 +168,33 @@ public class TopicDAO {
 
 		List<Topic> list = new ArrayList<>();
 
-		try {
+		String sql = """
+				SELECT *
+				FROM topics
+				WHERE subject_id = ?
+				AND is_deleted = true
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = "SELECT * FROM topics WHERE subject_id=? AND is_deleted=true";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, subjectId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			while (rs.next()) {
+				while (rs.next()) {
 
-				Topic t = new Topic();
+					Topic t = new Topic();
 
-				t.setId(rs.getInt("id"));
+					t.setId(rs.getInt("id"));
+					t.setSubjectId(rs.getInt("subject_id"));
+					t.setName(rs.getString("name"));
 
-				t.setSubjectId(rs.getInt("subject_id"));
-
-				t.setName(rs.getString("name"));
-
-				list.add(t);
-
+					list.add(t);
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return list;
@@ -227,34 +203,41 @@ public class TopicDAO {
 
 	public void restoreTopic(int id) {
 
-		try {
+		try (Connection con = DBConnection.getConnection()) {
 
-			Connection con = DBConnection.getConnection();
+			con.setAutoCommit(false);
 
-			// restore topic
+			try {
 
-			String sql1 = "UPDATE topics SET is_deleted=false WHERE id=?";
+				// Restore topic
+				String sql1 = "UPDATE topics SET is_deleted = false WHERE id = ?";
 
-			PreparedStatement ps1 = con.prepareStatement(sql1);
+				try (PreparedStatement ps1 = con.prepareStatement(sql1)) {
 
-			ps1.setInt(1, id);
+					ps1.setInt(1, id);
+					ps1.executeUpdate();
+				}
 
-			ps1.executeUpdate();
+				// Restore subtopics
+				String sql2 = "UPDATE sub_topics SET is_deleted = false WHERE topic_id = ?";
 
-			// restore subtopics
+				try (PreparedStatement ps2 = con.prepareStatement(sql2)) {
 
-			String sql2 = "UPDATE sub_topics SET is_deleted=false WHERE topic_id=?";
+					ps2.setInt(1, id);
+					ps2.executeUpdate();
+				}
 
-			PreparedStatement ps2 = con.prepareStatement(sql2);
+				con.commit();
 
-			ps2.setInt(1, id);
+			} catch (Exception e) {
 
-			ps2.executeUpdate();
+				con.rollback();
+				throw e;
+
+			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 	}
@@ -263,32 +246,26 @@ public class TopicDAO {
 
 		int id = 0;
 
-		try {
+		String sql = "INSERT INTO topics(subject_id, name) VALUES(?, ?)";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = "INSERT INTO topics(subject_id,name) VALUES(?,?)";
-
-			PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		try (Connection con = DBConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 			ps.setInt(1, subjectId);
-
 			ps.setString(2, name);
 
 			ps.executeUpdate();
 
-			ResultSet rs = ps.getGeneratedKeys();
+			try (ResultSet rs = ps.getGeneratedKeys()) {
 
-			if (rs.next()) {
-
-				id = rs.getInt(1);
+				if (rs.next()) {
+					id = rs.getInt(1);
+				}
 
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return id;
@@ -299,38 +276,33 @@ public class TopicDAO {
 
 		List<Topic> list = new ArrayList<>();
 
-		try {
+		String sql = """
+				SELECT *
+				FROM topics
+				WHERE subject_id = ?
+				AND is_deleted = false
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					    SELECT * FROM topics
-					    WHERE subject_id=?
-					    AND is_deleted=false
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, subjectId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			while (rs.next()) {
+				while (rs.next()) {
 
-				Topic t = new Topic();
+					Topic t = new Topic();
 
-				t.setId(rs.getInt("id"));
-				t.setSubjectId(rs.getInt("subject_id"));
-				t.setName(rs.getString("name"));
+					t.setId(rs.getInt("id"));
+					t.setSubjectId(rs.getInt("subject_id"));
+					t.setName(rs.getString("name"));
 
-				list.add(t);
-
+					list.add(t);
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return list;
@@ -341,39 +313,33 @@ public class TopicDAO {
 
 		List<Topic> list = new ArrayList<>();
 
-		try {
+		String sql = """
+				SELECT t.*
+				FROM topics t
+				JOIN subjects s
+					ON t.subject_id = s.id
+				JOIN roadmaps r
+					ON s.roadmap_id = r.id
+				WHERE r.user_id = ?
+				AND t.is_deleted = true
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					SELECT t.*
-					FROM topics t
-
-					JOIN subjects s
-					ON t.subject_id=s.id
-
-					JOIN roadmaps r
-					ON s.roadmap_id=r.id
-
-					WHERE r.user_id=?
-					AND t.is_deleted=true
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, userId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			while (rs.next()) {
+				while (rs.next()) {
 
-				Topic t = new Topic();
+					Topic t = new Topic();
 
-				t.setId(rs.getInt("id"));
-				t.setSubjectId(rs.getInt("subject_id"));
-				t.setName(rs.getString("name"));
+					t.setId(rs.getInt("id"));
+					t.setSubjectId(rs.getInt("subject_id"));
+					t.setName(rs.getString("name"));
 
-				list.add(t);
+					list.add(t);
+				}
 			}
 
 		} catch (Exception e) {
@@ -381,38 +347,34 @@ public class TopicDAO {
 		}
 
 		return list;
+
 	}
 
 	public Topic getTopicById(int id) {
 
 		Topic t = null;
 
-		try {
+		String sql = "SELECT * FROM topics WHERE id = ?";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = "SELECT * FROM topics WHERE id=?";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, id);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			if (rs.next()) {
+				if (rs.next()) {
 
-				t = new Topic();
+					t = new Topic();
 
-				t.setId(rs.getInt("id"));
-				t.setSubjectId(rs.getInt("subject_id"));
-				t.setName(rs.getString("name"));
+					t.setId(rs.getInt("id"));
+					t.setSubjectId(rs.getInt("subject_id"));
+					t.setName(rs.getString("name"));
 
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return t;

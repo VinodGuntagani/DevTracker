@@ -2,7 +2,6 @@ package dao;
 
 import java.sql.*;
 import java.util.*;
-import java.sql.Statement;
 
 import model.AIStudyPlan;
 import model.AIDailyTask;
@@ -17,39 +16,29 @@ public class AITimetableDAO {
 
 		int id = 0;
 
-		try {
+		String sql = """
+				INSERT INTO ai_study_plan
+				(user_id, roadmap_id, total_days)
+				VALUES (?, ?, ?)
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					INSERT INTO ai_study_plan
-					(user_id,roadmap_id,total_days)
-
-					VALUES(?,?,?)
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		try (Connection con = DBConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 			ps.setInt(1, plan.getUserId());
-
 			ps.setInt(2, plan.getRoadmapId());
-
 			ps.setInt(3, plan.getTotalDays());
 
 			ps.executeUpdate();
 
-			ResultSet rs = ps.getGeneratedKeys();
-
-			if (rs.next()) {
-
-				id = rs.getInt(1);
-
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				if (rs.next()) {
+					id = rs.getInt(1);
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return id;
@@ -58,58 +47,42 @@ public class AITimetableDAO {
 
 	public void addTask(AIDailyTask task) {
 
-		try {
+		String sql = """
+				INSERT INTO ai_daily_tasks
+				(ai_plan_id, subtopic_id, day_number, task_order)
+				VALUES (?, ?, ?, ?)
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					INSERT INTO ai_daily_tasks
-					(ai_plan_id,subtopic_id,day_number,task_order)
-
-					VALUES(?,?,?,?)
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, task.getPlanId());
-
 			ps.setInt(2, task.getSubtopicId());
-
 			ps.setInt(3, task.getDayNumber());
-
 			ps.setInt(4, task.getTaskOrder());
 
 			ps.executeUpdate();
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 	}
 
 	public void deleteExistingPlan(int roadmapId) {
 
-		try {
+		String sql = """
+				DELETE FROM ai_study_plan
+				WHERE roadmap_id = ?
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					DELETE FROM ai_study_plan
-					WHERE roadmap_id=?
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, roadmapId);
 
 			ps.executeUpdate();
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 	}
@@ -118,66 +91,45 @@ public class AITimetableDAO {
 
 		List<AIDailyTask> list = new ArrayList<>();
 
-		try {
-
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					SELECT
+		String sql = """
+				SELECT
 					adt.*,
 					st.name
-
-					FROM ai_daily_tasks adt
-
-
-					JOIN ai_study_plan asp
+				FROM ai_daily_tasks adt
+				JOIN ai_study_plan asp
 					ON adt.ai_plan_id = asp.id
-
-
-					JOIN sub_topics st
+				JOIN sub_topics st
 					ON adt.subtopic_id = st.id
-
-
-					WHERE asp.roadmap_id=?
-
-
-					ORDER BY
+				WHERE asp.roadmap_id = ?
+				ORDER BY
 					adt.day_number,
 					adt.task_order
-					""";
+				""";
 
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, roadmapId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			while (rs.next()) {
+				while (rs.next()) {
 
-				AIDailyTask task = new AIDailyTask();
+					AIDailyTask task = new AIDailyTask();
 
-				task.setId(rs.getInt("id"));
+					task.setId(rs.getInt("id"));
+					task.setPlanId(rs.getInt("ai_plan_id"));
+					task.setSubtopicId(rs.getInt("subtopic_id"));
+					task.setDayNumber(rs.getInt("day_number"));
+					task.setTaskOrder(rs.getInt("task_order"));
+					task.setCompleted(rs.getBoolean("completed"));
+					task.setSubtopicName(rs.getString("name"));
 
-				task.setPlanId(rs.getInt("ai_plan_id"));
-
-				task.setSubtopicId(rs.getInt("subtopic_id"));
-
-				task.setDayNumber(rs.getInt("day_number"));
-
-				task.setTaskOrder(rs.getInt("task_order"));
-
-				task.setCompleted(rs.getBoolean("completed"));
-
-				task.setSubtopicName(rs.getString("name"));
-
-				list.add(task);
-
+					list.add(task);
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return list;
@@ -188,39 +140,29 @@ public class AITimetableDAO {
 
 		int id = 0;
 
-		try {
+		String sql = """
+				INSERT INTO ai_study_plan
+				(user_id, roadmap_id, total_days)
+				VALUES (?, ?, ?)
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					INSERT INTO ai_study_plan
-					(user_id,roadmap_id,total_days)
-
-					VALUES(?,?,?)
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		try (Connection con = DBConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 			ps.setInt(1, userId);
-
 			ps.setInt(2, roadmapId);
-
 			ps.setInt(3, days);
 
 			ps.executeUpdate();
 
-			ResultSet rs = ps.getGeneratedKeys();
-
-			if (rs.next()) {
-
-				id = rs.getInt(1);
-
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				if (rs.next()) {
+					id = rs.getInt(1);
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return id;
@@ -229,61 +171,44 @@ public class AITimetableDAO {
 
 	public void addAITask(int aiPlanId, int subtopicId, int day, int order) {
 
-		try {
+		String sql = """
+				INSERT INTO ai_daily_tasks
+				(ai_plan_id, subtopic_id, day_number, task_order)
+				VALUES (?, ?, ?, ?)
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					INSERT INTO ai_daily_tasks
-					(ai_plan_id,subtopic_id,day_number,task_order)
-
-					VALUES(?,?,?,?)
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, aiPlanId);
-
 			ps.setInt(2, subtopicId);
-
 			ps.setInt(3, day);
-
 			ps.setInt(4, order);
 
 			ps.executeUpdate();
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 	}
 
 	public void updateCompleted(int taskId, boolean completed) {
 
-		try {
+		String sql = """
+				UPDATE ai_daily_tasks
+				SET completed = ?
+				WHERE id = ?
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					UPDATE ai_daily_tasks
-					SET completed=?
-					WHERE id=?
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setBoolean(1, completed);
-
 			ps.setInt(2, taskId);
 
 			ps.executeUpdate();
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 	}
@@ -292,47 +217,35 @@ public class AITimetableDAO {
 
 		int progress = 0;
 
-		try {
-
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					SELECT
-					COUNT(*) total,
-					SUM(completed) done
-
-					FROM ai_daily_tasks adt
-
-					JOIN ai_study_plan asp
+		String sql = """
+				SELECT
+					COUNT(*) AS total,
+					SUM(completed) AS done
+				FROM ai_daily_tasks adt
+				JOIN ai_study_plan asp
 					ON adt.ai_plan_id = asp.id
+				WHERE asp.roadmap_id = ?
+				""";
 
-					WHERE asp.roadmap_id=?
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, roadmapId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			if (rs.next()) {
+				if (rs.next()) {
 
-				int total = rs.getInt("total");
+					int total = rs.getInt("total");
+					int done = rs.getInt("done");
 
-				int done = rs.getInt("done");
-
-				if (total > 0) {
-
-					progress = (done * 100) / total;
-
+					if (total > 0) {
+						progress = (done * 100) / total;
+					}
 				}
-
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return progress;
@@ -345,124 +258,94 @@ public class AITimetableDAO {
 
 			StudyPlanDAO studyDAO = new StudyPlanDAO();
 
-			// remove old normal schedule
-
+			// Remove old normal schedule
 			studyDAO.deleteExistingPlan(roadmapId);
 
-			// create normal study plan
-
+			// Create normal study plan
 			StudyPlan plan = new StudyPlan();
 
 			plan.setUserId(userId);
-
 			plan.setRoadmapId(roadmapId);
-
 			plan.setTotalDays(days);
-
 			plan.setStartDate(new java.sql.Date(System.currentTimeMillis()));
-
 			plan.setDailyMinutes(120);
 
 			int planId = studyDAO.createPlan(plan);
 
-			Connection con = DBConnection.getConnection();
-
 			String sql = """
 					SELECT
-					adt.*,
-					st.estimated_minutes,
-					st.weight
-
+						adt.*,
+						st.estimated_minutes,
+						st.weight
 					FROM ai_daily_tasks adt
-
 					JOIN sub_topics st
-					ON adt.subtopic_id = st.id
-
-					WHERE adt.ai_plan_id=?
-
+						ON adt.subtopic_id = st.id
+					WHERE adt.ai_plan_id = ?
 					ORDER BY
-					adt.day_number,
-					adt.task_order
+						adt.day_number,
+						adt.task_order
 					""";
 
-			PreparedStatement ps = con.prepareStatement(sql);
+			try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-			ps.setInt(1, aiPlanId);
+				ps.setInt(1, aiPlanId);
 
-			ResultSet rs = ps.executeQuery();
+				try (ResultSet rs = ps.executeQuery()) {
 
-			while (rs.next()) {
+					while (rs.next()) {
 
-				DailyTask task = new DailyTask();
+						DailyTask task = new DailyTask();
 
-				task.setPlanId(planId);
+						task.setPlanId(planId);
+						task.setSubtopicId(rs.getInt("subtopic_id"));
+						task.setDayNumber(rs.getInt("day_number"));
 
-				task.setSubtopicId(rs.getInt("subtopic_id"));
+						java.time.LocalDate date = java.time.LocalDate.now().plusDays(rs.getInt("day_number") - 1);
 
-				task.setDayNumber(rs.getInt("day_number"));
-				java.time.LocalDate date = java.time.LocalDate.now().plusDays(rs.getInt("day_number") - 1);
+						task.setScheduleDate(java.sql.Date.valueOf(date));
 
-				task.setScheduleDate(java.sql.Date.valueOf(date));
+						task.setTaskOrder(rs.getInt("task_order"));
+						task.setWeight(rs.getInt("weight"));
+						task.setPlannedMinutes(rs.getInt("estimated_minutes"));
+						task.setCompleted(false);
+						task.setStatus("NOT_STARTED");
+						task.setStartTime("09:00");
+						task.setEndTime("11:00");
 
-				task.setTaskOrder(rs.getInt("task_order"));
-
-				task.setWeight(rs.getInt("weight"));
-
-				task.setPlannedMinutes(rs.getInt("estimated_minutes"));
-
-				task.setCompleted(false);
-
-				task.setStatus("NOT_STARTED");
-
-				task.setStartTime("09:00");
-
-				task.setEndTime("11:00");
-
-				studyDAO.addTask(task);
-
+						studyDAO.addTask(task);
+					}
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 	}
 
 	public boolean hasAITimetable(int roadmapId) {
 
-		try {
-
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					SELECT COUNT(*) total
-
-					FROM ai_daily_tasks adt
-
-					JOIN ai_study_plan asp
+		String sql = """
+				SELECT COUNT(*) AS total
+				FROM ai_daily_tasks adt
+				JOIN ai_study_plan asp
 					ON adt.ai_plan_id = asp.id
+				WHERE asp.roadmap_id = ?
+				""";
 
-					WHERE asp.roadmap_id=?
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, roadmapId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			if (rs.next()) {
-
-				return rs.getInt("total") > 0;
-
+				if (rs.next()) {
+					return rs.getInt("total") > 0;
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return false;
@@ -473,34 +356,27 @@ public class AITimetableDAO {
 
 		int id = 0;
 
-		try {
+		String sql = """
+				SELECT id
+				FROM ai_study_plan
+				WHERE roadmap_id = ?
+				ORDER BY id DESC
+				LIMIT 1
+				""";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = """
-					SELECT id
-					FROM ai_study_plan
-					WHERE roadmap_id=?
-					ORDER BY id DESC
-					LIMIT 1
-					""";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setInt(1, roadmapId);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			if (rs.next()) {
-
-				id = rs.getInt("id");
-
+				if (rs.next()) {
+					id = rs.getInt("id");
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return id;

@@ -24,7 +24,7 @@ public class OpenAIRoadmapServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		System.out.println("STEP 1");
 		int roadmapId = Integer.parseInt(request.getParameter("id"));
 
 		RoadmapDAO roadmapDAO = new RoadmapDAO();
@@ -36,11 +36,12 @@ public class OpenAIRoadmapServlet extends HttpServlet {
 		SubTopicDAO subDAO = new SubTopicDAO();
 
 		Roadmap roadmap = roadmapDAO.getRoadmapById(roadmapId);
+		System.out.println("STEP 2");
 
 		List<Subject> subjects = subjectDAO.getSubjectsByRoadmap(roadmapId);
-
+		System.out.println("STEP 3");
 		for (Subject s : subjects) {
-
+			System.out.println("Subject: " + s.getName());
 			int subjectProgress = topicDAO.getSubjectProgress(s.getId());
 
 			s.setProgress(subjectProgress);
@@ -48,13 +49,13 @@ public class OpenAIRoadmapServlet extends HttpServlet {
 			List<Topic> topics = topicDAO.getTopicsBySubject(s.getId());
 
 			for (Topic t : topics) {
-
+				System.out.println("Topic: " + t.getName());
 				int topicProgress = subDAO.getProgress(t.getId());
 
 				t.setProgress(topicProgress);
 
 				List<SubTopic> subs = subDAO.getSubTopicsByTopic(t.getId());
-
+				System.out.println("subTopic: " + t.getName());
 				t.setSubtopics(subs);
 
 			}
@@ -62,7 +63,7 @@ public class OpenAIRoadmapServlet extends HttpServlet {
 			s.setTopics(topics);
 
 		}
-
+		System.out.println("STEP END");
 		roadmap.setSubjects(subjects);
 
 		request.setAttribute("roadmap", roadmap);

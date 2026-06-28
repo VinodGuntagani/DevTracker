@@ -1,11 +1,16 @@
 package util;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DBConnection {
 
-	public static Connection getConnection() {
+	private static HikariDataSource dataSource;
+
+	static {
 
 		try {
 
@@ -16,7 +21,6 @@ public class DBConnection {
 			String user = System.getenv("DB_USER");
 			String pass = System.getenv("DB_PASSWORD");
 
-			// LOCAL FALLBACK
 			if (host == null || host.isEmpty()) {
 
 				System.out.println("Using LOCAL database");
@@ -36,13 +40,22 @@ public class DBConnection {
 
 			String url = "jdbc:mysql://" + host + ":" + port + "/" + db;
 
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			HikariConfig config = new HikariConfig();
 
-			Connection con = DriverManager.getConnection(url, user, pass);
+			config.setJdbcUrl(url);
+			config.setUsername(user);
+			config.setPassword(pass);
 
-			System.out.println("Database Connected");
+			config.setMaximumPoolSize(10);
+			config.setMinimumIdle(2);
 
-			return con;
+			config.setConnectionTimeout(30000);
+			config.setIdleTimeout(600000);
+			config.setMaxLifetime(1800000);
+
+			dataSource = new HikariDataSource(config);
+
+			System.out.println("HikariCP Pool Initialized");
 
 		} catch (Exception e) {
 
@@ -50,6 +63,12 @@ public class DBConnection {
 
 		}
 
-		return null;
 	}
+
+	public static Connection getConnection() throws SQLException {
+
+		return dataSource.getConnection();
+
+	}
+
 }

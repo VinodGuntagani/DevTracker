@@ -26,6 +26,7 @@ if (user == null) {
 <link rel="stylesheet" href="css/create-roadmap.css">
 <link rel="stylesheet" href="css/loading.css">
 <link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="css/auth.css">
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 	<style>

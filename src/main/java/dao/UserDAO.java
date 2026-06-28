@@ -11,71 +11,50 @@ public class UserDAO {
 
 	public boolean register(User user) {
 
-		boolean status = false;
+		String sql = "INSERT INTO users(name, email, password) VALUES(?, ?, ?)";
 
-		try {
-
-			Connection con = DBConnection.getConnection();
-
-			String sql = "INSERT INTO users(name,email,password) VALUES(?,?,?)";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setString(1, user.getName());
 			ps.setString(2, user.getEmail());
 			ps.setString(3, user.getPassword());
 
-			int rows = ps.executeUpdate();
-
-			if (rows > 0) {
-				status = true;
-			}
+			return ps.executeUpdate() > 0;
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
-		return status;
+		return false;
 	}
 
 	public User login(String email, String password) {
 
 		User user = null;
 
-		try {
+		String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
 
-			Connection con = DBConnection.getConnection();
-
-			String sql = "SELECT * FROM users WHERE email=? AND password=?";
-
-			PreparedStatement ps = con.prepareStatement(sql);
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setString(1, email);
 			ps.setString(2, password);
 
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
 
-			if (rs.next()) {
+				if (rs.next()) {
 
-				user = new User();
+					user = new User();
 
-				user.setId(rs.getInt("id"));
-
-				user.setName(rs.getString("name"));
-
-				user.setEmail(rs.getString("email"));
-
+					user.setId(rs.getInt("id"));
+					user.setName(rs.getString("name"));
+					user.setEmail(rs.getString("email"));
+				}
 			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 
 		return user;
 	}
-
 }

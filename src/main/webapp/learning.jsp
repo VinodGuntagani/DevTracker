@@ -54,29 +54,25 @@ try {
 <link rel="stylesheet" href="css/loading.css">
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<style>.more-videos-card{
-    margin-top:32px;
-    padding:28px;
-    text-align:center;
-
-    border:1px dashed var(--border);
-    border-radius:18px;
-
-    background:linear-gradient(
-        135deg,
-        #fafafa,
-        #ffffff
-    );
+<style>
+.more-videos-card {
+	margin-top: 32px;
+	padding: 28px;
+	text-align: center;
+	border: 1px dashed var(--border);
+	border-radius: 18px;
+	background: linear-gradient(135deg, #fafafa, #ffffff);
 }
 
-.more-videos-card h3{
-    margin-bottom:8px;
+.more-videos-card h3 {
+	margin-bottom: 8px;
 }
 
-.more-videos-card .btn{
-    margin-top:18px;
-    display:inline-flex;
-}</style>
+.more-videos-card .btn {
+	margin-top: 18px;
+	display: inline-flex;
+}
+</style>
 </head>
 
 <body>
@@ -189,9 +185,9 @@ try {
 					</span> <span class="btn-label">Adjust Display</span>
 				</button>
 
-				<button class="btn" onclick="history.back()">
-					<i class="ti ti-arrow-left"></i> Back
-				</button>
+				<a class="btn btn-sm" href="openAIRoadmap?id=<%=roadmapId%>"> <i
+					class="ti ti-arrow-left"></i> Back
+				</a>
 
 			</div>
 
@@ -416,10 +412,10 @@ function toggleLesson(id, completed, btn) {
   applyMode(savedIndex >= 0 ? savedIndex : 1, false);  // default: Comfortable
 })();
 </script>
-<script src="js/loading.js"></script>
-<div id="loadingContainer"></div>
+	<script src="js/loading.js"></script>
+	<div id="loadingContainer"></div>
 
-<script>
+	<script>
 window.addEventListener("DOMContentLoaded", async () => {
 
     const res = await fetch("includes/loading.html");
