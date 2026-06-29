@@ -894,70 +894,184 @@ body:not(.customize-mode) .customize-hint{ display:block; }
 }
 
 /* ---------- responsive ---------- */
-@media (max-width: 760px){
-  .syllabus-hero{ padding:20px 18px; }
-  .hero-title{ font-size:21px; }
-  .subject-header{ flex-wrap:wrap; padding:14px 16px; }
-  .subject-meta{ width:100%; justify-content:space-between; order:3; }
-  .mini-progress{ width:80px; }
-  .syllabus-toolbar{ flex-direction:column; align-items:flex-start; }
+@media (max-width: 760px) {
+  .syllabus-hero { padding: 20px 18px; }
+  .hero-title { font-size: 21px; }
+  .subject-header { flex-wrap: wrap; padding: 14px 16px; }
+  .subject-meta { width: 100%; justify-content: space-between; order: 3; }
+  .mini-progress { width: 80px; }
+  .syllabus-toolbar { flex-direction: column; align-items: flex-start; }
 
-  .topic-header{ flex-wrap:wrap; position:relative; padding-right:24px; }
-  .topic-name{ flex:1 1 100%; order:1; }
-  .topic-progress-box{
-    order:2;
-    flex:1 1 100%;
-    justify-content:flex-end;
-    margin-top:6px;
-    padding-left:18px;
+  /* ── Topic header: dot + name on same line, progress bar below ── */
+  .topic-header {
+    flex-wrap: wrap;
+    align-items: center;
+    position: relative;
+    padding-right: 24px;
+    row-gap: 4px;
   }
-  .topic-chevron{ order:3; position:absolute; right:0; top:2px; }
-  .topic-progress-box .mini-progress{ width:auto; flex:1; max-width:140px; }
 
-  .subtopic-row{ flex-wrap:wrap; }
-  .lesson-title{ flex:1 1 100%; }
-  .subtopic-right{ flex:1 1 100%; justify-content:flex-end; margin-top:4px; }
+  /* Dot stays on line 1, aligned with name */
+  .topic-dot {
+    order: 1;
+    flex-shrink: 0;
+    margin-top: 0;
+    align-self: center;
+  }
 
-  /* hide the count-pills ("N topics · M Lessons" / "X/Y lessons completed") on mobile — keep % and bar only */
+  /* Edit pencil btn right after dot */
+  .topic-header > .inline-edit-btn {
+    order: 2;
+  }
+
+  /* Name fills rest of line 1 */
+  .topic-name {
+    order: 3;
+    flex: 1 1 0;        /* ← key fix: NOT 100%, so it stays on same line as dot */
+    white-space: normal;
+    word-break: break-word;
+    min-width: 0;
+  }
+
+  /* Progress box wraps to line 2, aligned left under the name */
+  .topic-progress-box {
+    order: 4;
+    flex: 1 1 100%;         /* full width = forces new line */
+    justify-content: flex-start;  /* ← left-aligned */
+    margin-top: 2px;
+    padding-left: 18px;     /* indent past the dot */
+  }
+
+  /* Chevron pinned top-right */
+  .topic-chevron {
+    order: 5;
+    position: absolute;
+    right: 0;
+    top: 4px;
+  }
+
+  .topic-progress-box .mini-progress {
+    width: 100px;
+    flex: none;
+  }
+
+  /* ── Lesson rows: show full title, hide time pill ── */
+  .subtopic-row { flex-wrap: wrap; }
+
+  .lesson-title {
+    flex: 1 1 100%;
+    flex-wrap: nowrap;      /* keep check-btn + link on same line */
+    align-items: center;
+  }
+
+  /* Fix: allow link to wrap instead of truncating */
+  .lesson-link {
+    white-space: normal;    /* ← key fix: was nowrap */
+    word-break: break-word;
+    overflow: visible;
+    text-overflow: unset;
+    flex: 1;
+  }
+
+  /* Hide the duplicate pencil inside lesson-title on mobile */
+  .lesson-title > .inline-edit-btn { display: none; }
+
+  /* Hide time pill entirely on mobile */
+  .subtopic-right { display: none; }
+
+  /* ── Hide count pills, keep % + bar ── */
   .subject-progress-box .count-pill,
-  .topic-progress-box .count-pill{
-    display:none;
-  }
+  .topic-progress-box .count-pill { display: none; }
 
-  /* hero stat grid becomes a tap-to-reveal panel on mobile to save vertical space */
-  .hero-stats-toggle{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    width:100%;
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--r-sm);
-    padding:9px 13px;
-    font-family:var(--font-mono);
-    font-size:11.5px;
-    font-weight:600;
-    color:var(--mute);
-    cursor:pointer;
-    position:relative;
-    z-index:1;
+  /* ── Hero stats: tap-to-reveal ── */
+  .hero-stats-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 9px 13px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--mute);
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
   }
-  .hero-stats-toggle i{ margin-left:auto; transition:transform .2s ease; font-size:12px; }
-  .syllabus-hero.stats-open .hero-stats-toggle i{ transform:rotate(180deg); }
+  .hero-stats-toggle i { margin-left: auto; transition: transform .2s ease; font-size: 12px; }
+  .syllabus-hero.stats-open .hero-stats-toggle i { transform: rotate(180deg); }
 
-  .hero-stats{
-    max-height:0;
-    overflow:hidden;
-    gap:16px;
-    margin-top:0;
-    padding-top:0;
-    border-top:none;
-    transition:max-height .25s ease, margin-top .25s ease, padding-top .25s ease;
+  .hero-stats {
+    max-height: 0;
+    overflow: hidden;
+    gap: 16px;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    transition: max-height .25s ease, margin-top .25s ease, padding-top .25s ease;
   }
-  .syllabus-hero.stats-open .hero-stats{
-    max-height:240px;
-    margin-top:14px;
-    padding-top:14px;
-    border-top:1px solid var(--border);
+  .syllabus-hero.stats-open .hero-stats {
+    max-height: 240px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
   }
+}
+/* ── Floating expand/collapse pill ── */
+.fab-expand {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 80;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    border-radius: 999px;
+    padding: 11px 18px 11px 14px;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(20, 18, 14, 0.22);
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.15s ease;
+}
+
+.fab-expand i {
+    font-size: 16px;
+    transition: transform 0.25s ease;
+}
+
+.fab-expand:hover {
+    background: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(184, 116, 31, 0.35);
+}
+
+.fab-expand:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 10px rgba(20, 18, 14, 0.18);
+}
+
+/* Rotate icon when collapsed */
+.fab-expand.collapsed i {
+    transform: rotate(180deg);
+}
+
+/* On mobile, sit above the bottom nav bar */
+@media (max-width: 900px) {
+    .fab-expand {
+        bottom: 80px;
+        right: 16px;
+        padding: 10px 16px 10px 12px;
+        font-size: 12px;
+    }
 }

@@ -200,12 +200,7 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 					</button>
 
 
-					<button class="btn btn-sm" onclick="expandAll()">
-						<i class="ti ti-chevrons-down"></i> Expand all
-					</button>
-					<button class="btn btn-sm" onclick="collapseAll()">
-						<i class="ti ti-chevrons-up"></i> Collapse all
-					</button>
+					
 					<button class="btn btn-sm" id="customizeBtn"
 						onclick="toggleCustomize()">
 						<i class="ti ti-pencil"></i> Customize
@@ -630,6 +625,10 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 			Customize Mode </a> to add, edit, or remove subjects, topics and lessons.
 
 	</div>
+	<button class="fab-expand" id="expandToggleBtn" onclick="toggleExpandAll()">
+    <i class="ti ti-chevrons-up"></i>
+    <span>Collapse all</span>
+</button>
 	</main>
 	</div>
 	<%-- /layout --%>
@@ -675,6 +674,21 @@ function expandAll() {
 function collapseAll() {
     document.querySelectorAll('.subject-block').forEach(el => el.classList.remove('open'));
     document.querySelectorAll('.topic-section').forEach(el => el.classList.remove('open'));
+}
+
+let allExpanded = true;
+function toggleExpandAll() {
+    const btn = document.getElementById('expandToggleBtn');
+    if (allExpanded) {
+        collapseAll();
+        btn.querySelector('span').textContent = 'Expand all';
+        btn.classList.add('collapsed');
+    } else {
+        expandAll();
+        btn.querySelector('span').textContent = 'Collapse all';
+        btn.classList.remove('collapsed');
+    }
+    allExpanded = !allExpanded;
 }
 
 /* ── Subject inline edit ── */
@@ -733,8 +747,8 @@ function cancelSubtopicEdit(id) {
 }
 
 /* Open first subject by default */
-var first = document.querySelector('.subject-block');
-if (first) first.classList.add('open');
+/* Expand everything by default */
+expandAll();
 function showAddSub(id){
 
 	document.getElementById("addSubBtn-" + id)
@@ -1007,10 +1021,10 @@ function toggleLesson(
 
 	}
 </script>
-<script src="js/loading.js"></script>
-<div id="loadingContainer"></div>
+	<script src="js/loading.js"></script>
+	<div id="loadingContainer"></div>
 
-<script>
+	<script>
 window.addEventListener("DOMContentLoaded", async () => {
 
     const res = await fetch("includes/loading.html");
