@@ -253,12 +253,7 @@ if (tasks.size() > 0) {
 						onclick="location.href='openAIRoadmap?id=<%=roadmapId%>'">
 						<i class="ti ti-books"></i> Syllabus
 					</button>
-					<button class="btn btn-sm" onclick="expandAllDays()">
-						<i class="ti ti-chevrons-down"></i> Expand all
-					</button>
-					<button class="btn btn-sm" onclick="collapseAllDays()">
-						<i class="ti ti-chevrons-up"></i> Collapse all
-					</button>
+					
 					<a class="btn btn-sm" href="dashboard.jsp"> <i
 						class="ti ti-arrow-left"></i> Back
 					</a>
@@ -384,7 +379,10 @@ if (tasks.size() > 0) {
 	<div class="ai-actions" style="margin: 24px 0 40px">
 		<button class="btn ai-btn">✨ Optimize Schedule with AI</button>
 	</div>
-
+<button class="fab-expand" id="expandToggleBtnDays" onclick="toggleExpandAllDays()">
+		<i class="ti ti-chevrons-up"></i>
+		<span>Collapse all</span>
+	</button>
 	</main>
 
 	</div>
@@ -507,10 +505,25 @@ keyframes spin {to { transform:rotate(360deg);
 			document.getElementById(id).classList.toggle('open');
 		}
 		function expandAllDays() {
-			document.querySelectorAll('.subject-block').forEach(el => el.classList.add('open'));
+		    document.querySelectorAll('.subject-block').forEach(el => el.classList.add('open'));
 		}
 		function collapseAllDays() {
-			document.querySelectorAll('.subject-block').forEach(el => el.classList.remove('open'));
+		    document.querySelectorAll('.subject-block').forEach(el => el.classList.remove('open'));
+		}
+
+		let allDaysExpanded = true;
+		function toggleExpandAllDays() {
+		    const btn = document.getElementById('expandToggleBtnDays');
+		    if (allDaysExpanded) {
+		        collapseAllDays();
+		        btn.querySelector('span').textContent = 'Expand all';
+		        btn.classList.add('collapsed');
+		    } else {
+		        expandAllDays();
+		        btn.querySelector('span').textContent = 'Collapse all';
+		        btn.classList.remove('collapsed');
+		    }
+		    allDaysExpanded = !allDaysExpanded;
 		}
 
 		/* ── Shared progress helpers ── */

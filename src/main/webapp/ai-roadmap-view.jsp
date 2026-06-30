@@ -200,7 +200,7 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 					</button>
 
 
-					
+
 					<button class="btn btn-sm" id="customizeBtn"
 						onclick="toggleCustomize()">
 						<i class="ti ti-pencil"></i> Customize
@@ -404,7 +404,12 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 							%>
 
 							<%-- Read row --%>
-							<div class="subtopic-row" id="<%=stRowId%>">
+							<%
+							boolean isFirstLessonEver = (si == 1 && ti == 1 && sub == topic.getSubtopics().get(0));
+							%>
+							<div
+								class="subtopic-row<%=isFirstLessonEver ? " tutorial-target" : ""%>"
+								id="<%=stRowId%>">
 								<button class="inline-edit-btn" title="Edit subtopic"
 									onclick="enableSubtopicEdit(<%=sub.getId()%>)">
 									<i class="ti ti-pencil"></i>
@@ -447,19 +452,20 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 
 
 									<!-- open learning -->
+									<!-- open learning -->
 									<a class="lesson-link"
 										href="generateLearning?subtopicId=<%=sub.getId()%>&roadmapId=<%=roadmap.getId()%>">
 										<%=sub.getName()%>
+									</a> <a class="task-learn-btn"
+										href="generateLearning?subtopicId=<%=sub.getId()%>&roadmapId=<%=roadmap.getId()%>">
+										<i class="ti ti-book-2"></i> <span>Learn</span>
 									</a>
-
-
 									<button class="inline-edit-btn" title="Edit lesson"
 										onclick="enableSubtopicEdit(<%=sub.getId()%>)">
 
 										<i class="ti ti-pencil"></i>
 
 									</button>
-
 
 								</div>
 								<div class="subtopic-right">
@@ -625,10 +631,10 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 			Customize Mode </a> to add, edit, or remove subjects, topics and lessons.
 
 	</div>
-	<button class="fab-expand" id="expandToggleBtn" onclick="toggleExpandAll()">
-    <i class="ti ti-chevrons-up"></i>
-    <span>Collapse all</span>
-</button>
+	<button class="fab-expand" id="expandToggleBtn"
+		onclick="toggleExpandAll()">
+		<i class="ti ti-chevrons-up"></i> <span>Collapse all</span>
+	</button>
 	</main>
 	</div>
 	<%-- /layout --%>
