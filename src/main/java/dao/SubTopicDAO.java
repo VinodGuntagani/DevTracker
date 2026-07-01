@@ -493,8 +493,20 @@ public class SubTopicDAO {
 
 				if (rs.next()) {
 
-					context = rs.getString("roadmap") + " " + rs.getString("subject") + " " + rs.getString("topic")
-							+ " " + rs.getString("subtopic");
+					context = """
+							Roadmap:
+							%s
+
+							Subject:
+							%s
+
+							Topic:
+							%s
+
+							Subtopic:
+							%s
+							""".formatted(rs.getString("roadmap"), rs.getString("subject"), rs.getString("topic"),
+							rs.getString("subtopic"));
 				}
 			}
 
