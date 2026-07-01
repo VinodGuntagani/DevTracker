@@ -49,6 +49,8 @@ public class GenerateLearningServlet extends HttpServlet {
 					subDAO.updateAILearning(subtopicId, learning);
 
 					sub.setAiLearning(learning);
+					
+			
 
 				}
 
@@ -73,6 +75,7 @@ public class GenerateLearningServlet extends HttpServlet {
 					sub.setAiKeywords(keywords);
 
 				}
+
 
 			}
 

@@ -9,12 +9,21 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import model.AIScheduleResponse;
 import model.AIRoadmapResponse;
-
+import model.AIRequest;
+import model.AIResponse;
+import service.ai.AIService;
+import service.ai.GeminiClient;
+import service.prompt.LearningPromptBuilder;
 import model.AIAnalysis;
 
 public class GeminiService {
 
-	private static final String API_KEY = System.getenv("GEMINI_API_KEY");
+    private static final String API_KEY = System.getenv("GEMINI_API_KEY");
+
+    private final AIService aiService = new AIService();
+
+    private final LearningPromptBuilder learningPromptBuilder = new LearningPromptBuilder();
+	private final GeminiClient geminiClient = new GeminiClient();
 
 	public String testGemini() {
 
@@ -244,7 +253,7 @@ public class GeminiService {
 					+ API_KEY;
 
 			String prompt = """
-					You are an expert software career mentor and study planner.
+					You are an expert  career mentor and study planner.
 
 					Create a complete realistic learning roadmap.
 
@@ -730,7 +739,7 @@ public class GeminiService {
 			HttpClient client = HttpClient.newHttpClient();
 
 			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
+			System.out.println(response.body());
 			JsonObject root = JsonParser.parseString(response.body()).getAsJsonObject();
 
 			if (root.has("error")) {
@@ -761,400 +770,33 @@ public class GeminiService {
 
 	public String generateLearning(String topicName) {
 
-		try {
+	    try {
 
-			String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key="
-					+ API_KEY;
-			String prompt = """
-										You are an expert teacher creating a beautiful lesson page for DevTracker.
+	        String prompt = learningPromptBuilder.build(topicName);
 
-										DevTracker supports ANY learning topic:
-										- Programming
-										- Computer Science
-										- Mathematics
-										- Science
-										- Engineering
-										- School/College subjects
-										- Languages
-										- Business
-										- General skills
+	        AIRequest request = new AIRequest();
 
+	        request.setPrompt(prompt);
+	        request.setPreferredModel("gemini-2.5-flash");
 
-										========================
-										OUTPUT RULES
-										========================
+	        AIResponse response = aiService.generate(request);
 
-										Return ONLY an HTML fragment.
+	        if (!response.isSuccess()) {
 
-										Do NOT include:
-										<html>
-										<head>
-										<body>
-										<script>
-										markdown ``` blocks
+	            System.out.println(response.getErrorMessage());
 
+	            return null;
+	        }
 
-										You are creating the INSIDE content only.
+	        return response.getResponse();
 
+	    } catch (Exception e) {
 
-										========================
-										DESIGN RULES
-										========================
+	        e.printStackTrace();
 
-										Create a modern beautiful learning page.
+	    }
 
-										Style inspiration:
-										- Notion
-										- Coursera
-										- Modern documentation
-
-										You MAY use:
-										<div>
-										<section>
-										inline CSS
-
-										Create:
-										- clean cards
-										- highlighted notes
-										- important boxes
-										- examples boxes
-										- summaries
-
-										Use:
-										- border-radius
-										- padding
-										- soft backgrounds
-										- spacing
-
-
-										IMPORTANT RESPONSIVE RULES:
-
-										Must work on mobile.
-
-										Never use:
-										- fixed width like 800px
-										- huge tables without scrolling
-
-
-										Use:
-
-										max-width:100%;
-										box-sizing:border-box;
-
-
-										Tables must be wrapped:
-
-										<div style="overflow-x:auto">
-
-										<table>
-										...
-										</table>
-
-										</div>
-
-
-										Code blocks must use:
-
-										<pre style="
-										max-width:100%;
-										overflow-x:auto;
-										white-space:pre-wrap;
-										"><code>
-
-
-										========================
-										SUBJECT DETECTION
-										========================
-
-										First understand what type of lesson it is.
-
-
-										If Programming / Technology:
-
-										Include when useful:
-										- concept explanation
-										- architecture
-										- syntax
-										- code examples
-										- best practices
-										- debugging tips
-										- small practice projects
-										- interview questions
-
-
-										If Mathematics:
-
-										Include when useful:
-										- intuition
-										- formulas
-										- derivation
-										- step-by-step solving
-										- solved examples
-										- practice problems
-										- shortcuts
-
-
-										If Science:
-
-										Include when useful:
-										- concepts
-										- laws
-										- processes
-										- diagrams
-										- experiments
-										- applications
-
-
-										If Theory Subjects:
-
-										Include when useful:
-										- definitions
-										- explanations
-										- examples
-										- comparisons
-										- memory techniques
-
-
-										Do NOT force programming content into non-programming lessons.
-
-
-										========================
-										CODE RULES
-										========================
-
-										All programming code MUST be inside:
-
-										<pre><code>
-
-										code here
-
-										</code></pre>
-
-
-										Escape HTML characters:
-
-										< becomes &lt;
-
-										> becomes &gt;
-
-
-										Example:
-
-										Wrong:
-
-										class Box<T>
-
-
-										Correct:
-
-										class Box&lt;T&gt;
-
-
-										========================
-										MATH SUPPORT
-										========================
-
-										Use HTML compatible formulas.
-
-										Allowed:
-
-										<sup>
-										<sub>
-
-										Examples:
-
-										x<sup>2</sup>
-
-										H<sub>2</sub>O
-
-
-										Use symbols:
-
-										→
-										←
-										≥
-										≤
-										×
-										÷
-										π
-										√
-
-
-										========================
-										DIAGRAM SUPPORT
-										========================
-
-										Create diagrams whenever they improve understanding.
-
-										Use:
-
-										<pre>
-
-										Input
-										 |
-										 v
-										Process
-										 |
-										 v
-										Output
-
-										</pre>
-
-
-										========================
-										LESSON STRUCTURE
-										========================
-
-
-										Create the best structure depending on the topic.
-
-										Possible sections:
-
-
-										📘 Introduction
-
-										Explain simply.
-
-
-										💡 Why Learn This?
-
-										Real life importance.
-
-
-										🧠 Core Concepts
-
-										Main explanation.
-
-
-										👀 Visual Explanation
-
-										Diagram/table/process if helpful.
-
-
-										🧮 Formulas / Rules
-
-										Only when relevant.
-
-
-										💻 Examples
-
-										Programming:
-										code examples.
-
-										Math:
-										solved problems.
-
-										Other:
-										real examples.
-
-
-										⚠️ Common Mistakes
-
-										Beginner mistakes.
-
-
-										📝 Practice
-
-										Easy
-
-										Medium
-
-										Hard
-
-
-										🎯 Exam / Interview Preparation
-
-										Only if useful.
-
-
-										⚡ Quick Revision
-
-										Short notes for revision.
-
-
-
-										Teaching style:
-
-										- Act like a personal mentor
-										- Beginner friendly
-										- Detailed but not boring
-										- Practical examples
-										- Make hard topics simple
-
-
-										========================
-					LEARNING CONTEXT
-					========================
-
-					The following information provides context about where this lesson belongs.
-
-					Roadmap → Overall learning path
-					Subject → Broad category
-					Topic → Parent concept
-					Subtopic → Exact concept to teach
-
-					IMPORTANT:
-					- Teach ONLY the selected Subtopic.
-					- Do NOT explain the entire Topic unless it is necessary to understand the Subtopic.
-					- Do NOT explain the whole Subject.
-					- Do NOT explain the entire Roadmap.
-					- If prerequisite concepts are required, briefly explain them and then return to the Subtopic.
-					- The Roadmap, Subject and Topic are provided ONLY as context.
-
-					Learning Context:
-
-					""" + topicName;
-			Gson gson = new Gson();
-
-			JsonObject textPart = new JsonObject();
-
-			textPart.addProperty("text", prompt);
-
-			JsonObject content = new JsonObject();
-
-			content.add("parts", gson.toJsonTree(new JsonObject[] { textPart }));
-
-			JsonObject requestJson = new JsonObject();
-
-			requestJson.add("contents", gson.toJsonTree(new JsonObject[] { content }));
-
-			HttpRequest request = HttpRequest.newBuilder()
-
-					.uri(URI.create(url))
-
-					.header("Content-Type", "application/json")
-
-					.POST(HttpRequest.BodyPublishers.ofString(requestJson.toString()))
-
-					.build();
-
-			HttpClient client = HttpClient.newHttpClient();
-
-			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-			JsonObject root = JsonParser.parseString(response.body()).getAsJsonObject();
-
-			if (root.has("error")) {
-
-				return null;
-
-			}
-
-			return root.getAsJsonArray("candidates").get(0).getAsJsonObject()
-
-					.getAsJsonObject("content")
-
-					.getAsJsonArray("parts").get(0).getAsJsonObject()
-
-					.get("text").getAsString();
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-
-		return null;
+	    return null;
 
 	}
 

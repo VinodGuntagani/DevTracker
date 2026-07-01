@@ -470,20 +470,21 @@ public class SubTopicDAO {
 		String context = "";
 
 		String sql = """
-				SELECT
-					r.title AS roadmap,
-					s.name AS subject,
-					t.name AS topic,
-					st.name AS subtopic
+					SELECT
+				    r.title AS roadmap,
+				    r.description AS roadmap_description,
+				    s.name AS subject,
+				    t.name AS topic,
+				    st.name AS subtopic
 				FROM sub_topics st
 				JOIN topics t
-					ON st.topic_id = t.id
+				    ON st.topic_id = t.id
 				JOIN subjects s
-					ON t.subject_id = s.id
+				    ON t.subject_id = s.id
 				JOIN roadmaps r
-					ON s.roadmap_id = r.id
-				WHERE st.id = ?
-				""";
+				    ON s.roadmap_id = r.id
+				WHERE st.id = ?;
+												""";
 
 		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -494,7 +495,12 @@ public class SubTopicDAO {
 				if (rs.next()) {
 
 					context = """
+							LEARNING CONTEXT
+
 							Roadmap:
+							%s
+
+							Roadmap Goal:
 							%s
 
 							Subject:
@@ -503,10 +509,10 @@ public class SubTopicDAO {
 							Topic:
 							%s
 
-							Subtopic:
+							Target Subtopic:
 							%s
-							""".formatted(rs.getString("roadmap"), rs.getString("subject"), rs.getString("topic"),
-							rs.getString("subtopic"));
+							""".formatted(rs.getString("roadmap"), rs.getString("roadmap_description"),
+							rs.getString("subject"), rs.getString("topic"), rs.getString("subtopic"));
 				}
 			}
 
