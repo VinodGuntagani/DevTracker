@@ -49,29 +49,53 @@ public class GeminiClient implements AIProvider {
 
 			if (root.has("error")) {
 
-				String error = root.getAsJsonObject("error").get("message").getAsString();
+			    String error = root.getAsJsonObject("error")
+			            .get("message")
+			            .getAsString();
 
-				aiResponse.setSuccess(false);
-				aiResponse.setErrorMessage(error);
+			    int statusCode = httpResponse.statusCode();
 
-				String lower = error.toLowerCase();
+			    aiResponse.setSuccess(false);
+			    aiResponse.setErrorMessage(error);
 
-				if (lower.contains("quota") || lower.contains("rate") || lower.contains("429")
-						|| lower.contains("resource exhausted") || lower.contains("temporarily")) {
+			    boolean retryable = false;
 
-					aiResponse.setRetryable(true);
+			    // Retryable HTTP status codes
+			    if (statusCode == 429 ||
+			        statusCode == 500 ||
+			        statusCode == 502 ||
+			        statusCode == 503 ||
+			        statusCode == 504) {
 
-				} else {
+			        retryable = true;
+			    }
 
-					aiResponse.setRetryable(false);
+			    // Fallback to message matching
+			    String lower = error.toLowerCase();
 
-				}
+			    if (lower.contains("quota")
+			            || lower.contains("rate")
+			            || lower.contains("429")
+			            || lower.contains("resource exhausted")
+			            || lower.contains("temporarily")
+			            || lower.contains("temporary")
+			            || lower.contains("high demand")
+			            || lower.contains("try again")
+			            || lower.contains("unavailable")
+			            || lower.contains("overloaded")) {
 
-				return aiResponse;
+			        retryable = true;
+			    }
+
+			    aiResponse.setRetryable(retryable);
+
+			    return aiResponse;
 			}
 
 			String text = root.getAsJsonArray("candidates").get(0).getAsJsonObject().getAsJsonObject("content")
 					.getAsJsonArray("parts").get(0).getAsJsonObject().get("text").getAsString();
+
+			text = text.replace("```json", "").replace("```", "").trim();
 
 			aiResponse.setSuccess(true);
 			aiResponse.setResponse(text);

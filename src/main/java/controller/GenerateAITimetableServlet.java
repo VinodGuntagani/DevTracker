@@ -19,7 +19,9 @@ public class GenerateAITimetableServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		System.out.println("\n========================================");
+		System.out.println("🌐 /generateAITimetable HIT");
+		System.out.println("========================================");
 		HttpSession session = request.getSession();
 
 		User user = (User) session.getAttribute("user");
