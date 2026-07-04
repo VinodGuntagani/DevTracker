@@ -60,24 +60,7 @@ public class GenerateLearningServlet extends HttpServlet {
 			// AI SEARCH KEYWORDS CACHE
 			// =========================
 
-			if (sub.getAiKeywords() == null || sub.getAiKeywords().trim().isEmpty()) {
-
-				String context = subDAO.getLearningContext(subtopicId);
-
-				String keywords = gemini.generateSearchKeywords(context);
-
-				if (keywords != null) {
-
-					keywords = keywords.replace("```json", "").replace("```", "").trim();
-
-					subDAO.updateAIKeywords(subtopicId, keywords);
-
-					sub.setAiKeywords(keywords);
-
-				}
-
-
-			}
+		
 
 			// =========================
 			// YOUTUBE CACHE
@@ -89,7 +72,7 @@ public class GenerateLearningServlet extends HttpServlet {
 
 				YouTubeService yt = new YouTubeService();
 
-				String query = "";
+				String query = sub.getName() ;
 
 				if (sub.getAiKeywords() != null && !sub.getAiKeywords().isBlank()) {
 
@@ -99,7 +82,7 @@ public class GenerateLearningServlet extends HttpServlet {
 
 				} else {
 
-					query = sub.getName() + " tutorial beginner";
+					query = sub.getName();
 
 				}
 

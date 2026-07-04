@@ -267,25 +267,7 @@ try {
 						</a>
 
 					</div>
-					<div class="stats-card">
-						<h2>🔍 Didn't find what you need?</h2>
-
-						<p class="muted-text">Try these searches</p>
-
-						<div id="keywordBox" class="keyword-box"></div>
-
-						<br>
-
-						<form action="searchVideos" method="get">
-							<input type="hidden" name="subtopicId" value="<%=sub.getId()%>">
-
-							<input type="text" name="query"
-								placeholder="Search videos (topic, language, teacher, exam...)"
-								required>
-
-							<button class="btn">Search</button>
-						</form>
-					</div>
+					
 
 				</div>
 			</div>
