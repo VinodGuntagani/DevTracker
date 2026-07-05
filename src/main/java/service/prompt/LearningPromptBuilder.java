@@ -48,11 +48,13 @@ public class LearningPromptBuilder {
 									- Coursera
 									- Modern documentation
 
+									when using color for text dont use light colors which gets blended with the background 
+									
 									You MAY use:
 									<div>
 									<section>
 									inline CSS
-
+									
 									Create:
 									- clean cards
 									- highlighted notes

