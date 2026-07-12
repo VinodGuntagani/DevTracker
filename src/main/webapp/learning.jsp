@@ -4,6 +4,8 @@
 <%@ page import="model.LearningResource"%>
 <%@ page import="java.util.List"%>
 <%@ page import="com.google.gson.Gson"%>
+<%@ page import="model.User"%>
+<%User user = (User) session.getAttribute("user"); %>
 
 <%
 SubTopic sub = (SubTopic) request.getAttribute("subtopic");
@@ -133,7 +135,7 @@ try {
 						<i class="ti ti-user" style="font-size: 15px"></i>
 					</div>
 					<div class="user-info">
-						<div class="user-name">My Account</div>
+						<div class="user-name"><%=user.getName()%></div>
 						<div class="user-plan">Free plan</div>
 					</div>
 					<a href="logout" class="logout-btn" title="Logout"> <i

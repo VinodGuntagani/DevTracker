@@ -13,6 +13,8 @@
 <%@ page import="java.time.temporal.ChronoUnit"%>
 <%@ page import="dao.AITimetableDAO"%>
 <%@ page import="java.sql.Date"%>
+<%@ page import="model.User"%>
+<%User user = (User) session.getAttribute("user"); %>
 
 
 
@@ -26,8 +28,7 @@ List<DailyTask> tasks = dao.getTasks(roadmapId);
 //no main schedule exists
 if (tasks.size() == 0) {
 
-	User user = (User) session.getAttribute("user");
-
+	
 	if (user != null) {
 
 		AITimetableDAO aiDAO = new AITimetableDAO();
@@ -192,7 +193,7 @@ if (tasks.size() > 0) {
 						<i class="ti ti-user" style="font-size: 15px"></i>
 					</div>
 					<div class="user-info">
-						<div class="user-name">My Account</div>
+						<div class="user-name"><%=user.getName()%></div>
 						<div class="user-plan">Free plan</div>
 					</div>
 					<a href="logout" class="logout-btn" title="Logout"> <i

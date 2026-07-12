@@ -2,6 +2,8 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="model.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="model.User"%>
+<%User user = (User) session.getAttribute("user"); %>
 
 <%
 Roadmap roadmap = (Roadmap) request.getAttribute("roadmap");
@@ -84,7 +86,7 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 						<i class="ti ti-user" style="font-size: 15px"></i>
 					</div>
 					<div class="user-info">
-						<div class="user-name">My Account</div>
+						<div class="user-name"><%=user.getName()%></div>
 						<div class="user-plan">Free plan</div>
 					</div>
 					<a href="logout" class="logout-btn" title="Logout"><i

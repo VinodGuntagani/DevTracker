@@ -8,10 +8,6 @@
 
 <%
 User user = (User) session.getAttribute("user");
-if (user == null) {
-	response.sendRedirect("login.html");
-	return;
-}
 
 RoadmapDAO dao = new RoadmapDAO();
 List<Roadmap> roadmaps = dao.getRoadmaps(user.getId());
