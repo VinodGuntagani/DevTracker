@@ -28,16 +28,15 @@ public class UserDAO {
 		return false;
 	}
 
-	public User login(String email, String password) {
+	public User getUserByEmail(String email) {
 
 		User user = null;
 
-		String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+		String sql = "SELECT * FROM users WHERE email = ?";
 
 		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
 			ps.setString(1, email);
-			ps.setString(2, password);
 
 			try (ResultSet rs = ps.executeQuery()) {
 
@@ -48,6 +47,7 @@ public class UserDAO {
 					user.setId(rs.getInt("id"));
 					user.setName(rs.getString("name"));
 					user.setEmail(rs.getString("email"));
+					user.setPassword(rs.getString("password")); // BCrypt hash
 				}
 			}
 

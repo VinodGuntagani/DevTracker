@@ -2,44 +2,42 @@ package controller;
 
 import java.io.IOException;
 
-import dao.UserDAO;
-import model.User;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
+import org.mindrot.jbcrypt.BCrypt;
+
+import dao.UserDAO;
+import model.User;
+
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
+            throws ServletException, IOException {
 
-			throws ServletException, IOException {
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
-		String email = request.getParameter("email");
+        UserDAO dao = new UserDAO();
 
-		String password = request.getParameter("password");
+        User user = dao.getUserByEmail(email);
 
-		UserDAO dao = new UserDAO();
+        if (user != null &&
+            BCrypt.checkpw(password, user.getPassword())) {
 
-		User user = dao.login(email, password);
+            HttpSession session = request.getSession();
 
-		if (user != null) {
+            session.setAttribute("user", user);
 
-			HttpSession session = request.getSession();
+            response.sendRedirect("dashboard.jsp");
 
-			session.setAttribute("user", user);
+        } else {
 
-			response.sendRedirect("dashboard.jsp");
+            response.getWriter().println("Invalid Login");
 
-		}
-
-		else {
-
-			response.getWriter().println("Invalid Login");
-
-		}
-
-	}
-
+        }
+    }
 }

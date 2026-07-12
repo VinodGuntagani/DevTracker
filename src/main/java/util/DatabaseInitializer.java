@@ -49,7 +49,7 @@ public class DatabaseInitializer {
 
 			// SUB TOPICS
 			st.executeUpdate("CREATE TABLE IF NOT EXISTS sub_topics(" + "id INT PRIMARY KEY AUTO_INCREMENT,"
-					+ "topic_id INT," + "name VARCHAR(100)," + "completed BOOLEAN DEFAULT FALSE,"
+					+ "topic_id INT," + "name VARCHAR(255)," + "completed BOOLEAN DEFAULT FALSE,"
 
 					+ "difficulty VARCHAR(20) DEFAULT 'Medium'," + "estimated_minutes INT DEFAULT 60,"
 					+ "weight INT DEFAULT 120," + "ai_notes LONGTEXT," + "ai_learning LONGTEXT," + "ai_keywords TEXT,"

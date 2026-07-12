@@ -2,18 +2,19 @@ package controller;
 
 import java.io.IOException;
 
-import dao.UserDAO;
-import model.User;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+
+import org.mindrot.jbcrypt.BCrypt;
+
+import dao.UserDAO;
+import model.User;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-
 			throws ServletException, IOException {
 
 		String name = request.getParameter("name");
@@ -22,11 +23,14 @@ public class RegisterServlet extends HttpServlet {
 
 		String password = request.getParameter("password");
 
+		// Hash the password
+		String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
 		User user = new User();
 
 		user.setName(name);
 		user.setEmail(email);
-		user.setPassword(password);
+		user.setPassword(hashedPassword);
 
 		UserDAO dao = new UserDAO();
 
@@ -41,7 +45,5 @@ public class RegisterServlet extends HttpServlet {
 			response.getWriter().println("Registration Failed");
 
 		}
-
 	}
-
 }
