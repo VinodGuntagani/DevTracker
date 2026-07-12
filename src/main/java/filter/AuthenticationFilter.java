@@ -19,7 +19,7 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         String path = req.getRequestURI().substring(req.getContextPath().length());
-
+        System.out.println("AuthenticationFilter: " + req.getRequestURI());
         // Public resources
         if (path.equals("/login")
                 || path.equals("/register")
