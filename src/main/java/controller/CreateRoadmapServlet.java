@@ -24,7 +24,7 @@ public class CreateRoadmapServlet extends HttpServlet {
 
 		if (session == null || session.getAttribute("user") == null) {
 
-			response.sendRedirect("login.html");
+			response.sendRedirect("login.jsp");
 
 			return;
 

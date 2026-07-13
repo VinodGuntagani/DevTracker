@@ -1167,7 +1167,7 @@ input, textarea, select {
 	transition: border-color var(--transition), box-shadow var(--transition),
 		background var(--transition);
 	outline: none;
-	appearance: none;
+	
 }
 
 input:hover, textarea:hover, select:hover {

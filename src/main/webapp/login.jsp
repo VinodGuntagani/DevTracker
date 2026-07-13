@@ -1,13 +1,18 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+String error = (String) request.getAttribute("error");
+String email = (String) request.getAttribute("email");
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login | DevTracker</title>
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/auth.css">
 <link rel="stylesheet" href="css/animation.css">
-	<link rel="stylesheet" href="css/loading.css">
+<link rel="stylesheet" href="css/loading.css">
 
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -23,28 +28,31 @@
 		<!-- ============================================================
 		     ILLUSTRATED BACKGROUND
 		     Blobs are pure CSS (::before). This SVG adds:
-		       • Two dashed curved paths (orange + blue)
-		       • Dot nodes along the paths
-		       • Four floating icon badges (book, trophy, checkmark, rocket)
+		       â¢ Two dashed curved paths (orange + blue)
+		       â¢ Dot nodes along the paths
+		       â¢ Four floating icon badges (book, trophy, checkmark, rocket)
 		     ============================================================ -->
 		<svg class="auth-bg-svg" viewBox="0 0 1000 750"
 			preserveAspectRatio="xMidYMid slice" aria-hidden="true">
 
 			<defs>
-				<filter id="cornerBlobBlurLogin" x="-50%" y="-50%" width="200%" height="200%">
+				<filter id="cornerBlobBlurLogin" x="-50%" y="-50%" width="200%"
+				height="200%">
 					<feGaussianBlur stdDeviation="55" />
 				</filter>
 			</defs>
 
 			<!-- ── Glowing corner blobs (faint, blurred, animated, sit behind everything) ── -->
-			<circle class="corner-blob corner-blob-orange" cx="20" cy="20" r="150"
-				fill="#b8741f" opacity="0.16" filter="url(#cornerBlobBlurLogin)" />
+			<circle class="corner-blob corner-blob-orange" cx="20" cy="20"
+				r="150" fill="#b8741f" opacity="0.16"
+				filter="url(#cornerBlobBlurLogin)" />
 			<circle class="corner-blob corner-blob-blue" cx="985" cy="40" r="180"
 				fill="#5b8fc7" opacity="0.14" filter="url(#cornerBlobBlurLogin)" />
 			<circle class="corner-blob corner-blob-blue" cx="15" cy="730" r="170"
 				fill="#5b8fc7" opacity="0.13" filter="url(#cornerBlobBlurLogin)" />
-			<circle class="corner-blob corner-blob-orange" cx="990" cy="720" r="190"
-				fill="#b8741f" opacity="0.17" filter="url(#cornerBlobBlurLogin)" />
+			<circle class="corner-blob corner-blob-orange" cx="990" cy="720"
+				r="190" fill="#b8741f" opacity="0.17"
+				filter="url(#cornerBlobBlurLogin)" />
 
 			<!-- ── Orange dashed path (top arc) ── -->
 			<path class="bp-orange"
@@ -76,22 +84,29 @@
 			<circle class="pn" cx="350" cy="511" r="4" />
 
 			<!-- ── Badge: Book (top-left) ── -->
-			<circle class="badge-ring badge-ring-orange badge-anim-1" cx="300" cy="220" r="15" />
-			<text class="badge-icon badge-icon-orange badge-anim-1" x="300" y="220">📖</text>
+			<circle class="badge-ring badge-ring-orange badge-anim-1" cx="300"
+				cy="220" r="15" />
+			<text class="badge-icon badge-icon-orange badge-anim-1" x="300"
+				y="220">📖</text>
 
 			<!-- ── Badge: Trophy (top-right) ── -->
-			<circle class="badge-ring badge-ring-blue badge-anim-2" cx="710" cy="160" r="15" />
+			<circle class="badge-ring badge-ring-blue badge-anim-2" cx="710"
+				cy="160" r="15" />
 			<text class="badge-icon badge-icon-blue badge-anim-2" x="710" y="160">🏆</text>
 
 			<!-- ── Badge: Checkmark (left-middle) ── -->
 		
 			<!-- Custom SVG checkmark instead of emoji for better rendering -->
-			 	<circle class="badge-ring badge-ring-orange badge-anim-3" cx="315" cy="460" r="15" />
-			<text class="badge-icon badge-icon-accent badge-anim-3" x="315" y="460">✔️</text>
+			 	<circle class="badge-ring badge-ring-orange badge-anim-3" cx="315"
+				cy="460" r="15" />
+			<text class="badge-icon badge-icon-accent badge-anim-3" x="315"
+				y="460">✔️</text>
 
 			<!-- ── Badge: Rocket (bottom-right) ── -->
-			<circle class="badge-ring badge-ring-orange badge-anim-4" cx="670" cy="444" r="15" />
-			<text class="badge-icon badge-icon-accent badge-anim-4" x="670" y="444">🚀</text>
+			<circle class="badge-ring badge-ring-orange badge-anim-4" cx="670"
+				cy="444" r="15" />
+			<text class="badge-icon badge-icon-accent badge-anim-4" x="670"
+				y="444">🚀</text>
 
 		</svg>
 
@@ -106,22 +121,28 @@
 			</div>
 
 			<h2>Welcome back</h2>
-			<p class="auth-subtitle">Continue your learning journey where you left
-				off.</p>
+			<p class="auth-subtitle">Continue your learning journey where you
+				left off.</p>
 
-			<div class="auth-error" id="authError">
-				<i class="ti ti-alert-circle"></i> <span id="authErrorText">Incorrect
-					email or password.</span>
+			<%
+			if (error != null) {
+			%>
+			<div class="auth-error show">
+				<i class="ti ti-alert-circle"></i> <span><%=error%></span>
 			</div>
+			<%
+			}
+			%>
 
 			<form action="login" method="post" id="loginForm"
-     			 onsubmit="showLoader('login');handleLoginSubmit(event);">
+				onsubmit="showLoader('login');handleLoginSubmit(event);">
 
 				<div class="input-group">
 					<label for="email">Email</label>
 					<div class="input-wrap">
-						<span class="input-icon"><i class="ti ti-mail"></i></span>
-						<input id="email" type="email" name="email"
+						<span class="input-icon"><i class="ti ti-mail"></i></span> <input
+							id="email" type="email" name="email"
+							value="<%=email != null ? email : ""%>"
 							placeholder="you@example.com" autocomplete="email" required>
 					</div>
 				</div>
@@ -129,20 +150,21 @@
 				<div class="input-group">
 					<label for="password">Password</label>
 					<div class="input-wrap">
-						<span class="input-icon"><i class="ti ti-lock"></i></span>
-						<input id="password" type="password" name="password"
+						<span class="input-icon"><i class="ti ti-lock"></i></span> <input
+							id="password" type="password" name="password"
 							placeholder="Enter password" autocomplete="current-password"
 							required>
 						<button type="button" class="password-toggle"
-							onclick="togglePassword('password', this)" aria-label="Show password">
+							onclick="togglePassword('password', this)"
+							aria-label="Show password">
 							<i class="ti ti-eye"></i>
 						</button>
 					</div>
 				</div>
 
 				<div class="auth-row">
-					<label class="remember-me"> <input type="checkbox" name="remember">
-						Remember me
+					<label class="remember-me"> <input type="checkbox"
+						name="remember"> Remember me
 					</label> <a class="forgot-link" href="forgot-password.jsp">Forgot
 						password?</a>
 				</div>
@@ -156,16 +178,18 @@
 			<div class="auth-divider">or continue with</div>
 
 			<div class="oauth-row">
-				<button type="button" class="oauth-btn" onclick="oauthLogin('google')">
+				<button type="button" class="oauth-btn"
+					onclick="oauthLogin('google')">
 					<i class="ti ti-brand-google"></i> Google
 				</button>
-				<button type="button" class="oauth-btn" onclick="oauthLogin('github')">
+				<button type="button" class="oauth-btn"
+					onclick="oauthLogin('github')">
 					<i class="ti ti-brand-github"></i> GitHub
 				</button>
 			</div>
 
 			<p class="auth-link">
-				New here? <a href="register.html">Create account</a>
+				New here? <a href="register.jsp">Create account</a>
 			</p>
 
 		</div>
@@ -199,7 +223,7 @@
 
 	<!-- Loader -->
 	<div id="loadingContainer"></div>
-<script>window.addEventListener("DOMContentLoaded", async () => {
+	<script>window.addEventListener("DOMContentLoaded", async () => {
 
     const res = await fetch("includes/loading.html");
 

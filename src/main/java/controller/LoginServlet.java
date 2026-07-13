@@ -14,30 +14,41 @@ import model.User;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
-            throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+		String email = request.getParameter("email");
+		String password = request.getParameter("password");
 
-        UserDAO dao = new UserDAO();
+		UserDAO dao = new UserDAO();
 
-        User user = dao.getUserByEmail(email);
+		User user = dao.getUserByEmail(email);
 
-        if (user != null &&
-            BCrypt.checkpw(password, user.getPassword())) {
+		if (user != null && BCrypt.checkpw(password, user.getPassword())) {
 
-            HttpSession session = request.getSession();
+			// Destroy any existing session
+			HttpSession oldSession = request.getSession(false);
 
-            session.setAttribute("user", user);
+			if (oldSession != null) {
+				oldSession.invalidate();
+			}
 
-            response.sendRedirect("dashboard.jsp");
+			// Create a brand new session
+			HttpSession session = request.getSession(true);
 
-        } else {
+			session.setAttribute("user", user);
 
-            response.getWriter().println("Invalid Login");
+			// 30 minutes of inactivity
+			session.setMaxInactiveInterval(30 * 60);
 
-        }
-    }
+			response.sendRedirect("dashboard.jsp");
+
+		} else {
+
+			request.setAttribute("error", "Invalid email or password.");
+			request.setAttribute("email", email);
+			request.getRequestDispatcher("login.jsp").forward(request, response);
+
+		}
+	}
 }

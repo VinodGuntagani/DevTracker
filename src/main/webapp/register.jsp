@@ -1,3 +1,9 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+String error = (String) request.getAttribute("error");
+String name = (String) request.getAttribute("name");
+String email = (String) request.getAttribute("email");
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,12 +13,12 @@
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/auth.css">
 <link rel="stylesheet" href="css/animation.css">
-	<link rel="stylesheet" href="css/loading.css">
+<link rel="stylesheet" href="css/loading.css">
 
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-	<style>/* ============================================================
-   ANIMATED BACKGROUND DESIGN — coffee/amber theme
+<style>/* ============================================================
+   ANIMATED BACKGROUND DESIGN â coffee/amber theme
    Self-contained so it works without touching auth.css.
    - Corner blobs: slow breathing glow (matches register page)
    - Dashed paths: gentle flowing dash motion
@@ -20,79 +26,368 @@
    - Badge icons: light floating bob, staggered per badge
    Respects prefers-reduced-motion.
    ============================================================ */
-
 .auth-bg-svg .corner-blob {
 	transform-box: fill-box;
 	transform-origin: center;
 }
+
 .auth-bg-svg .corner-blob-orange {
 	animation: blobDriftOrange 14s ease-in-out infinite;
 }
+
 .auth-bg-svg .corner-blob-blue {
 	animation: blobDriftBlue 17s ease-in-out infinite;
 }
 
-@keyframes blobDriftOrange {
-	0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
-	50%      { transform: translate(14px, -10px) scale(1.15); opacity: 0.22; }
-}
-@keyframes blobDriftBlue {
-	0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.13; }
-	50%      { transform: translate(-12px, 12px) scale(1.12); opacity: 0.2; }
+@
+keyframes blobDriftOrange { 0%, 100% {
+	transform: translate(0, 0) scale(1);
+	opacity: 0.15;
 }
 
-.auth-bg-svg .bp-orange,
-.auth-bg-svg .bp-blue {
+50
+
+
+
+
+%
+{
+transform
+
+
+
+
+:
+
+
+
+
+translate
+
+
+(
+
+
+
+
+14px
+,
+-10px
+
+
+
+
+)
+
+
+
+
+scale
+
+
+(
+
+
+
+
+1
+
+
+.15
+
+
+
+
+)
+
+
+;
+opacity
+
+
+
+
+:
+
+
+
+
+0
+
+
+.22
+
+
+;
+}
+}
+@
+keyframes blobDriftBlue { 0%, 100% {
+	transform: translate(0, 0) scale(1);
+	opacity: 0.13;
+}
+
+50
+
+
+
+
+%
+{
+transform
+
+
+
+
+:
+
+
+
+
+translate
+
+
+(
+
+
+
+
+-12px
+,
+12px
+
+
+
+
+)
+
+
+
+
+scale
+
+
+(
+
+
+
+
+1
+
+
+.12
+
+
+
+
+)
+
+
+;
+opacity
+
+
+
+
+:
+
+
+
+
+0
+
+
+.2
+
+
+;
+}
+}
+.auth-bg-svg .bp-orange, .auth-bg-svg .bp-blue {
 	animation: dashFlow 7s linear infinite;
 }
-@keyframes dashFlow {
-	to { stroke-dashoffset: -200; }
+
+@
+keyframes dashFlow {to { stroke-dashoffset:-200;
+	
 }
 
+}
 .auth-bg-svg .pn {
 	transform-box: fill-box;
 	transform-origin: center;
 	animation: dotGlow 3.2s ease-in-out infinite;
 }
+
 .auth-bg-svg .pn-pulse {
 	transform-box: fill-box;
 	transform-origin: center;
 	animation: dotPulse 2.4s ease-in-out infinite;
 }
-@keyframes dotGlow {
-	0%, 100% { opacity: 0.45; }
-	50%      { opacity: 1; }
-}
-@keyframes dotPulse {
-	0%, 100% { transform: scale(1);   opacity: 0.6; }
-	50%      { transform: scale(1.8); opacity: 1; }
+
+@
+keyframes dotGlow { 0%, 100% {
+	opacity: 0.45;
 }
 
-.auth-bg-svg .badge-anim-1,
-.auth-bg-svg .badge-anim-2,
-.auth-bg-svg .badge-anim-3,
-.auth-bg-svg .badge-anim-4 {
+50
+
+
+
+
+%
+{
+opacity
+
+
+
+
+:
+
+
+
+
+1
+
+
+;
+}
+}
+@
+keyframes dotPulse { 0%, 100% {
+	transform: scale(1);
+	opacity: 0.6;
+}
+
+50
+
+
+
+
+%
+{
+transform
+
+
+
+
+:
+
+
+
+
+scale
+
+
+(
+
+
+
+
+1
+
+
+.8
+
+
+
+
+)
+
+
+;
+opacity
+
+
+
+
+:
+
+
+
+
+1
+
+
+;
+}
+}
+.auth-bg-svg .badge-anim-1, .auth-bg-svg .badge-anim-2, .auth-bg-svg .badge-anim-3,
+	.auth-bg-svg .badge-anim-4 {
 	transform-box: fill-box;
 	transform-origin: center;
 	animation-name: badgeFloat;
 	animation-timing-function: ease-in-out;
 	animation-iteration-count: infinite;
 }
-.auth-bg-svg .badge-anim-1 { animation-duration: 5s;   animation-delay: 0s; }
-.auth-bg-svg .badge-anim-2 { animation-duration: 6s;   animation-delay: .6s; }
-.auth-bg-svg .badge-anim-3 { animation-duration: 5.5s; animation-delay: 1.2s; }
-.auth-bg-svg .badge-anim-4 { animation-duration: 6.5s; animation-delay: .3s; }
 
-@keyframes badgeFloat {
-	0%, 100% { transform: translateY(0); }
-	50%      { transform: translateY(-10px); }
+.auth-bg-svg .badge-anim-1 {
+	animation-duration: 5s;
+	animation-delay: 0s;
 }
 
-@media (prefers-reduced-motion: reduce) {
+.auth-bg-svg .badge-anim-2 {
+	animation-duration: 6s;
+	animation-delay: .6s;
+}
+
+.auth-bg-svg .badge-anim-3 {
+	animation-duration: 5.5s;
+	animation-delay: 1.2s;
+}
+
+.auth-bg-svg .badge-anim-4 {
+	animation-duration: 6.5s;
+	animation-delay: .3s;
+}
+
+@
+keyframes badgeFloat { 0%, 100% {
+	transform: translateY(0);
+}
+
+50
+
+
+
+
+%
+{
+transform
+
+
+
+
+:
+
+
+
+
+translateY
+
+
+(
+
+
+
+
+-10px
+
+
+
+
+)
+
+
+;
+}
+}
+@media ( prefers-reduced-motion : reduce) {
 	.auth-bg-svg * {
 		animation: none !important;
 	}
-}</style>
+}
+</style>
 </head>
 
 <body>
@@ -102,28 +397,31 @@
 		<!-- ============================================================
 		     ILLUSTRATED BACKGROUND
 		     Blobs are pure CSS (::before). This SVG adds:
-		       • Two dashed curved paths (orange + blue)
-		       • Dot nodes along the paths
-		       • Four floating icon badges (book, trophy, checkmark, rocket)
+		       â¢ Two dashed curved paths (orange + blue)
+		       â¢ Dot nodes along the paths
+		       â¢ Four floating icon badges (book, trophy, checkmark, rocket)
 		     ============================================================ -->
 		<svg class="auth-bg-svg" viewBox="0 0 1000 750"
 			preserveAspectRatio="xMidYMid slice" aria-hidden="true">
 
 			<defs>
-				<filter id="cornerBlobBlurLogin" x="-50%" y="-50%" width="200%" height="200%">
+				<filter id="cornerBlobBlurLogin" x="-50%" y="-50%" width="200%"
+				height="200%">
 					<feGaussianBlur stdDeviation="55" />
 				</filter>
 			</defs>
 
 			<!-- ── Glowing corner blobs (faint, blurred, animated, sit behind everything) ── -->
-			<circle class="corner-blob corner-blob-orange" cx="20" cy="20" r="150"
-				fill="#b8741f" opacity="0.16" filter="url(#cornerBlobBlurLogin)" />
+			<circle class="corner-blob corner-blob-orange" cx="20" cy="20"
+				r="150" fill="#b8741f" opacity="0.16"
+				filter="url(#cornerBlobBlurLogin)" />
 			<circle class="corner-blob corner-blob-blue" cx="985" cy="40" r="180"
 				fill="#5b8fc7" opacity="0.14" filter="url(#cornerBlobBlurLogin)" />
 			<circle class="corner-blob corner-blob-blue" cx="15" cy="730" r="170"
 				fill="#5b8fc7" opacity="0.13" filter="url(#cornerBlobBlurLogin)" />
-			<circle class="corner-blob corner-blob-orange" cx="990" cy="720" r="190"
-				fill="#b8741f" opacity="0.17" filter="url(#cornerBlobBlurLogin)" />
+			<circle class="corner-blob corner-blob-orange" cx="990" cy="720"
+				r="190" fill="#b8741f" opacity="0.17"
+				filter="url(#cornerBlobBlurLogin)" />
 
 			<!-- ── Orange dashed path (top arc) ── -->
 			<path class="bp-orange"
@@ -155,22 +453,29 @@
 			<circle class="pn" cx="350" cy="511" r="4" />
 
 			<!-- ── Badge: Book (top-left) ── -->
-			<circle class="badge-ring badge-ring-orange badge-anim-1" cx="300" cy="220" r="15" />
-			<text class="badge-icon badge-icon-orange badge-anim-1" x="300" y="220">📖</text>
+			<circle class="badge-ring badge-ring-orange badge-anim-1" cx="300"
+				cy="220" r="15" />
+			<text class="badge-icon badge-icon-orange badge-anim-1" x="300"
+				y="220">📖</text>
 
 			<!-- ── Badge: Trophy (top-right) ── -->
-			<circle class="badge-ring badge-ring-blue badge-anim-2" cx="710" cy="160" r="15" />
+			<circle class="badge-ring badge-ring-blue badge-anim-2" cx="710"
+				cy="160" r="15" />
 			<text class="badge-icon badge-icon-blue badge-anim-2" x="710" y="160">🏆</text>
 
 			<!-- ── Badge: Checkmark (left-middle) ── -->
 		
 			<!-- Custom SVG checkmark instead of emoji for better rendering -->
-			 	<circle class="badge-ring badge-ring-orange badge-anim-3" cx="315" cy="460" r="15" />
-			<text class="badge-icon badge-icon-accent badge-anim-3" x="315" y="460">✔️</text>
+			 	<circle class="badge-ring badge-ring-orange badge-anim-3" cx="315"
+				cy="460" r="15" />
+			<text class="badge-icon badge-icon-accent badge-anim-3" x="315"
+				y="460">✔️</text>
 
 			<!-- ── Badge: Rocket (bottom-right) ── -->
-			<circle class="badge-ring badge-ring-orange badge-anim-4" cx="670" cy="444" r="15" />
-			<text class="badge-icon badge-icon-accent badge-anim-4" x="670" y="444">🚀</text>
+			<circle class="badge-ring badge-ring-orange badge-anim-4" cx="670"
+				cy="444" r="15" />
+			<text class="badge-icon badge-icon-accent badge-anim-4" x="670"
+				y="444">🚀</text>
 
 		</svg>
 
@@ -188,21 +493,24 @@
 			<p class="auth-subtitle">Start tracking your learning roadmap in
 				minutes.</p>
 
-			<div class="auth-error" id="authError">
-				<i class="ti ti-alert-circle"></i> <span id="authErrorText">Something
-					went wrong. Try again.</span>
+			<%
+			if (error != null) {
+			%>
+			<div class="auth-error show">
+				<i class="ti ti-alert-circle"></i> <span><%=error%></span>
 			</div>
-
-		<form action="register"
-     		 method="post"
-	     	 id="registerForm"
-	      onsubmit="showLoader('login'); handleRegisterSubmit(event);">
+			<%
+			}
+			%>
+			<form action="register" method="post" id="registerForm"
+				onsubmit="showLoader('login'); handleRegisterSubmit(event);">
 
 				<div class="input-group">
 					<label for="name">Full name</label>
 					<div class="input-wrap">
-						<span class="input-icon"><i class="ti ti-user"></i></span>
-						<input id="name" type="text" name="name" placeholder="Your name"
+						<span class="input-icon"><i class="ti ti-user"></i></span> <input
+							id="name" type="text" name="name"
+							value="<%=name != null ? name : ""%>" placeholder="Your name"
 							autocomplete="name" required>
 					</div>
 				</div>
@@ -210,8 +518,9 @@
 				<div class="input-group">
 					<label for="email">Email</label>
 					<div class="input-wrap">
-						<span class="input-icon"><i class="ti ti-mail"></i></span>
-						<input id="email" type="email" name="email"
+						<span class="input-icon"><i class="ti ti-mail"></i></span> <input
+							id="email" type="email" name="email"
+							value="<%=email != null ? email : ""%>"
 							placeholder="you@example.com" autocomplete="email" required>
 					</div>
 				</div>
@@ -219,8 +528,8 @@
 				<div class="input-group">
 					<label for="password">Password</label>
 					<div class="input-wrap">
-						<span class="input-icon"><i class="ti ti-lock"></i></span>
-						<input id="password" type="password" name="password"
+						<span class="input-icon"><i class="ti ti-lock"></i></span> <input
+							id="password" type="password" name="password"
 							placeholder="Create a password" autocomplete="new-password"
 							required minlength="8" oninput="updateStrength(this.value)">
 						<button type="button" class="password-toggle"
@@ -267,7 +576,7 @@
 			</div>
 
 			<p class="auth-link">
-				Already have an account? <a href="login.html">Log in</a>
+				Already have an account? <a href="login.jspl">Log in</a>
 			</p>
 
 		</div>
@@ -299,7 +608,7 @@
 		if (/[0-9]/.test(value) && /[^A-Za-z0-9]/.test(value)) score++;
 
 		const tiers = ['weak', 'fair', 'strong'];
-		const labels = ['Weak — try adding numbers or symbols', 'Fair — getting stronger', 'Strong password'];
+		const labels = ['Weak â try adding numbers or symbols', 'Fair â getting stronger', 'Strong password'];
 		const level = Math.max(1, score);
 
 		for (let i = 0; i < level; i++) {
@@ -323,9 +632,9 @@
 		console.log('OAuth login requested:', provider);
 	}
 	</script>
-<!-- Loader -->
+	<!-- Loader -->
 	<div id="loadingContainer"></div>
-<script>window.addEventListener("DOMContentLoaded", async () => {
+	<script>window.addEventListener("DOMContentLoaded", async () => {
 
     const res = await fetch("includes/loading.html");
 

@@ -38,11 +38,14 @@ public class RegisterServlet extends HttpServlet {
 
 		if (result) {
 
-			response.sendRedirect("login.html");
+			response.sendRedirect("login.jsp");
 
 		} else {
 
-			response.getWriter().println("Registration Failed");
+			request.setAttribute("error", "Registration failed. Please try again.");
+			request.setAttribute("name", name);
+			request.setAttribute("email", email);
+			request.getRequestDispatcher("register.jsp").forward(request, response);
 
 		}
 	}

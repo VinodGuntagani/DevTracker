@@ -6,6 +6,8 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.*;
 
+import model.User;
+
 @WebFilter("/*")
 public class AuthenticationFilter implements Filter {
 
@@ -19,12 +21,24 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         String path = req.getRequestURI().substring(req.getContextPath().length());
-        System.out.println("AuthenticationFilter: " + req.getRequestURI());
+        HttpSession session = req.getSession(false);
+
+        User user = null;
+
+        if (session != null) {
+            user = (User) session.getAttribute("user");
+        }
+
+        System.out.println(
+            "Path: " + path +
+            " | Session: " + (session != null) +
+            " | User: " + (user != null ? user.getName() : "NULL")
+        );
         // Public resources
         if (path.equals("/login")
                 || path.equals("/register")
-                || path.equals("/login.html")
-                || path.equals("/register.html")
+                || path.equals("/login.jsp")
+                || path.equals("/register.jsp")
                 || path.startsWith("/css/")
                 || path.startsWith("/js/")
                 || path.startsWith("/images/")
@@ -34,7 +48,6 @@ public class AuthenticationFilter implements Filter {
             return;
         }
 
-        HttpSession session = req.getSession(false);
 
         if (session != null && session.getAttribute("user") != null) {
 
@@ -42,7 +55,7 @@ public class AuthenticationFilter implements Filter {
 
         } else {
 
-            res.sendRedirect(req.getContextPath() + "/login.html");
+            res.sendRedirect(req.getContextPath() + "/login.jsp");
 
         }
     }
