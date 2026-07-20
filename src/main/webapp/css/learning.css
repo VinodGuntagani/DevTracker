@@ -263,10 +263,6 @@ body{
     line-height:1.3;
     flex:1 1 100%;
   }
-  /* displayBtn becomes a fixed FAB on mobile (see below), so it's pulled
-     out of the flex flow entirely — only the lesson-check and Back
-     buttons remain in the row, and Back gets pushed to its own line
-     so nothing sits under the floating FAB in the corner. */
   .top-bar > button.btn:last-child{
     order:3;
     flex:1 1 100%;
@@ -364,8 +360,16 @@ body{
   max-width:100%; height:auto; display:block; border-radius:var(--r-sm);
 }
 
-/* ---------- TABLE: slider instead of squeeze/break ---------- */
+/* ---------- TABLE: slider instead of squeeze/break ----------
+   NOTE: scoped to divs that actually CONTAIN a table via :has(),
+   so this never touches the reading-mode popover or any other
+   unrelated div that happens to have "overflow-x" in its inline
+   style. If :has() isn't supported in your target browser, see
+   the JS fallback at the bottom of this file's comment block. */
 .learning-body table{
+  max-width:none !important;
+  width:max-content;
+  min-width:100%;
   border-collapse:collapse;
   white-space:nowrap;
   word-break:normal;
@@ -380,12 +384,30 @@ body{
   word-break:normal;
   overflow-wrap:normal;
 }
-/* the AI wraps every table in a div with inline overflow-x:auto —
-   reinforce it so it scrolls instead of shrinking */
-.learning-body div[style*="overflow-x"]{
+.learning-body table th:first-child,
+.learning-body table td:first-child{
+  width:1%;
+}
+
+.learning-body div[style*="overflow-x"]:has(table){
   overflow-x:auto !important;
-  -webkit-overflow-scrolling:touch;
   max-width:100% !important;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:auto;
+  scrollbar-color:var(--faint) var(--surface-2);
+}
+.learning-body div[style*="overflow-x"]:has(table)::-webkit-scrollbar{
+  height:10px;
+  display:block;
+}
+.learning-body div[style*="overflow-x"]:has(table)::-webkit-scrollbar-thumb{
+  background:var(--faint);
+  border-radius:99px;
+  border:2px solid var(--surface);
+}
+.learning-body div[style*="overflow-x"]:has(table)::-webkit-scrollbar-track{
+  background:var(--surface-2);
+  border-radius:99px;
 }
 
 /* ---------- CODE: slider, never wrap ---------- */
@@ -400,6 +422,18 @@ body{
   white-space:pre !important;
   word-break:normal !important;
   overflow-wrap:normal !important;
+  scrollbar-width:thin;
+  scrollbar-color:var(--faint) transparent;
+}
+.learning-body pre::-webkit-scrollbar{
+  height:8px;
+}
+.learning-body pre::-webkit-scrollbar-thumb{
+  background:var(--faint);
+  border-radius:99px;
+}
+.learning-body pre::-webkit-scrollbar-track{
+  background:transparent;
 }
 .learning-body code{
   background:var(--surface-2);
@@ -421,24 +455,7 @@ body{
 .learning-body > *, .learning-body div, .learning-body section{
   transition:padding .38s cubic-bezier(.4,0,.2,1), margin .38s cubic-bezier(.4,0,.2,1);
 }
-.learning-body pre,
-.learning-body div[style*="overflow-x"]{
-  scrollbar-width:thin;              /* Firefox */
-  scrollbar-color:var(--faint) transparent;
-}
-.learning-body pre::-webkit-scrollbar,
-.learning-body div[style*="overflow-x"]::-webkit-scrollbar{
-  height:8px;
-}
-.learning-body pre::-webkit-scrollbar-thumb,
-.learning-body div[style*="overflow-x"]::-webkit-scrollbar-thumb{
-  background:var(--faint);
-  border-radius:99px;
-}
-.learning-body pre::-webkit-scrollbar-track,
-.learning-body div[style*="overflow-x"]::-webkit-scrollbar-track{
-  background:transparent;
-}
+
 /* ---------- three reading modes ---------- */
 body.reading-compact .learning-card{ max-width:520px; padding:0; }
 body.reading-compact .learning-body{ font-size:13.5px; line-height:1.55; }
@@ -680,4 +697,17 @@ body.reading-focus .learning-body pre{ padding:20px 22px; }
   .video-grid{ grid-template-columns:1fr; }
   .video-card iframe{ height:200px; }
   .stats-card{ padding:18px; border-radius:var(--r-md); }
+}
+.learning-body table{
+  display:table !important;
+  max-width:none !important;
+  width:max-content;
+  min-width:100%;
+  border-collapse:collapse;
+  white-space:nowrap;
+  word-break:normal;
+  overflow-wrap:normal;
+}
+.learning-body{
+  overflow:visible !important;
 }
