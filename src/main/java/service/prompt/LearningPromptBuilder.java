@@ -69,39 +69,85 @@ public class LearningPromptBuilder {
 									- spacing
 
 
-									IMPORTANT RESPONSIVE RULES:
-
-									Must work on mobile.
-
-									Never use:
-									- fixed width like 800px
-									- huge tables without scrolling
-
-
-									Use:
-
-									max-width:100%;
-									box-sizing:border-box;
-
-
-									Tables must be wrapped:
-
-									<div style="overflow-x:auto">
-
-									<table>
-									...
-									</table>
-
-									</div>
-
-
-									Code blocks must use:
-
-									<pre style="
-									max-width:100%;
-									overflow-x:auto;
-									white-space:pre-wrap;
-									"><code>
+										========================
+										RESPONSIVE DESIGN RULES
+										========================
+										
+										The generated HTML must be fully responsive and never break the page layout.
+										
+										The lesson should work correctly on:
+										- Desktop
+										- Tablet
+										- Mobile
+										
+										General Rules:
+										
+										- Never use fixed widths (600px, 800px, etc.)
+										- Prefer width:100% and max-width:100%
+										- Always use box-sizing:border-box
+										- Long content must never overflow outside its parent container.
+										- If any element might become wider than the screen, make it horizontally scrollable instead of breaking the layout.
+										
+										Tables:
+										
+										Always wrap every table inside:
+										
+										<div style="
+										overflow-x:auto;
+										max-width:100%;
+										margin:15px 0;
+										">
+										
+										<table style="
+										width:100%;
+										min-width:650px;
+										border-collapse:collapse;
+										">
+										
+										...
+										
+										</table>
+										
+										</div>
+										
+										Code Blocks:
+										
+										Wrap every code example inside:
+										
+										<pre style="
+										max-width:100%;
+										overflow-x:auto;
+										white-space:pre;
+										padding:15px;
+										border-radius:8px;
+										"><code>
+										
+										...
+										
+										</code></pre>
+										
+										Large Diagrams:
+										
+										ASCII diagrams inside <pre> must also use:
+										
+										overflow-x:auto;
+										max-width:100%;
+										
+										Long Words / URLs:
+										
+										Prevent layout breaking by using:
+										
+										word-break:break-word;
+										overflow-wrap:anywhere;
+										
+										Images (if ever used):
+										
+										max-width:100%;
+										height:auto;
+										
+										Important Rule:
+										
+										Whenever any content (tables, diagrams, code, long text, comparison charts, large lists, etc.) could exceed the available width, wrap it inside a horizontally scrollable container instead of allowing it to overflow or distort the page.
 
 
 									========================
@@ -343,7 +389,10 @@ public class LearningPromptBuilder {
 				- Do NOT explain the entire Roadmap.
 				- If prerequisite concepts are required, briefly explain them and then return to the Subtopic.
 				- The Roadmap, Subject and Topic are provided ONLY as context.
-
+				
+				Before returning the HTML, verify that no element can cause horizontal page overflow.
+				If there is any possibility that an element could exceed the screen width, automatically wrap it in a horizontally scrollable container.
+				
 				Learning Context:
 
 				           """;
