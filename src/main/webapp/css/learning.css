@@ -421,6 +421,24 @@ body{
 .learning-body > *, .learning-body div, .learning-body section{
   transition:padding .38s cubic-bezier(.4,0,.2,1), margin .38s cubic-bezier(.4,0,.2,1);
 }
+.learning-body pre,
+.learning-body div[style*="overflow-x"]{
+  scrollbar-width:thin;              /* Firefox */
+  scrollbar-color:var(--faint) transparent;
+}
+.learning-body pre::-webkit-scrollbar,
+.learning-body div[style*="overflow-x"]::-webkit-scrollbar{
+  height:8px;
+}
+.learning-body pre::-webkit-scrollbar-thumb,
+.learning-body div[style*="overflow-x"]::-webkit-scrollbar-thumb{
+  background:var(--faint);
+  border-radius:99px;
+}
+.learning-body pre::-webkit-scrollbar-track,
+.learning-body div[style*="overflow-x"]::-webkit-scrollbar-track{
+  background:transparent;
+}
 /* ---------- three reading modes ---------- */
 body.reading-compact .learning-card{ max-width:520px; padding:0; }
 body.reading-compact .learning-body{ font-size:13.5px; line-height:1.55; }
