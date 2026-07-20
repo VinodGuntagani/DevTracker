@@ -375,6 +375,11 @@ body{
     white-space:pre;
     overflow-x:auto;
 }
+.learning-body table td,
+.learning-body table th{
+    word-break: normal;
+    overflow-wrap: normal;
+}
 .learning-body code{
   background:var(--surface-2);
   padding:2px 6px;
