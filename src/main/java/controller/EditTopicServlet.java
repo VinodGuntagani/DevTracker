@@ -55,9 +55,7 @@ public class EditTopicServlet extends HttpServlet {
 
 
         response.sendRedirect(
-            "topics.jsp?subjectId="
-            + subjectId
-            + "&roadmapId="
+            "openAIRoadmap?id="
             + roadmapId
         );
 

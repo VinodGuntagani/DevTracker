@@ -14,9 +14,9 @@ public class DatabaseInitializer {
 			Connection con = DBConnection.getConnection();
 			if (con == null) {
 
-			    System.out.println("DATABASE CONNECTION FAILED - SKIPPING INIT");
+				System.out.println("DATABASE CONNECTION FAILED - SKIPPING INIT");
 
-			    return;
+				return;
 
 			}
 
@@ -135,6 +135,66 @@ public class DatabaseInitializer {
 					+ "FOREIGN KEY(ai_plan_id) REFERENCES ai_study_plan(id)" + " ON DELETE CASCADE,"
 
 					+ "FOREIGN KEY(subtopic_id) REFERENCES sub_topics(id)" + ")");
+			// AI JOBS
+			st.executeUpdate("CREATE TABLE IF NOT EXISTS ai_jobs("
+
+					+ "id INT PRIMARY KEY AUTO_INCREMENT,"
+
+					+ "user_id INT NOT NULL,"
+
+					+ "roadmap_id INT NOT NULL,"
+
+					+ "current_subtopic_id INT NULL,"
+
+					+ "job_type VARCHAR(30) NOT NULL,"
+
+					+ "status VARCHAR(20) DEFAULT 'PENDING',"
+
+					+ "total_tasks INT DEFAULT 0,"
+
+					+ "completed_tasks INT DEFAULT 0,"
+
+					+ "failed_tasks INT DEFAULT 0,"
+
+					+ "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+
+					+ "started_at DATETIME NULL,"
+
+					+ "finished_at DATETIME NULL,"
+
+					+ "FOREIGN KEY(user_id) REFERENCES users(id),"
+
+					+ "FOREIGN KEY(roadmap_id) REFERENCES roadmaps(id),"
+
+					+ "FOREIGN KEY(current_subtopic_id) REFERENCES sub_topics(id)"
+
+					+ ")");
+			// AI JOB TASKS
+			st.executeUpdate("CREATE TABLE IF NOT EXISTS ai_job_tasks("
+
+					+ "id INT PRIMARY KEY AUTO_INCREMENT,"
+
+					+ "job_id INT NOT NULL,"
+
+					+ "subtopic_id INT NOT NULL,"
+
+					+ "status VARCHAR(20) DEFAULT 'PENDING',"
+
+					+ "attempts INT DEFAULT 0,"
+
+					+ "error_message TEXT,"
+
+					+ "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+
+					+ "started_at DATETIME NULL,"
+
+					+ "completed_at DATETIME NULL,"
+
+					+ "FOREIGN KEY(job_id) REFERENCES ai_jobs(id) ON DELETE CASCADE,"
+
+					+ "FOREIGN KEY(subtopic_id) REFERENCES sub_topics(id)"
+
+					+ ")");
 
 			System.out.println("Database Ready");
 

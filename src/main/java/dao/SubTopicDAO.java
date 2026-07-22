@@ -368,7 +368,9 @@ public class SubTopicDAO {
 					st.setDifficulty(rs.getString("difficulty"));
 					st.setEstimatedMinutes(rs.getInt("estimated_minutes"));
 					st.setWeight(rs.getInt("weight"));
-
+					st.setAiNotes(rs.getString("ai_notes"));
+					st.setAiLearning(rs.getString("ai_learning"));
+					st.setAiKeywords(rs.getString("ai_keywords"));
 					list.add(st);
 				}
 			}

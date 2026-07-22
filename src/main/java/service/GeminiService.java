@@ -63,11 +63,11 @@ public class GeminiService {
 
 	}
 
-	public String generateLearning(String topicName) {
+	public String generateLearning(String learningContext) {
 
 		try {
 
-			String prompt = learningPromptBuilder.build(topicName);
+			String prompt = learningPromptBuilder.build(learningContext);
 
 			AIRequest request = new AIRequest();
 

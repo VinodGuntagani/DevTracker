@@ -3,7 +3,9 @@
 <%@ page import="model.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="model.User"%>
-<%User user = (User) session.getAttribute("user"); %>
+<%
+User user = (User) session.getAttribute("user");
+%>
 
 <%
 Roadmap roadmap = (Roadmap) request.getAttribute("roadmap");
@@ -193,23 +195,23 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 
 			</div>
 			<!-- Toolbar -->
-			<div class="syllabus-toolbar">
-				<span class="syllabus-toolbar-label">Syllabus</span>
-				<div class="toolbar-actions">
-					<button class="btn btn-sm"
-						onclick="location.href='schedule.jsp?roadmapId=<%=roadmap.getId()%>'">
-						<i class="ti ti-calendar-week"></i> Daily Tasks
-					</button>
+			<div class="toolbar-actions">
+				<button class="btn btn-sm"
+					onclick="location.href='schedule.jsp?roadmapId=<%=roadmap.getId()%>'">
+					<i class="ti ti-calendar-week"></i> Daily Tasks
+				</button>
 
+				<button class="btn btn-sm" id="generateLearningBtn"
+					onclick="generateAILearning()">
+					<i class="ti ti-sparkles"></i> Generate AI Learning
+				</button>
 
-
-					<button class="btn btn-sm" id="customizeBtn"
-						onclick="toggleCustomize()">
-						<i class="ti ti-pencil"></i> Customize
-					</button>
-					<a class="btn btn-sm" href="dashboard.jsp"><i
-						class="ti ti-arrow-left"></i> Back</a>
-				</div>
+				<button class="btn btn-sm" id="customizeBtn"
+					onclick="toggleCustomize()">
+					<i class="ti ti-pencil"></i> Customize
+				</button>
+				<a class="btn btn-sm" href="dashboard.jsp"><i
+					class="ti ti-arrow-left"></i> Back</a>
 			</div>
 
 			<%-- ══════════════════════════════════════════
@@ -346,8 +348,8 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 
 							<%-- Topic inline edit form --%>
 							<form id="<%=tEditFormId%>" class="topic-edit-form"
-								action="editAITopic" method="post">
-								<input type="hidden" name="topicId" value="<%=topic.getId()%>">
+								action="editTopic" method="post">
+								<input type="hidden" name="id" value="<%=topic.getId()%>">
 								<input type="hidden" name="subjectId"
 									value="<%=subject.getId()%>"> <input type="hidden"
 									name="roadmapId" value="<%=roadmap.getId()%>"> <input
@@ -1041,6 +1043,36 @@ window.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("loadingContainer").innerHTML = html;
 
 });
+function generateAILearning() {
+    const btn = document.getElementById("generateLearningBtn");
+    const originalHTML = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = "Generating...";
+
+    fetch("generateLearningJob", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "roadmapId=<%=roadmap.getId()%>"
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            console.log("Job Started", data.jobId);
+        } else {
+            alert("Failed to start AI generation.");
+        }
+    })
+    .catch(() => {
+        alert("Server error while starting AI generation.");
+    })
+    .finally(() => {
+        btn.innerHTML = '<i class="ti ti-sparkles"></i> Generate AI Learning';
+        btn.disabled = false;
+    });
+}
 </script>
 </body>
 </html>

@@ -296,7 +296,6 @@ public class RoadmapDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 
 				while (rs.next()) {
-
 					SubTopic st = new SubTopic();
 
 					st.setId(rs.getInt("id"));
@@ -306,6 +305,7 @@ public class RoadmapDAO {
 					st.setDifficulty(rs.getString("difficulty"));
 					st.setEstimatedMinutes(rs.getInt("estimated_minutes"));
 					st.setWeight(rs.getInt("weight"));
+					st.setAiLearning(rs.getString("ai_learning"));
 
 					list.add(st);
 				}

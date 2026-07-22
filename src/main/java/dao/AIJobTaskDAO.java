@@ -1,0 +1,170 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import model.AIJobTask;
+import util.DBConnection;
+
+public class AIJobTaskDAO {
+
+	public void createTask(AIJobTask task) {
+
+		String sql = """
+				INSERT INTO ai_job_tasks
+				(job_id, subtopic_id, status, attempts)
+				VALUES (?, ?, ?, ?)
+				""";
+
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setInt(1, task.getJobId());
+			ps.setInt(2, task.getSubtopicId());
+			ps.setString(3, task.getStatus());
+			ps.setInt(4, task.getAttempts());
+
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public AIJobTask getNextPendingTask() {
+
+		String sql = """
+				SELECT *
+				FROM ai_job_tasks
+				WHERE status = 'PENDING'
+				ORDER BY id
+				LIMIT 1
+				""";
+
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+			try (ResultSet rs = ps.executeQuery()) {
+
+				if (rs.next()) {
+
+					AIJobTask task = new AIJobTask();
+
+					task.setId(rs.getInt("id"));
+					task.setJobId(rs.getInt("job_id"));
+					task.setSubtopicId(rs.getInt("subtopic_id"));
+					task.setStatus(rs.getString("status"));
+					task.setAttempts(rs.getInt("attempts"));
+
+					return task;
+				}
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public void updateStatus(int taskId, String status) {
+
+		String sql = """
+				UPDATE ai_job_tasks
+				SET status = ?
+				WHERE id = ?
+				""";
+
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setString(1, status);
+			ps.setInt(2, taskId);
+
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void incrementAttempts(int taskId) {
+
+		String sql = """
+				UPDATE ai_job_tasks
+				SET attempts = attempts + 1
+				WHERE id = ?
+				""";
+
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setInt(1, taskId);
+
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void markCompleted(int taskId) {
+
+		String sql = """
+				UPDATE ai_job_tasks
+				SET
+				    status = 'COMPLETED',
+				    completed_at = NOW()
+				WHERE id = ?
+				""";
+
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setInt(1, taskId);
+
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void markFailed(int taskId) {
+
+		String sql = """
+				UPDATE ai_job_tasks
+				SET status = 'FAILED'
+				WHERE id = ?
+				""";
+
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setInt(1, taskId);
+
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void markRunning(int taskId) {
+
+		String sql = """
+				UPDATE ai_job_tasks
+				SET
+				    status = 'RUNNING',
+				    started_at = NOW()
+				WHERE id = ?
+				""";
+
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setInt(1, taskId);
+
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
