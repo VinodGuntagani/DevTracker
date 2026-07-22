@@ -22,6 +22,8 @@ public class GenerateLearningJobServlet extends HttpServlet {
 
 		try {
 
+			System.out.println("STEP 1");
+
 			User user = (User) request.getSession().getAttribute("user");
 
 			if (user == null) {
@@ -38,11 +40,19 @@ public class GenerateLearningJobServlet extends HttpServlet {
 				return;
 			}
 
+			System.out.println("STEP 2");
+
 			int userId = user.getId();
+
+			System.out.println("STEP 3");
 
 			int roadmapId = Integer.parseInt(request.getParameter("roadmapId"));
 
+			System.out.println("STEP 4");
+
 			int jobId = jobService.createNotesJob(userId, roadmapId);
+
+			System.out.println("STEP 5");
 
 			response.getWriter().write("""
 					{
@@ -50,6 +60,8 @@ public class GenerateLearningJobServlet extends HttpServlet {
 					    "jobId":%d
 					}
 					""".formatted(jobId));
+
+			System.out.println("STEP 6");
 
 		} catch (Exception e) {
 

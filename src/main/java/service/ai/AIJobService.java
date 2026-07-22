@@ -19,6 +19,10 @@ public class AIJobService {
 
 	public int createNotesJob(int userId, int roadmapId) {
 
+		System.out.println("========================================");
+		System.out.println("JOB STEP 1 - Starting createNotesJob()");
+		System.out.println("========================================");
+
 		AIJob job = new AIJob();
 
 		job.setUserId(userId);
@@ -30,51 +34,68 @@ public class AIJobService {
 		job.setFailedTasks(0);
 		job.setTotalTasks(0);
 
+		System.out.println("JOB STEP 2 - Creating AI Job");
+
 		int jobId = jobDAO.createJob(job);
 
+		System.out.println("JOB STEP 3 - Job ID = " + jobId);
+
 		if (jobId == -1) {
+			System.out.println("JOB FAILED - createJob() returned -1");
 			return -1;
 		}
 
+		System.out.println("JOB STEP 4 - Fetching SubTopics");
+
 		List<SubTopic> subTopics = roadmapDAO.getAllSubTopics(roadmapId);
 
-		int totalTasks = 0;
-		System.out.println("Total subtopics fetched = " + subTopics.size());
+		System.out.println("JOB STEP 5 - Total SubTopics = " + subTopics.size());
 
-		for (SubTopic st : subTopics) {
-		    System.out.println(st.getId() + " - " + st.getName());
-		}
+		int totalTasks = 0;
+
 		for (SubTopic subTopic : subTopics) {
 
-		    System.out.println("----------------------------");
-		    System.out.println("SubTopic: " + subTopic.getName());
+			System.out.println("----------------------------------------");
+			System.out.println("Processing : " + subTopic.getName());
 
-		    if (subTopic.getAiLearning() != null && !subTopic.getAiLearning().isBlank()) {
-		        System.out.println("SKIPPED");
-		        continue;
-		    }
+			if (subTopic.getAiLearning() != null && !subTopic.getAiLearning().isBlank()) {
 
-		    System.out.println("QUEUED");
+				System.out.println("SKIPPED - Already Generated");
+				continue;
+			}
 
-		    AIJobTask task = new AIJobTask();
+			System.out.println("JOB STEP 6 - Creating Task");
 
-		    task.setJobId(jobId);
-		    task.setSubtopicId(subTopic.getId());
-		    task.setStatus("PENDING");
-		    task.setAttempts(0);
+			AIJobTask task = new AIJobTask();
 
-		    taskDAO.createTask(task);
+			task.setJobId(jobId);
+			task.setSubtopicId(subTopic.getId());
+			task.setStatus("PENDING");
+			task.setAttempts(0);
 
-		    totalTasks++;
+			taskDAO.createTask(task);
+
+			System.out.println("JOB STEP 7 - Task Created");
+
+			totalTasks++;
 		}
+
+		System.out.println("JOB STEP 8 - Updating Total Tasks");
 
 		jobDAO.updateTotalTasks(jobId, totalTasks);
 
 		if (totalTasks == 0) {
+
+			System.out.println("JOB STEP 9 - Nothing To Generate");
+
 			jobDAO.markCompleted(jobId);
 		}
 
-		System.out.println("Created AI Job " + jobId + " with " + totalTasks + " tasks.");
+		System.out.println("========================================");
+		System.out.println("JOB STEP 10 - Finished");
+		System.out.println("Job ID      : " + jobId);
+		System.out.println("Total Tasks : " + totalTasks);
+		System.out.println("========================================");
 
 		return jobId;
 	}
