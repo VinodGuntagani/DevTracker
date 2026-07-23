@@ -639,6 +639,61 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 		onclick="toggleExpandAll()">
 		<i class="ti ti-chevrons-up"></i> <span>Collapse all</span>
 	</button>
+	<!-- ============ AI Generation Modal ============ -->
+	<div class="ai-gen-overlay" id="aiGenModal" style="display: none">
+		<div class="ai-gen-modal">
+
+			<div class="ai-gen-header">
+				<span class="ai-gen-badge" id="aiGenBadge"><span
+					class="ai-gen-pulse"></span>Generating</span>
+				<h3 id="aiGenTitle">Building your AI lessons</h3>
+				<p id="aiGenSubtitle">Starting up the AI worker...</p>
+			</div>
+
+			<div class="ai-gen-ring-row">
+				<div class="ai-gen-ring-wrap">
+					<svg viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="aiRingGrad" x1="0%" y1="0%" x2="100%"
+							y2="100%">
+              <stop offset="0%" stop-color="#d99a3f" />
+              <stop offset="100%" stop-color="#8f5a15" />
+            </linearGradient>
+          </defs>
+          <circle class="ai-ring-track" cx="50" cy="50" r="42"></circle>
+          <circle id="aiGenRing" class="ai-ring-fill" cx="50" cy="50"
+							r="42" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+        </svg>
+					<div class="ai-ring-label">
+						<span id="aiGenPercent">0%</span>
+					</div>
+				</div>
+
+				<div class="ai-gen-current">
+					<div class="ai-gen-row">
+						<span class="label">Subject</span><span class="value"
+							id="aiGenSubject">—</span>
+					</div>
+					<div class="ai-gen-row">
+						<span class="label">Topic</span><span class="value"
+							id="aiGenTopic">—</span>
+					</div>
+					<div class="ai-gen-row">
+						<span class="label">Done</span><span class="value" id="aiGenCount">0
+							/ 0</span>
+					</div>
+				</div>
+			</div>
+
+			<div id="aiGenTaskList" class="ai-gen-tasklist"></div>
+
+			<button type="button" class="ai-gen-close" id="aiGenCloseBtn"
+				style="display: none" onclick="closeAIGenModal()">
+				<i class="ti ti-check"></i> Done — refresh syllabus
+			</button>
+
+		</div>
+	</div>
 	</main>
 	</div>
 	<%-- /layout --%>
@@ -1043,35 +1098,121 @@ window.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("loadingContainer").innerHTML = html;
 
 });
+
+let aiGenPollTimer = null;
+
 function generateAILearning() {
     const btn = document.getElementById("generateLearningBtn");
-    const originalHTML = btn.innerHTML;
-
     btn.disabled = true;
-    btn.innerHTML = "Generating...";
+    btn.innerHTML = "Starting...";
 
     fetch("generateLearningJob", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "roadmapId=<%=roadmap.getId()%>"
     })
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            console.log("Job Started", data.jobId);
+            openAIGenModal(data.jobId);
         } else {
             alert("Failed to start AI generation.");
         }
     })
-    .catch(() => {
-        alert("Server error while starting AI generation.");
-    })
+    .catch(() => alert("Server error while starting AI generation."))
     .finally(() => {
         btn.innerHTML = '<i class="ti ti-sparkles"></i> Generate AI Learning';
         btn.disabled = false;
     });
+}
+
+function openAIGenModal(jobId) {
+    document.getElementById("aiGenModal").style.display = "flex";
+    document.getElementById("aiGenCloseBtn").style.display = "none";
+    document.getElementById("aiGenBadge").className = "ai-gen-badge";
+    document.getElementById("aiGenBadge").innerHTML = '<span class="ai-gen-pulse"></span>Generating';
+    document.getElementById("aiGenTitle").innerText = "Building your AI lessons";
+    pollAIGenStatus(jobId);
+}
+
+function closeAIGenModal() {
+    document.getElementById("aiGenModal").style.display = "none";
+    if (aiGenPollTimer) clearInterval(aiGenPollTimer);
+    location.reload(); // pulls freshly generated lessons into the syllabus tree
+}
+
+// Maps your DAO's status strings to the CSS classes used in the modal
+function taskStatusClass(status) {
+    switch (status) {
+        case "RUNNING":   return "active";
+        case "COMPLETED": return "done";
+        case "FAILED":    return "error";
+        case "PENDING":
+        default:          return "pending";
+    }
+}
+
+function pollAIGenStatus(jobId) {
+    const CIRCUMFERENCE = 264; // 2 * PI * 42, matches r=42 in the SVG
+
+    function tick() {
+        fetch("aiJobProgress?jobId=" + jobId)
+            .then(r => r.json())
+            .then(data => {
+                const total = data.total || 0;
+                const completed = data.completed || 0;
+                const failed = data.failed || 0;
+                const percent = total > 0 ? Math.round(100 * (completed + failed) / total) : 0;
+
+                // Find the task currently RUNNING to show subject/topic context
+                const runningTask = (data.tasks || []).find(t => t.status === "RUNNING");
+
+                document.getElementById("aiGenPercent").innerText = percent + "%";
+                document.getElementById("aiGenSubject").innerText = runningTask ? runningTask.subjectName : "—";
+                document.getElementById("aiGenTopic").innerText = runningTask ? runningTask.subtopicName : "—";
+                document.getElementById("aiGenCount").innerText = completed + " / " + total;
+
+                let subtitle = "Preparing AI worker...";
+                if (runningTask) {
+                    subtitle = 'Writing notes for "' + runningTask.subtopicName + '"...';
+                } else if (data.status === "COMPLETED") {
+                    subtitle = "All lessons generated!";
+                }
+                document.getElementById("aiGenSubtitle").innerText = subtitle;
+
+                const offset = CIRCUMFERENCE - (CIRCUMFERENCE * percent / 100);
+                document.getElementById("aiGenRing").style.strokeDashoffset = offset;
+
+                const list = document.getElementById("aiGenTaskList");
+                list.innerHTML = (data.tasks || []).map(t =>
+                    '<div class="ai-gen-task ' + taskStatusClass(t.status) + '">' +
+                        '<span class="dot"></span><span>' + t.subtopicName + '</span>' +
+                    '</div>'
+                ).join("");
+
+                // Your AIJob only reaches COMPLETED — treat any failed tasks at that point as partial success
+                if (data.status === "COMPLETED") {
+                    clearInterval(aiGenPollTimer);
+                    if (failed > 0) {
+                        document.getElementById("aiGenBadge").className = "ai-gen-badge error";
+                        document.getElementById("aiGenBadge").innerHTML = "⚠ Completed with errors";
+                        document.getElementById("aiGenSubtitle").innerText =
+                            failed + " of " + total + " lessons failed to generate.";
+                    } else {
+                        document.getElementById("aiGenBadge").className = "ai-gen-badge success";
+                        document.getElementById("aiGenBadge").innerHTML = "✓ Complete";
+                        document.getElementById("aiGenTitle").innerText = "All lessons generated!";
+                        document.getElementById("aiGenSubtitle").innerText =
+                            total + " lessons are ready in your syllabus.";
+                    }
+                    document.getElementById("aiGenCloseBtn").style.display = "flex";
+                }
+            })
+            .catch(() => { /* transient network hiccup — interval retries on its own */ });
+    }
+
+    tick(); // fire immediately so the modal isn't blank for 2s
+    aiGenPollTimer = setInterval(tick, 2000);
 }
 </script>
 </body>

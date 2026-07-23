@@ -15,6 +15,9 @@ public class AIJobTask {
 	private LocalDateTime createdAt;
 	private LocalDateTime startedAt;
 	private LocalDateTime completedAt;
+	private String subjectName;
+	private String topicName;
+	private String subtopicName;
 
 	public AIJobTask() {
 	}
@@ -91,4 +94,27 @@ public class AIJobTask {
 		this.completedAt = completedAt;
 	}
 
+	public String getSubjectName() {
+		return subjectName;
+	}
+
+	public void setSubjectName(String subjectName) {
+		this.subjectName = subjectName;
+	}
+
+	public String getTopicName() {
+		return topicName;
+	}
+
+	public void setTopicName(String topicName) {
+		this.topicName = topicName;
+	}
+
+	public String getSubtopicName() {
+		return subtopicName;
+	}
+
+	public void setSubtopicName(String subtopicName) {
+		this.subtopicName = subtopicName;
+	}
 }

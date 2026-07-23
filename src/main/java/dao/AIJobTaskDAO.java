@@ -3,7 +3,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import java.util.ArrayList;
+import java.util.List;
 import model.AIJobTask;
 import util.DBConnection;
 
@@ -167,4 +168,56 @@ public class AIJobTaskDAO {
 		}
 	}
 
+	public List<AIJobTask> getTasksByJobId(int jobId) {
+
+		List<AIJobTask> tasks = new ArrayList<>();
+
+		String sql = """
+				SELECT
+				    ajt.*,
+				    s.name AS subject_name,
+				    t.name AS topic_name,
+				    st.name AS subtopic_name
+				FROM ai_job_tasks ajt
+				JOIN sub_topics st
+				    ON ajt.subtopic_id = st.id
+				JOIN topics t
+				    ON st.topic_id = t.id
+				JOIN subjects s
+				    ON t.subject_id = s.id
+				WHERE ajt.job_id = ?
+				ORDER BY ajt.id
+				""";
+
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setInt(1, jobId);
+
+			try (ResultSet rs = ps.executeQuery()) {
+
+				while (rs.next()) {
+
+					AIJobTask task = new AIJobTask();
+
+					task.setId(rs.getInt("id"));
+					task.setJobId(rs.getInt("job_id"));
+					task.setSubtopicId(rs.getInt("subtopic_id"));
+					task.setStatus(rs.getString("status"));
+					task.setAttempts(rs.getInt("attempts"));
+
+					// We'll add these fields to AIJobTask in the next step
+					task.setSubjectName(rs.getString("subject_name"));
+					task.setTopicName(rs.getString("topic_name"));
+					task.setSubtopicName(rs.getString("subtopic_name"));
+
+					tasks.add(task);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return tasks;
+	}
 }

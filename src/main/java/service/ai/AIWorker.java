@@ -54,7 +54,15 @@ public class AIWorker implements Runnable {
 
 	private void processTask(AIJobTask task) {
 
+		System.out.println("================================");
+		System.out.println("Processing Job : " + task.getJobId());
+		System.out.println("Task ID        : " + task.getId());
+		System.out.println("Subtopic ID    : " + task.getSubtopicId());
+		System.out.println("================================");
+
 		taskDAO.markRunning(task.getId());
+
+		System.out.println("✅ Marked RUNNING");
 
 		try {
 
@@ -62,22 +70,30 @@ public class AIWorker implements Runnable {
 
 			if (subTopic == null) {
 
+				System.out.println("❌ SubTopic not found");
+
 				taskDAO.markFailed(task.getId());
 				jobDAO.incrementFailedTasks(task.getJobId());
 
 				return;
 			}
 
+			System.out.println("📚 SubTopic : " + subTopic.getName());
+
 			String context = subTopicDAO.getLearningContext(subTopic.getId());
+
+			System.out.println("🤖 Calling Gemini...");
 
 			String learning = geminiService.generateLearning(context);
 
+			System.out.println("🤖 Gemini Finished");
+
 			if (learning == null || learning.isBlank()) {
 
+				System.out.println("❌ Empty Response");
+
 				taskDAO.incrementAttempts(task.getId());
-
 				taskDAO.markFailed(task.getId());
-
 				jobDAO.incrementFailedTasks(task.getJobId());
 
 				return;
@@ -85,21 +101,31 @@ public class AIWorker implements Runnable {
 
 			learning = learning.replace("```html", "").replace("```", "").trim();
 
+			System.out.println("💾 Saving Learning");
+
 			subTopicDAO.updateAILearning(subTopic.getId(), learning);
+
+			System.out.println("✅ Learning Saved");
 
 			taskDAO.markCompleted(task.getId());
 
+			System.out.println("✅ Task Marked COMPLETED");
+
 			jobDAO.incrementCompletedTasks(task.getJobId());
+
+			System.out.println("✅ Job Completed Count Incremented");
 
 			if (jobDAO.isFinished(task.getJobId())) {
 
 				jobDAO.markCompleted(task.getJobId());
 
-				System.out.println("✅ Job Finished : " + task.getJobId());
+				System.out.println("🎉 Job Finished : " + task.getJobId());
 
 			}
 
 		} catch (Exception e) {
+
+			System.out.println("❌ Exception while processing task");
 
 			e.printStackTrace();
 
