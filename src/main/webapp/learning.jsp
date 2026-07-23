@@ -5,7 +5,9 @@
 <%@ page import="java.util.List"%>
 <%@ page import="com.google.gson.Gson"%>
 <%@ page import="model.User"%>
-<%User user = (User) session.getAttribute("user"); %>
+<%
+User user = (User) session.getAttribute("user");
+%>
 
 <%
 SubTopic sub = (SubTopic) request.getAttribute("subtopic");
@@ -174,6 +176,10 @@ try {
 						}
 						%>
 					</button>
+					<button class="btn btn-sm"
+						onclick="downloadPDF(<%=sub.getId()%>, this)">
+						<i class="ti ti-file-download"></i> Download PDF
+					</button>
 				</div>
 
 				<button class="btn" id="displayBtn" type="button"
@@ -269,7 +275,7 @@ try {
 						</a>
 
 					</div>
-					
+
 
 				</div>
 			</div>
@@ -408,6 +414,51 @@ window.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("loadingContainer").innerHTML = html;
 
 });
+async function downloadPDF(subtopicId, btn) {
+
+    const original = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML =
+        '<i class="ti ti-loader-2 ti-spin"></i> Generating PDF...';
+
+    try {
+
+        const response = await fetch(
+            "downloadLessonPDF?subtopicId=" + subtopicId
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to generate PDF");
+        }
+
+        const blob = await response.blob();
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+
+        // Optional filename
+        a.download = "Lesson.pdf";
+
+        document.body.appendChild(a);
+        a.click();
+
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+    } catch (e) {
+
+        alert("Failed to generate PDF.");
+
+    } finally {
+
+        btn.disabled = false;
+        btn.innerHTML = original;
+
+    }
+}
 </script>
 </body>
 </html>

@@ -203,7 +203,7 @@ int overallPct = totalSubtopics > 0 ? Math.round(100f * totalCompleted / totalSu
 
 				<button class="btn btn-sm" id="generateLearningBtn"
 					onclick="generateAILearning()">
-					<i class="ti ti-sparkles"></i> Generate AI Learning
+					<i class="ti ti-sparkles"></i> Generate All Lessons
 				</button>
 
 				<button class="btn btn-sm" id="customizeBtn"
@@ -1201,7 +1201,7 @@ function pollAIGenStatus(jobId) {
                     } else {
                         document.getElementById("aiGenBadge").className = "ai-gen-badge success";
                         document.getElementById("aiGenBadge").innerHTML = "✓ Complete";
-                        document.getElementById("aiGenTitle").innerText = "All lessons generated!";
+                        document.getElementById("aiGenTitle").innerText = "All lessons are generated!";
                         document.getElementById("aiGenSubtitle").innerText =
                             total + " lessons are ready in your syllabus.";
                     }
